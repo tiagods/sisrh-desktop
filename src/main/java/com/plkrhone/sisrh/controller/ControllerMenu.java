@@ -1,0 +1,148 @@
+package com.plkrhone.sisrh.controller;
+
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.plkrhone.sisrh.model.Anuncio;
+import com.plkrhone.sisrh.repository.helper.AnunciosImp;
+import com.plkrhone.sisrh.repository.helper.TarefasImp;
+import com.plkrhone.sisrh.view.AnuncioView;
+import com.plkrhone.sisrh.view.AvaliacaoView;
+import com.plkrhone.sisrh.view.CandidatoView;
+import com.plkrhone.sisrh.view.ClienteView;
+import com.plkrhone.sisrh.view.EntrevistaView;
+import com.plkrhone.sisrh.view.TarefaView;
+import com.plkrhone.sisrh.view.UsuarioView;
+import com.plkrhone.sisrh.view.VagaView;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+/**
+ * Created by Tiago on 07/07/2017.
+ */
+public class ControllerMenu extends PersistenciaController implements Initializable {
+	
+	private static Logger log = LoggerFactory.getLogger(ControllerMenu.class);
+	@FXML
+	private Label txAnunciosAbertos;
+	@FXML
+	private Label txTarefasHoje;
+	@FXML
+	private Label txEntrevistasHoje;
+	
+	AnunciosImp anuncios;
+	TarefasImp tarefas;
+	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		long tempoInicial = System.currentTimeMillis();
+        long tempoFinal = System.currentTimeMillis();
+        if(log.isDebugEnabled()) {
+        	log.debug("Tela "+getClass().getSimpleName().replace("Controller", "")+" abriu em : "+(tempoFinal-tempoInicial)+" ms");
+        }
+        try {
+            loadFactory();
+            carregarCartoes();
+        }catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+        
+	}
+	@FXML
+	private Pane pnCenter;
+
+	@FXML
+	void abrirCliente(ActionEvent event) {
+		ClienteView cliente = new ClienteView();
+		cliente.start(new Stage());
+		//
+		// try {
+		// URL url = getClass().getClassLoader().getResource("Cliente.fxml");
+		// Parent root = FXMLLoader.load(url);
+		// pnCenter.getChildren().clear();
+		// pnCenter.getChildren().add(root);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+	}
+
+	@FXML
+	void abrirAnuncio(ActionEvent event) {
+		AnuncioView anuncio = new AnuncioView();
+		anuncio.start(new Stage());
+		// try {
+		// URL url = getClass().getClassLoader().getResource("Anuncio.fxml");
+		// Parent root = FXMLLoader.load(url);
+		// pnCenter.getChildren().clear();
+		// pnCenter.getChildren().add(root);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+	}
+
+	@FXML
+	void abrirAvaliacao(ActionEvent event) {
+		AvaliacaoView avaliacao = new AvaliacaoView();
+		avaliacao.start(new Stage());
+	}
+
+	@FXML
+	void abrirCandidato(ActionEvent event) {
+			CandidatoView candidatoView = new CandidatoView();
+			candidatoView.start(new Stage());
+		
+	}
+
+	@FXML
+	void abrirEntrevista(ActionEvent event) {
+		EntrevistaView entrevistaView = new EntrevistaView();
+		entrevistaView.start(new Stage());
+	}
+
+	@FXML
+	void abrirTarefa(ActionEvent event) {
+		TarefaView tarefaView = new TarefaView();
+		tarefaView.start(new Stage());
+	}
+
+	@FXML
+	void abrirVaga(ActionEvent event) {
+		VagaView vagaView = new VagaView();
+		vagaView.start(new Stage());
+	}
+
+	@FXML
+	void abrirUsuario(ActionEvent event) {
+		UsuarioView usuarioView = new UsuarioView();
+		usuarioView.start(new Stage());
+	}
+	
+	private void carregarCartoes() {
+		anuncios = new AnunciosImp(getManager());
+		tarefas = new TarefasImp(getManager());
+		
+		LocalDateTime inicio = LocalDateTime.now().with(LocalTime.of(00, 00, 00));
+		LocalDateTime fim = LocalDateTime.now().with(LocalTime.of(23, 59, 59));
+		
+		long valueTarefas = tarefas.filtrar(null, null, null, null, null, null, null, 0).size();
+		long valueEntrevistas = tarefas.filtrar(null, Anuncio.Cronograma.AGENDAMENTO_DE_ENTREVISTA, null, null, null, inicio, fim, 0).size();
+				
+		long value = anuncios.count(Anuncio.AnuncioStatus.EM_ANDAMENTO);
+		txAnunciosAbertos.setText(String.valueOf(value));
+		txEntrevistasHoje.setText(String.valueOf(valueEntrevistas));
+		txTarefasHoje.setText(String.valueOf(valueTarefas));
+		
+	}
+}

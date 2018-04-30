@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import org.fxutils.maskedtextfield.MaskTextField?>
+
+<JFXTabPane fx:id="tab" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/estilo.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAnuncio">
+            <tabs>
+                <Tab fx:id="tabPesquisa" text="Pesquisa">
+                    <content>
+                        <AnchorPane fx:id="panPesquisa">
+                            <children>
+                                <Label layoutX="235.0" layoutY="18.0" prefHeight="17.0" prefWidth="65.0" text="Empresa:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <JFXComboBox fx:id="cbEmpresaPesquisa" layoutX="304.0" layoutY="15.0" prefHeight="25.0" prefWidth="120.0" />
+                                <ComboBox fx:id="cbVagaPesquisa" layoutX="304.0" layoutY="58.0" prefHeight="25.0" prefWidth="120.0" />
+                                <JFXComboBox fx:id="cbCronogramaPesquisa" layoutX="109.0" layoutY="15.0" prefHeight="25.0" prefWidth="120.0" />
+                                <JFXComboBox fx:id="cbStatusPesquisa" layoutX="109.0" layoutY="59.0" prefHeight="25.0" prefWidth="120.0" />
+                                <JFXDatePicker fx:id="dtInicialPesquisa" layoutX="449.0" layoutY="48.0" promptText="Data Inicial" />
+                                <JFXDatePicker fx:id="dtFinalPesquisa" layoutX="449.0" layoutY="81.0" promptText="Data Final" />
+                                <TableView fx:id="tbAnuncio" layoutX="6.0" layoutY="245.0" prefHeight="400.0" prefWidth="1200.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                <Label layoutX="235.0" layoutY="59.0" prefHeight="25.0" prefWidth="42.0" text="Vaga:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Label layoutX="14.0" layoutY="16.0" prefHeight="25.0" prefWidth="95.0" text="Cronograma:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Label layoutX="14.0" layoutY="61.0" prefHeight="19.0" prefWidth="80.0" text="Status:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <JFXComboBox fx:id="cbFiltro" layoutX="185.0" layoutY="144.0" prefWidth="150.0" />
+                                <JFXTextField fx:id="txPesquisa" layoutX="14.0" layoutY="144.0" onKeyTyped="#pesquisar" promptText="Entre com um valor" />
+                                <JFXComboBox fx:id="cbDatasFiltro" layoutX="449.0" layoutY="16.0" prefHeight="25.0" prefWidth="172.0" />
+                        <PieChart fx:id="grafico" layoutX="638.0" prefHeight="241.0" prefWidth="562.0" />
+                        <JFXRadioButton fx:id="rbStatusGrafico" layoutX="513.0" layoutY="224.0" text="Status" />
+                        <JFXRadioButton fx:id="rbCronogramaGrafico" layoutX="513.0" layoutY="200.0" text="Cronograma" />
+                        <Label alignment="CENTER" layoutX="529.0" layoutY="167.0" prefHeight="19.0" prefWidth="90.0" text="Visão Geral" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                  <JFXButton layoutX="14.0" layoutY="220.0" mnemonicParsing="false" onAction="#novo" prefHeight="23.0" prefWidth="110.0" styleClass="btJFXDefault" text="Cadastrar Novo" />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="tabCadastro" text="Cadastro">
+                    <content>
+                        <AnchorPane fx:id="pnCadastro" prefHeight="264.0" prefWidth="1018.0">
+                            <children>
+                                <Label layoutX="15.0" layoutY="48.0" prefHeight="17.0" prefWidth="65.0" text="Nome:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Label layoutX="18.0" layoutY="177.0" prefHeight="17.0" prefWidth="85.0" text="Abertura:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <JFXTextField fx:id="txCodigo" disable="true" layoutX="17.0" layoutY="9.0" prefHeight="25.0" prefWidth="43.0" />
+                                <JFXTextField fx:id="txNome" layoutX="115.0" layoutY="44.0" prefHeight="26.0" prefWidth="300.0" promptText="Use um código para o seu anúncio" />
+                                <Label layoutX="16.0" layoutY="209.0" prefHeight="17.0" prefWidth="100.0" text="Encerramento:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <JFXDatePicker fx:id="dtEncerramento" layoutX="117.0" layoutY="203.0" prefHeight="26.0" prefWidth="110.0" />
+                                <JFXDatePicker fx:id="dtAbertura" layoutX="117.0" layoutY="171.0" prefHeight="26.0" prefWidth="110.0" />
+                                <JFXComboBox fx:id="cbCliente" layoutX="115.0" layoutY="76.0" prefHeight="26.0" prefWidth="300.0" />
+                                <Label layoutX="15.0" layoutY="80.0" prefHeight="17.0" prefWidth="65.0" text="Cliente:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Label layoutX="17.0" layoutY="145.0" prefHeight="17.0" prefWidth="65.0" text="Status:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <JFXComboBox fx:id="cbStatus" layoutX="115.0" layoutY="139.0" prefHeight="25.0" prefWidth="123.0" />
+                                <JFXComboBox fx:id="cbCronograma" disable="true" layoutX="347.0" layoutY="139.0" prefHeight="25.0" prefWidth="123.0" />
+                                <Label layoutX="248.0" layoutY="145.0" prefHeight="17.0" prefWidth="90.0" text="Cronograma:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <JFXTextField fx:id="txCriacao" disable="true" layoutX="79.0" layoutY="9.0" prefHeight="25.0" prefWidth="139.0" />
+                                <AnchorPane layoutX="496.0" layoutY="291.0" prefHeight="374.0" prefWidth="1191.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="291.0">
+                                    <children>
+                                        <JFXTabPane fx:id="tpProcesso" layoutX="65.0" prefHeight="286.0" prefWidth="1183.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+                                            <tabs>
+                                                <Tab fx:id="tabVagas" text="Vaga">
+                                                    <content>
+                                                        <AnchorPane fx:id="pnCadastroVaga" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <children>
+                                                                <JFXTabPane fx:id="tpVaga" layoutX="2.0" layoutY="47.0" prefHeight="290.0" prefWidth="1177.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="70.0">
+                                                                    <tabs>
+                                                                        <Tab fx:id="tabVaga1" text="1-Cargo Req...">
+                                                                            <content>
+                                                                                <AnchorPane fx:id="pnVaga1" minHeight="0.0" minWidth="0.0" prefHeight="314.0" prefWidth="440.0">
+                                                                                    <children>
+                                                                                        <Label layoutX="15.0" layoutY="88.0" prefHeight="17.0" prefWidth="83.0" text="Carga Horária:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <JFXRadioButton fx:id="rbVaga1Clt" layoutX="328.0" layoutY="46.0" mnemonicParsing="false" text="CLT">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <JFXRadioButton fx:id="rbVaga1Estagiario" layoutX="393.0" layoutY="46.0" mnemonicParsing="false" text="Estagiário">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <JFXRadioButton fx:id="rbVaga1Temporario" layoutX="509.0" layoutY="46.0" mnemonicParsing="false" text="Temporário">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <JFXDatePicker fx:id="dtVaga1DataInicio" layoutX="348.0" layoutY="129.0" prefHeight="25.0" prefWidth="100.0" />
+                                                                                        <JFXDatePicker fx:id="dtVaga1DataFim" layoutX="456.0" layoutY="129.0" prefHeight="25.0" prefWidth="100.0" />
+                                                                                        <Label layoutX="16.0" layoutY="46.0" text="Cargo:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <ComboBox fx:id="cbVaga1Cargo" layoutX="99.0" layoutY="40.0" prefHeight="25.0" prefWidth="202.0" />
+                                                                                        <JFXComboBox fx:id="cbVaga1CargaHoraria" layoutX="100.0" layoutY="84.0" prefHeight="25.0" prefWidth="202.0" />
+                                                                                        <Label alignment="CENTER" layoutX="328.0" layoutY="88.0" prefHeight="17.0" prefWidth="251.0" text="Período(Estagiário e Temporário)">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <Label layoutX="15.0" layoutY="132.0" text="Horário de Trabalho:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <JFXTextField fx:id="txVaga1HorarioTrabalho" layoutX="153.0" layoutY="128.0" />
+                                                                                        <Label layoutX="15.0" layoutY="171.0" text="Esse processo seletivo é sigiloso?">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <JFXRadioButton fx:id="rbVaga1ProcessoSigilosoNao" layoutX="308.0" layoutY="171.0" mnemonicParsing="false" text="Não">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <JFXRadioButton fx:id="rbVaga1ProcessoSigilosoSim" alignment="CENTER_LEFT" layoutX="245.0" layoutY="171.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="42.0" text="Sim">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <JFXButton fx:id="btVagaAvancar1" layoutX="598.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoAvancar" prefHeight="25.0" prefWidth="75.0" styleClass="btJFXDefault" text="Avançar" />
+                                                            							<JFXTextField fx:id="txDocumento" disable="true" layoutX="777.0" layoutY="53.0" prefHeight="25.0" prefWidth="400.0" />
+                                                                                  		<JFXButton fx:id="btAnexarFormulario" layoutX="803.0" layoutY="90.0" mnemonicParsing="false" onAction="#anexarFormulario" styleClass="btJFXDefault" text="Anexar Formulario" />
+		                                                                                <JFXButton fx:id="btAbrirFormulario" layoutX="929.0" layoutY="90.0" mnemonicParsing="false" onAction="#visualizar" prefHeight="26.0" prefWidth="113.0" styleClass="btJFXDefault" text="Abrir Formulário" />
+		                                                                                <JFXButton fx:id="btRemoverFormulario" layoutX="1052.0" layoutY="90.0" mnemonicParsing="false" onAction="#removerDocumento" prefHeight="26.0" prefWidth="113.0" styleClass="btJFXDefault" text="Remover" />
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </content>
+                                                                        </Tab>
+                                                                        <Tab fx:id="tabVaga2" text="2-Motivo / Jus...">
+                                                                            <content>
+                                                                                <AnchorPane fx:id="pnVaga2" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <JFXRadioButton fx:id="rbVaga2MotivoQuadro" layoutX="14.0" layoutY="77.0" mnemonicParsing="false" text="Aumento de Quadro">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <JFXRadioButton fx:id="rbVaga2MotivoDesligado" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" text="Substituição por Desligamento">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <Label layoutX="14.0" layoutY="14.0" text="Motivo da requisição:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <JFXRadioButton fx:id="rbVaga2MotivoAfastamento" layoutX="14.0" layoutY="109.0" mnemonicParsing="false" text="Afastamento">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <JFXRadioButton fx:id="rbVaga2MotivoOutro" layoutX="14.0" layoutY="143.0" mnemonicParsing="false" text="Outro:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXRadioButton>
+                                                                                        <JFXTextField fx:id="txVaga2MotivoOutro" layoutX="100.0" layoutY="139.0" prefHeight="25.0" prefWidth="166.0" />
+                                                                                        <JFXButton fx:id="btVagaAvancar2" layoutX="600.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoAvancar" prefHeight="25.0" prefWidth="75.0" styleClass="btJFXDefault" text="Avançar" />
+                                                                                        <JFXButton fx:id="btVagaVoltar2" layoutX="539.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoRetroceder" prefHeight="25.0" prefWidth="60.0" styleClass="btJFXDefault" text="Voltar" />
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </content>
+                                                                        </Tab>
+                                                                        <Tab fx:id="tabVaga3" text="3-Requisitos">
+                                                                            <content>
+                                                                                <AnchorPane fx:id="pnVaga3" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <JFXComboBox fx:id="cbVaga3Escolaridade" layoutX="119.0" layoutY="10.0" prefWidth="150.0" promptText="Nivel de Escolaridade" />
+                                                                                        <JFXComboBox fx:id="cbVaga3Municipio" layoutX="207.0" layoutY="155.0" prefWidth="150.0" promptText="Município" />
+                                                                                        <JFXComboBox fx:id="cbVaga3Formacao" layoutX="119.0" layoutY="45.0" prefWidth="150.0" promptText="Curso de Formação" />
+                                                                                        <Label layoutX="14.0" layoutY="195.0" text="Experiência:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <JFXComboBox fx:id="cbVaga3Tempo" layoutX="119.0" layoutY="188.0" prefHeight="25.0" prefWidth="75.0" promptText="Tempo" />
+                                                                                        <JFXComboBox fx:id="cbVaga3Tipo" layoutX="207.0" layoutY="188.0" prefHeight="25.0" prefWidth="75.0" promptText="Tipo" />
+                                                                                        <Label layoutX="14.0" layoutY="14.0" text="Escolaridade:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <Label layoutX="14.0" layoutY="162.0" text="Localização:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <JFXComboBox fx:id="cbVaga3Estado" layoutX="119.0" layoutY="155.0" prefHeight="25.0" prefWidth="80.0" promptText="Estado" />
+                                                                                        <JFXButton fx:id="btVagaVoltar3" layoutX="538.0" layoutY="272.0" mnemonicParsing="false" onAction="#formRequisicaoRetroceder" prefHeight="25.0" prefWidth="60.0" styleClass="btJFXDefault" text="Voltar" />
+                                                                                        <JFXButton fx:id="btVagaAvancar3" layoutX="602.0" layoutY="272.0" mnemonicParsing="false" onAction="#formRequisicaoAvancar" prefHeight="25.0" prefWidth="75.0" styleClass="btJFXDefault" text="Avançar" />
+                                                                                        <JFXTextField fx:id="txVaga3Idioma" layoutX="119.0" layoutY="78.0" prefHeight="25.0" prefWidth="151.0" promptText="Idioma" />
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </content>
+                                                                        </Tab>
+                                                                        <Tab fx:id="tabVaga31" text="3.1-Competências">
+                                                                            <content>
+                                                                                <AnchorPane fx:id="pnVaga31" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <JFXTextArea fx:id="txVaga31Competencia" layoutX="14.0" layoutY="53.0" prefHeight="166.0" prefWidth="528.0" promptText="Conhecimentos Específicos e Gerais / Habilidades / Aspectos Comportamentais" wrapText="true">
+                                                               <font>
+                                                                  <Font size="16.0" />
+                                                               </font></JFXTextArea>
+                                                                                        <JFXButton fx:id="btVagaAvancar31" layoutX="600.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoAvancar" prefHeight="25.0" prefWidth="75.0" styleClass="btJFXDefault" text="Avançar" />
+                                                                                        <JFXButton fx:id="btVagaVoltar31" layoutX="533.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoRetroceder" prefHeight="25.0" prefWidth="60.0" styleClass="btJFXDefault" text="Voltar" />
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </content>
+                                                                        </Tab>
+                                                                        <Tab fx:id="tabVaga32" text="3.2-Descrição de Atividades">
+                                                                            <content>
+                                                                                <AnchorPane fx:id="pnVaga32" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="1177.0">
+                                                                                    <children>
+                                                                                        <JFXTextArea fx:id="txVaga32DescricaoAtividades" layoutX="12.0" layoutY="53.0" prefHeight="170.0" prefWidth="528.0" promptText="Descreva aqui as atividades a serem desenvolvidas" wrapText="true">
+                                                               <font>
+                                                                  <Font size="16.0" />
+                                                               </font></JFXTextArea>
+                                                                                        <JFXButton fx:id="btVagaVoltar32" layoutX="544.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoRetroceder" prefHeight="25.0" prefWidth="60.0" styleClass="btJFXDefault" text="Voltar" />
+                                                                                        <JFXButton fx:id="btVagaAvancar32" layoutX="611.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoAvancar" prefHeight="25.0" prefWidth="67.0" styleClass="btJFXDefault" text="Avançar" />
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </content>
+                                                                        </Tab>
+                                                                        <Tab fx:id="tabVaga4" text="4-Salário">
+                                                                            <content>
+                                                                                <AnchorPane fx:id="pnVaga4" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <MaskTextField fx:id="txVaga4Salario" layoutX="89.0" layoutY="14.0" mask="N!,NN" promptText="ex: 5000,00" />
+                                                                                        <Label layoutX="14.0" layoutY="18.0" text="Salário:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <JFXCheckBox fx:id="ckVaga4ACombinar" layoutX="289.0" layoutY="18.0" mnemonicParsing="false" text="Á combinar">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </JFXCheckBox>
+                                                                                        <Label layoutX="254.0" layoutY="18.0" prefHeight="17.0" prefWidth="18.0" text="ou">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <Label layoutX="14.0" layoutY="170.0" text="Comissão:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <Label layoutX="14.0" layoutY="65.0" text="Observaçaõ:">
+                                                                                            <font>
+                                                                                                <Font name="System Bold" size="12.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <JFXTextArea fx:id="txVaga4Observacao" layoutX="89.0" layoutY="53.0" prefHeight="106.0" prefWidth="283.0" wrapText="true" />
+                                                                                        <MaskTextField fx:id="txVaga4Comissao" layoutX="260.0" layoutY="166.0" mask="N!,NN" prefHeight="25.0" prefWidth="110.0" promptText="ex: 5000,00" />
+                                                                                        <JFXButton fx:id="btVagaAvancar4" layoutX="611.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoAvancar" prefHeight="25.0" prefWidth="60.0" styleClass="btJFXDefault" text="Avançar" />
+                                                                                        <JFXButton fx:id="btVagaVoltar4" layoutX="545.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoRetroceder" prefHeight="25.0" prefWidth="60.0" styleClass="btJFXDefault" text="Voltar" />
+                                                                                        <JFXRadioButton fx:id="rbVaga4ComissaoSim" layoutX="89.0" layoutY="170.0" mnemonicParsing="false" text="Sim" />
+                                                                                        <JFXRadioButton fx:id="rbVaga4ComissaoNao" layoutX="142.0" layoutY="170.0" mnemonicParsing="false" text="Não" />
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </content>
+                                                                        </Tab>
+                                                                        <Tab fx:id="tabVaga41" text="4.1-Benefícios">
+                                                                            <content>
+                                                                                <AnchorPane fx:id="pnVaga41" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <Label layoutX="14.0" layoutY="53.0" text="Vale Refeição:" />
+                                                                                        <Label layoutX="14.0" layoutY="81.0" text="Vale Transporte:" />
+                                                                                        <Label layoutX="14.0" layoutY="110.0" text="Assitência Médica:" />
+                                                                                        <MaskTextField fx:id="txVaga41VRValor" layoutX="257.0" layoutY="49.0" mask="N!,NN" prefHeight="25.0" prefWidth="150.0" promptText="por dia (ex: 30,00)" />
+                                                                                        <JFXButton fx:id="btVagaVoltar41" layoutX="611.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoRetroceder" prefHeight="25.0" prefWidth="60.0" styleClass="btJFXDefault" text="Voltar" />
+                                                                                        <JFXRadioButton fx:id="rbVaga41VRNao" layoutX="178.0" layoutY="52.0" mnemonicParsing="false" text="Não" />
+                                                                                        <JFXRadioButton fx:id="rbVaga41VRSim" layoutX="129.0" layoutY="52.0" mnemonicParsing="false" text="Sim" />
+                                                                                        <JFXRadioButton fx:id="rbVaga41VTSim" layoutX="129.0" layoutY="81.0" mnemonicParsing="false" text="Sim" />
+                                                                                        <JFXRadioButton fx:id="rbVaga41VTNao" layoutX="178.0" layoutY="81.0" mnemonicParsing="false" text="Não" />
+                                                                                        <JFXRadioButton fx:id="rbVaga41AMedicaNao" layoutX="178.0" layoutY="110.0" mnemonicParsing="false" text="Não" />
+                                                                                        <JFXRadioButton fx:id="rbVaga41AMedicaSim" layoutX="129.0" layoutY="110.0" mnemonicParsing="false" text="Sim" />
+                                                                                        <JFXTextField fx:id="txVaga41AMedicaDetalhes" layoutX="256.0" layoutY="106.0" prefHeight="25.0" prefWidth="328.0" promptText="opcional (ex: Amil, Bradesco ou qualquer outra informação)" />
+                                                                                        <Label layoutX="14.0" layoutY="148.0" prefHeight="17.0" prefWidth="100.0" text="Outro:" />
+                                                                                        <JFXTextField fx:id="txVaga41Outro" layoutX="129.0" layoutY="144.0" prefHeight="25.0" prefWidth="340.0" promptText="Qualquer outra informação importante" />
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </content>
+                                                                        </Tab>
+                                                                    </tabs>
+                                                                </JFXTabPane>
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </content>
+                                                </Tab>
+                                                <Tab fx:id="tabCadastroContrato" text="Contrato">
+                                                    <content>
+                                                        <AnchorPane fx:id="panContrato" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <children>
+                                                                <JFXDatePicker fx:id="dtEnvioContrato" layoutX="165.0" layoutY="92.0" />
+                                                                <Label layoutX="14.0" layoutY="99.0" prefHeight="17.0" prefWidth="149.0" text="Envio do Contrato:">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <Label layoutX="14.0" layoutY="137.0" prefHeight="17.0" prefWidth="154.0" text="Retorno do Contrato:">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <JFXDatePicker fx:id="dtRetornoContrato" layoutX="165.0" layoutY="130.0" />
+                                                                <JFXComboBox fx:id="cbStatusContrato" layoutX="165.0" layoutY="169.0" prefHeight="25.0" prefWidth="173.0" />
+                                                                <Label layoutX="14.0" layoutY="176.0" prefHeight="17.0" prefWidth="137.0" text="Status do Contrato:">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </content>
+                                                </Tab>
+                                                <Tab fx:id="tabCurriculos" text="Curriculos">
+                                                    <content>
+                                                        <AnchorPane fx:id="panCurriculos" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <children>
+                                                                <TableView fx:id="tbCurriculos" layoutX="9.0" layoutY="58.0" prefHeight="289.0" prefWidth="681.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="70.0" />
+                                                                <JFXButton fx:id="btAdicionarCurriculo" layoutX="5.0" layoutY="14.0" mnemonicParsing="false" onAction="#incluirCandidato" styleClass="btJFXDefault" text="Adicionar Curriculo(s)" AnchorPane.leftAnchor="5.0" />
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </content>
+                                                </Tab>
+                                                <Tab fx:id="tabEntrevistas" text="Entrevistas/Testes">
+                                                    <content>
+                                                        <AnchorPane fx:id="panEntrevistas" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <children>
+                                                                <JFXComboBox fx:id="cbCandidatoEntrevista" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="392.0" promptText="Escolher candidado" AnchorPane.leftAnchor="5.0" />
+                                                                <JFXButton fx:id="btnEntrevista" layoutX="414.0" layoutY="14.0" mnemonicParsing="false" onAction="#incluirEntrevista" prefHeight="25.0" prefWidth="114.0" styleClass="btJFXDefault" text="Adicionar" />
+                                                                <TableView fx:id="tbEntrevista" layoutX="14.0" layoutY="49.0" prefHeight="282.0" prefWidth="1181.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="70.0">
+                                             <columns>
+                                                                        <TableColumn prefWidth="22.0" text="*" />
+                                                <TableColumn prefWidth="71.0" text="Data" />
+                                                <TableColumn prefWidth="114.0" text="Nome" />
+                                                <TableColumn prefWidth="41.0" text="Idade" />
+                                                <TableColumn prefWidth="68.0" text="Seleções" />
+                                                <TableColumn prefWidth="68.0" text="Pré-Aprovações" />
+                                                <TableColumn prefWidth="68.0" text="Avaliações" />
+                                                <TableColumn prefWidth="68.0" text="Entrevista" />
+                                                <TableColumn prefWidth="68.0" text="Ver Perfil" />
+                                                <TableColumn prefWidth="68.0" text="Remover" />
+                                             </columns>
+                                                                </TableView>
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </content>
+                                                </Tab>
+                                                <Tab fx:id="tabPreSelecionado" text="Pré-Selecionados">
+                                                    <content>
+                                                        <AnchorPane fx:id="panPreSelecionado" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <children>
+                                                                <JFXButton fx:id="btnAdicionar" layoutX="414.0" layoutY="14.0" mnemonicParsing="false" onAction="#incluirPreAprovado" styleClass="btJFXDefault" text="Adicionar" />
+                                                                <JFXComboBox fx:id="cbPreSelecionado" layoutX="15.0" layoutY="14.0" prefHeight="25.0" prefWidth="392.0" promptText="Candidado Pré Aprovado" AnchorPane.leftAnchor="5.0" />
+                                                                <TableView fx:id="tbPreSelecionado" layoutX="14.0" layoutY="57.0" prefHeight="278.0" prefWidth="1181.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="70.0">
+                                                                    <columns>
+                                                                        <TableColumn prefWidth="171.0" text="Nome" />
+                                                                        <TableColumn prefWidth="106.0" text="Data de Cadastro" />
+                                                                        <TableColumn prefWidth="109.0" text="Data de Entrevista" />
+                                                                        <TableColumn prefWidth="109.0" />
+                                                                    </columns>
+                                                                </TableView>
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </content>
+                                                </Tab>
+                                                <Tab fx:id="tabConclusao" text="Conclusão">
+                                                    <content>
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <children>
+                                                                <Label layoutX="16.0" layoutY="23.0" prefHeight="44.0" prefWidth="90.0" text="Candidato Selecionado:" wrapText="true">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <JFXComboBox fx:id="cbCandidatoConclusao" layoutX="109.0" layoutY="33.0" prefHeight="26.0" prefWidth="370.0" promptText="Nome do Candidado" />
+                                                                <JFXCheckBox fx:id="ckTreinamentoConclusao" layoutX="13.0" layoutY="143.0" mnemonicParsing="false" text="Haverá Treinamento?">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </JFXCheckBox>
+                                                                <JFXComboBox fx:id="cbNomeTreinamento" layoutX="189.0" layoutY="139.0" onAction="#criarTreinamento" prefHeight="26.0" prefWidth="285.0" promptText="Nome do Treinamento" />
+                                                                <JFXDatePicker fx:id="dtInicioConclusao" layoutX="188.0" layoutY="185.0" prefHeight="25.0" prefWidth="100.0" promptText="Inicio" />
+                                                                <JFXDatePicker fx:id="dtFimConclusao" layoutX="309.0" layoutY="185.0" prefHeight="25.0" prefWidth="100.0" promptText="Fim" />
+                                                                <Label layoutX="13.0" layoutY="189.0" prefHeight="17.0" prefWidth="160.0" text="Previsão do Treinamento:">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <JFXButton fx:id="btnVerCandidatoConclusao" layoutX="488.0" layoutY="33.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Ver Perfil" />
+                                                                <JFXButton fx:id="btnNovoTreinamentoConclusao" layoutX="485.0" layoutY="139.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" styleClass="btJFXDefault" text="Novo" />
+																<JFXButton fx:id="btnRemoverCandidato" layoutX="293.0" layoutY="85.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Remover Candidato" />
+																<JFXButton fx:id="btnAprovarCandidato" layoutX="162.0" layoutY="85.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Aprovar Candidato" />
+                                                            </children>
+                                                        </AnchorPane>
+                                                    </content>
+                                                </Tab>
+                                            </tabs>
+                                        </JFXTabPane>
+                                    </children>
+                                </AnchorPane>
+                                <JFXDatePicker fx:id="dtAdmissao" layoutX="117.0" layoutY="234.0" prefHeight="26.0" prefWidth="110.0" />
+                                <Label layoutX="16.0" layoutY="240.0" prefHeight="17.0" prefWidth="84.0" text="Admissão:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <JFXTextField fx:id="txResponsavel" layoutX="115.0" layoutY="107.0" prefHeight="26.0" prefWidth="125.0" />
+                                <Label layoutX="16.0" layoutY="111.0" prefHeight="17.0" prefWidth="96.0" text="Responsável:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                  <AnchorPane layoutX="470.0" layoutY="8.0" prefHeight="249.0" prefWidth="726.0">
+                     <children>
+                        <JFXDatePicker fx:id="dtInicioDivulgacao" layoutX="216.0" layoutY="41.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXDatePicker fx:id="dtFimDivulgacao" layoutX="336.0" layoutY="41.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXTextField fx:id="txDivulgacaoObs" layoutX="446.0" layoutY="42.0" prefHeight="26.0" prefWidth="273.0" />
+                        <Label layoutX="14.0" layoutY="46.0" prefHeight="17.0" prefWidth="119.0" text="Divulgação da Vaga:">
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="14.0" layoutY="80.0" prefHeight="17.0" prefWidth="172.0" text="Recrutamento de Currículos:">
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font>
+                        </Label>
+                        <JFXDatePicker fx:id="dtInicioRecrutamento" layoutX="216.0" layoutY="74.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXDatePicker fx:id="dtFimRecrutamento" layoutX="336.0" layoutY="74.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXTextField fx:id="txRecrutamentoObs" layoutX="446.0" layoutY="74.0" prefHeight="26.0" prefWidth="273.0" />
+                        <Label layoutX="15.0" layoutY="112.0" prefHeight="17.0" prefWidth="172.0" text="Agendamento de Entrevista:">
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font>
+                        </Label>
+                        <JFXDatePicker fx:id="dtInicioAgendamento" layoutX="216.0" layoutY="108.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXDatePicker fx:id="dtFimAgendamento" layoutX="336.0" layoutY="108.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXTextField fx:id="txAgendamentoObs" layoutX="446.0" layoutY="108.0" prefHeight="26.0" prefWidth="273.0" />
+                        <JFXDatePicker fx:id="dtInicioEntrevista" layoutX="216.0" layoutY="142.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXDatePicker fx:id="dtFimEntrevista" layoutX="336.0" layoutY="142.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXTextField fx:id="txEntrevistaObs" layoutX="446.0" layoutY="143.0" prefHeight="26.0" prefWidth="273.0" />
+                        <Label layoutX="14.0" layoutY="147.0" prefHeight="17.0" prefWidth="181.0" text="Entrevistas Realizadas:">
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="14.0" layoutY="181.0" prefHeight="17.0" prefWidth="198.0" text="Envio de Candidato Pré-Selecionado:">
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font>
+                        </Label>
+                        <JFXDatePicker fx:id="dtInicioPreSelecionado" layoutX="216.0" layoutY="175.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXDatePicker fx:id="dtFimPreSelecionado" layoutX="336.0" layoutY="175.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXTextField fx:id="txPreSelecionadoObs" layoutX="446.0" layoutY="175.0" prefHeight="26.0" prefWidth="273.0" />
+                        <Label layoutX="15.0" layoutY="213.0" prefHeight="17.0" prefWidth="172.0" text="Retorno do Processo Seletivo:">
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font>
+                        </Label>
+                        <JFXDatePicker fx:id="dtInicioRetorno" layoutX="216.0" layoutY="209.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXDatePicker fx:id="dtFimRetorno" layoutX="336.0" layoutY="209.0" prefHeight="26.0" prefWidth="110.0" />
+                        <JFXTextField fx:id="txRetornoObs" layoutX="446.0" layoutY="209.0" prefHeight="26.0" prefWidth="273.0" />
+                        <JFXButton layoutX="606.0" layoutY="2.0" onAction="#visualizarCronogramaDocumento" prefHeight="25.0" prefWidth="106.0" styleClass="btJFXDefault" text="Export" />
+                     </children>
+                  </AnchorPane>
+                                <JFXButton fx:id="btSalvarEConcluir" layoutX="1084.0" layoutY="260.0" mnemonicParsing="false" onAction="#fecharAnuncio" prefHeight="25.0" prefWidth="101.0" styleClass="btJFXDefault" text="Fechar Anúncio" visible="false" />
+                                <JFXButton fx:id="btNovo" layoutX="800.0" layoutY="260.0" mnemonicParsing="false" onAction="#novo" prefWidth="65.0" styleClass="btJFXDefault" text="Novo" />
+                                <JFXButton fx:id="btAlterar" layoutX="871.0" layoutY="260.0" mnemonicParsing="false" onAction="#alterar" prefWidth="65.0" styleClass="btJFXDefault" text="Alterar" />
+                                <JFXButton fx:id="btExcluir" layoutX="941.0" layoutY="260.0" mnemonicParsing="false" onAction="#remover" prefWidth="65.0" styleClass="btJFXDefault" text="Excluir" />
+                                <JFXButton fx:id="btSalvar" layoutX="1012.0" layoutY="260.0" mnemonicParsing="false" onAction="#salvar" prefWidth="65.0" styleClass="btJFXDefault" text="Salvar" />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </JFXTabPane>

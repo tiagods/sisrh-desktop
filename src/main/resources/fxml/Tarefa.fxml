@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="700.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerTarefa">
+   <children>
+      <JFXTabPane fx:id="tabPrincipal" layoutY="-3.0" prefHeight="540.0" prefWidth="700.0">
+         <tabs>
+            <Tab fx:id="tabPesquisa" text="Pesquisa">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="693.0">
+                     <children>
+                        <TableView fx:id="tbTarefa" layoutX="14.0" layoutY="184.0" prefHeight="305.0" prefWidth="673.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <JFXButton layoutX="12.0" layoutY="173.0" mnemonicParsing="false" onAction="#novo" prefHeight="23.0" prefWidth="128.0" styleClass="btJFXDefault" text="Cadastrar Novo" />
+                        <Label layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="88.0" text="Cronograma:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbCronogramaPesquisa" layoutX="102.0" layoutY="14.0" prefHeight="26.0" prefWidth="153.0" />
+                        <JFXDatePicker fx:id="dtInicioPesquisa" layoutX="538.0" layoutY="39.0" prefHeight="26.0" prefWidth="120.0" />
+                        <JFXDatePicker fx:id="dtFimPesquisa" layoutX="538.0" layoutY="81.0" prefHeight="26.0" prefWidth="120.0" />
+                        <Label layoutX="538.0" layoutY="14.0" prefHeight="25.0" prefWidth="110.0" text="Data do Evento">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="14.0" layoutY="52.0" prefHeight="25.0" prefWidth="67.0" text="Cliente:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbClientePesquisa" layoutX="102.0" layoutY="52.0" prefHeight="26.0" prefWidth="153.0" />
+                        <Label layoutX="276.0" layoutY="14.0" prefHeight="25.0" prefWidth="67.0" text="Anuncio:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbAnuncioPesquisa" layoutX="364.0" layoutY="14.0" prefHeight="26.0" prefWidth="88.0" />
+                        <Label layoutX="14.0" layoutY="94.0" prefHeight="25.0" prefWidth="132.0" text="Status do Anuncio:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbAnuncioStatusPesquisa" layoutX="157.0" layoutY="94.0" prefHeight="26.0" prefWidth="153.0" />
+                        <Label layoutX="14.0" layoutY="127.0" prefHeight="25.0" prefWidth="132.0" text="Status da Tarefa:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbTarefaStatusPesquisa" layoutX="157.0" layoutY="127.0" prefHeight="26.0" prefWidth="153.0" />
+                        <Label layoutX="276.0" layoutY="52.0" prefHeight="25.0" prefWidth="85.0" text="Atendente:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbAtendentePesquisa" layoutX="364.0" layoutY="52.0" prefHeight="26.0" prefWidth="153.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tabCadastro" text="Cadastro">
+               <content>
+                  <AnchorPane fx:id="pnCadastro" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Pane layoutX="6.0" layoutY="285.0" prefHeight="175.0" prefWidth="687.0" style="-fx-border-color: blue;">
+                           <children>
+                              <Label alignment="CENTER" layoutY="2.0" prefHeight="25.0" prefWidth="675.0" text="Entrevista">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <JFXButton layoutX="487.0" layoutY="138.0" mnemonicParsing="false" onAction="#acionarEntrevista" prefHeight="23.0" prefWidth="90.0" styleClass="btJFXDefault" text="Entrevista" />
+                              <JFXButton layoutX="585.0" layoutY="138.0" mnemonicParsing="false" onAction="#acionarAvaliacao" prefHeight="23.0" prefWidth="90.0" styleClass="btJFXDefault" text="Avaliação" />
+                              <Label layoutX="14.0" layoutY="63.0" prefHeight="25.0" prefWidth="95.0" text="Candidato:">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <JFXComboBox fx:id="cbAnuncioEntrevista" layoutX="121.0" layoutY="62.0" prefHeight="26.0" prefWidth="270.0" />
+                              <JFXButton layoutX="406.0" layoutY="64.0" mnemonicParsing="false" onAction="#verPerfil" prefHeight="23.0" prefWidth="90.0" styleClass="btJFXDefault" text="Ver Perfil" />
+                           </children>
+                        </Pane>
+                        <JFXButton layoutX="476.0" layoutY="473.0" mnemonicParsing="false" onAction="#novo" prefWidth="65.0" styleClass="btJFXDefault" text="Novo" />
+                        <JFXButton layoutX="549.0" layoutY="473.0" mnemonicParsing="false" onAction="#remover" prefWidth="65.0" styleClass="btJFXDefault" text="Excluir" />
+                        <JFXButton layoutX="621.0" layoutY="473.0" mnemonicParsing="false" onAction="#salvar" prefWidth="65.0" styleClass="btJFXDefault" text="Salvar" />
+                        <Label layoutX="12.0" layoutY="104.0" prefHeight="25.0" prefWidth="95.0" text="Tipo:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbCrograma" layoutX="116.0" layoutY="104.0" prefHeight="26.0" prefWidth="153.0" />
+                        <Label layoutX="286.0" layoutY="104.0" prefHeight="25.0" prefWidth="95.0" text="Descrição:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXTextArea fx:id="txDescricao" layoutX="390.0" layoutY="104.0" prefHeight="60.0" prefWidth="290.0" />
+                        <JFXTextField fx:id="txCodigo" disable="true" layoutX="11.0" layoutY="14.0" prefHeight="25.0" prefWidth="95.0">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </JFXTextField>
+                        <Label layoutX="8.0" layoutY="194.0" prefHeight="25.0" prefWidth="95.0" text="Data Evento:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXDatePicker fx:id="dtEvento" layoutX="112.0" layoutY="193.0" prefHeight="26.0" prefWidth="170.0" />
+                        <Label alignment="CENTER" layoutX="282.0" layoutY="194.0" prefHeight="25.0" prefWidth="35.0" text="ás" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXCheckBox fx:id="ckFinalizado" layoutX="532.0" layoutY="244.0" text="Marcar como Concluida" />
+                        <Label layoutX="8.0" layoutY="241.0" prefHeight="25.0" prefWidth="87.0" text="Fim Previsto:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXCheckBox fx:id="ckDiaTodo" layoutX="428.0" layoutY="245.0" text="O dia todo" />
+                        <Label layoutX="11.0" layoutY="72.0" prefHeight="25.0" prefWidth="95.0" text="Anuncio:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbAnuncio" layoutX="118.0" layoutY="71.0" prefHeight="26.0" prefWidth="153.0" />
+                        <JFXButton layoutX="279.0" layoutY="73.0" mnemonicParsing="false" onAction="#verAnuncio" prefHeight="23.0" prefWidth="90.0" styleClass="btJFXDefault" text="Ver Anuncio" visible="false" />
+                        <Label layoutX="12.0" layoutY="138.0" prefHeight="25.0" prefWidth="95.0" text="Atendente:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXComboBox fx:id="cbAtendente" layoutX="116.0" layoutY="138.0" prefHeight="26.0" prefWidth="153.0" />
+                        <JFXDatePicker fx:id="dtFimEvento" layoutX="112.0" layoutY="241.0" prefHeight="26.0" prefWidth="170.0" />
+                        <Label alignment="CENTER" layoutX="282.0" layoutY="242.0" prefHeight="25.0" prefWidth="35.0" text="ás" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXTimePicker fx:id="timeInicio" layoutX="316.0" layoutY="194.0" prefHeight="25.0" prefWidth="120.0" />
+                        <JFXTimePicker fx:id="timeFim" layoutX="316.0" layoutY="241.0" prefHeight="25.0" prefWidth="120.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+   </children>
+</AnchorPane>

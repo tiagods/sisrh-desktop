@@ -1,0 +1,622 @@
+package com.plkrhone.sisrh.model;
+
+import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+/**
+ * Created by Prolink on 30/07/2017.
+ */
+@Entity
+public class Candidato implements AbstractEntity,Serializable {
+	public enum Escolaridade {
+		FUNDAMENTAL_INCOMPLETO("Fundamental Incompleto",1),
+		FUNDAMENTAL_COMPLETO("Fundamental Completo",2),
+	    MEDIO_INCOMPLETO("Médio Incompleto",3),
+	    MEDIO_COMPLETO("Médio Completo",4),
+	    SUPERIOR_INCOMPLETO("Superior Incompleto",5),
+	    SUPERIOR_COMPLETO("Superior Completo",6),
+	    POS_GRADUACAO_INCOMPLETO("Pós-Graduação Incompleto",7),
+	    POS_GRADUACAO_COMPLETO("Pós-Graduação Completo",8),
+	    MESTRADO_INCOMPLETO("Mestrado Incompleto",9),
+	    MESTRADO_COMPLETO("Mestrado Completo",10),
+	    DOUTORADO_INCOMPLETO("Doutorado Incompleto",11),
+	    DOUTORADO_COMPLETO("Doutorado Completo",12);
+		
+		private String descricao;
+		private int valor;
+		Escolaridade(String descricao,int valor){
+			this.descricao=descricao;
+			this.valor=valor;
+		}
+		/**
+		 * @return the descricao
+		 */
+		public String getDescricao() {
+			return this.descricao;
+		}
+		/**
+		 * @return the valor
+		 */
+		public int getValor() {
+			return valor;
+		}
+		@Override
+		public String toString() {
+			return this.descricao;
+		}
+	}
+	public enum EstadoCivil {
+		SOLTEIRO("Solteiro"),CASADO("Casado"),SEPARADO("Separado"),DIVORCIADO("Divorciado"),VIUVO("Viúvo");
+		private String descricao;
+		EstadoCivil(String descricao){
+			this.descricao=descricao;
+		}
+		public String getDescricao(){
+			return this.descricao;
+		}
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			return this.descricao;
+		}
+	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="criado_em")
+	private Calendar criadoEm;
+    @Column(name="data_modificacao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar ultimaModificacao;
+    @ManyToOne
+    @JoinColumn(name="criado_por_id")
+    private Usuario criadoPor;
+    private String nome;
+    private String sexo;
+    @Column(name="data_nascimento")
+    @Temporal(TemporalType.DATE)
+	private Calendar dataNascimento;
+    @Transient
+    private int idade;
+    @Enumerated(value=EnumType.STRING)
+    @Column(name="estado_civil")
+    private EstadoCivil estadoCivil;
+    private int fumante;
+    private int filhos;
+    private int qtdeFilhos;
+    @Enumerated(value=EnumType.STRING)
+    private Escolaridade escolaridade;
+    @ManyToOne
+    @JoinColumn(name="curso_superior_id")
+    private CursoSuperior cursoSuperior;
+    private String nacionalidade;
+    @Embedded
+    private PfPj pessoaFisica;
+    @ManyToOne
+    @JoinColumn(name="objetivo1_id")
+    private Vaga objetivo1;
+    @ManyToOne
+    @JoinColumn(name="objetivo2_id")
+    private Vaga objetivo2;
+    @ManyToOne
+    @JoinColumn(name="objetivo3_id")
+    private Vaga objetivo3;
+    private int indicacao;
+    @Column(name="empresa_indicacao")
+    private String empresaIndicacao;
+    @Column(name="detalhes_indicacao")
+    private String detalhesIndicacao;
+    private String empresa1;
+    private String empresa2;
+    private String empresa3;
+    @ManyToOne
+    @JoinColumn(name="cargo1_id")
+    private Vaga cargo1;
+    @ManyToOne
+    @JoinColumn(name="cargo2_id")
+    private Vaga cargo2;
+    @ManyToOne
+    @JoinColumn(name="cargo3_id")
+    private Vaga cargo3;
+    @Column(name="descricao_cargo1")    
+    private String descricaoCargo1;
+    @Column(name="descricao_cargo2") 
+    private String descricaoCargo2;
+    @Column(name="descricao_cargo3") 
+    private String descricaoCargo3;
+    private String formulario;
+    
+    @Column(name="total_recrutamento")
+    private int totalRecrutamento = 0;//numero de vezes que o curriculo foi usado em recrutamento
+    @Column(name="total_entrevista")
+    private int totalEntrevista=0;//numero de entrevista agendadas
+    @Column(name="total_pre_selecao")
+    private int totalPreSelecao=0;//numero de pre-seleções realizadas
+    @Column(name="total_aprovacao")
+    private int totalAprovacao=0;//numero de vezes que teve o perfil aprovado
+    @Column(name="ocupado")
+    private int ocupado=0;
+    @Column(name="ocupado_detalhes")
+    private String ocupadoDetalhes;
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Calendar getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(Calendar criadoEm) {
+        this.criadoEm = criadoEm;
+    }
+
+    /**
+	 * @return the ultimaModificacao
+	 */
+	public Calendar getUltimaModificacao() {
+		return ultimaModificacao;
+	}
+
+	/**
+	 * @param ultimaModificacao the ultimaModificacao to set
+	 */
+	public void setUltimaModificacao(Calendar ultimaModificacao) {
+		this.ultimaModificacao = ultimaModificacao;
+	}
+
+	public Usuario getCriadoPor() {
+        return criadoPor;
+    }
+
+    public void setCriadoPor(Usuario criadoPor) {
+        this.criadoPor = criadoPor;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public Calendar getDataNascimento() {
+    	return dataNascimento;
+    }
+
+    public void setDataNascimento(Calendar dataNascimento) {
+        this.dataNascimento = dataNascimento;
+        
+        System.out.println("Idade: "+this.idade+"\n");
+    }
+    
+    public int getIdade() {
+    	if(dataNascimento!=null) {
+        	LocalDate now = LocalDate.now();
+			Instant instant = this.dataNascimento.toInstant();
+			ZonedDateTime zonedDateTime = instant.atZone(ZoneId.systemDefault());
+			Period period = Period.between(zonedDateTime.toLocalDate(), now);
+			return this.idade=period.getYears();
+        }
+        else
+        	return this.idade=0;
+    }
+    public EstadoCivil getEstadoCivil() {
+        return this.estadoCivil;
+    }
+
+    public void setEstadoCivil(EstadoCivil estadoCivil) {
+        this.estadoCivil = estadoCivil;
+    }
+
+    public int getFumante() {
+        return fumante;
+    }
+
+    public void setFumante(int fumante) {
+        this.fumante = fumante;
+    }
+
+    public int getFilhos() {
+        return filhos;
+    }
+
+    public void setFilhos(int filhos) {
+        this.filhos = filhos;
+    }
+
+    public int getQtdeFilhos() {
+        return qtdeFilhos;
+    }
+
+    public void setQtdeFilhos(int qtdeFilhos) {
+        this.qtdeFilhos = qtdeFilhos;
+    }
+
+    public Escolaridade getEscolaridade() {
+        return escolaridade;
+    }
+
+    public void setEscolaridade(Escolaridade escolaridade) {
+        this.escolaridade = escolaridade;
+    }
+    /**
+	 * @return the cursoSuperior
+	 */
+	public CursoSuperior getCursoSuperior() {
+		return cursoSuperior;
+	}
+
+	/**
+	 * @param cursoSuperior the cursoSuperior to set
+	 */
+	public void setCursoSuperior(CursoSuperior cursoSuperior) {
+		this.cursoSuperior = cursoSuperior;
+	}
+
+	/**
+	 * @return the nacionalidade
+	 */
+	public String getNacionalidade() {
+		return nacionalidade;
+	}
+
+	/**
+	 * @param nacionalidade the nacionalidade to set
+	 */
+	public void setNacionalidade(String nacionalidade) {
+		this.nacionalidade = nacionalidade;
+	}
+
+	public PfPj getPessoaFisica() {
+        return pessoaFisica;
+    }
+
+    public void setPessoaFisica(PfPj pessoaFisica) {
+        this.pessoaFisica = pessoaFisica;
+    }
+
+    public Vaga getObjetivo1() {
+		return objetivo1;
+	}
+
+	public void setObjetivo1(Vaga objetivo1) {
+		this.objetivo1 = objetivo1;
+	}
+
+	public Vaga getObjetivo2() {
+		return objetivo2;
+	}
+
+	public void setObjetivo2(Vaga objetivo2) {
+		this.objetivo2 = objetivo2;
+	}
+
+	public Vaga getObjetivo3() {
+		return objetivo3;
+	}
+
+	public void setObjetivo3(Vaga objetivo3) {
+		this.objetivo3 = objetivo3;
+	}
+
+	/**
+	 * @return the indicacao
+	 */
+	public int getIndicacao() {
+		return indicacao;
+	}
+
+	/**
+	 * @param indicacao the indicacao to set
+	 */
+	public void setIndicacao(int indicacao) {
+		this.indicacao = indicacao;
+	}
+
+	public String getEmpresaIndicacao() {
+        return empresaIndicacao;
+    }
+
+    public void setEmpresaIndicacao(String empresaIndicacao) {
+        this.empresaIndicacao = empresaIndicacao;
+    }
+
+    public String getDetalhesIndicacao() {
+        return detalhesIndicacao;
+    }
+
+    public void setDetalhesIndicacao(String detalhesIndicacao) {
+        this.detalhesIndicacao = detalhesIndicacao;
+    }
+    /**
+	 * @return the empresa1
+	 */
+	public String getEmpresa1() {
+		return empresa1;
+	}
+
+	/**
+	 * @param empresa1 the empresa1 to set
+	 */
+	public void setEmpresa1(String empresa1) {
+		this.empresa1 = empresa1;
+	}
+
+	/**
+	 * @return the empresa2
+	 */
+	public String getEmpresa2() {
+		return empresa2;
+	}
+
+	/**
+	 * @param empresa2 the empresa2 to set
+	 */
+	public void setEmpresa2(String empresa2) {
+		this.empresa2 = empresa2;
+	}
+
+	/**
+	 * @return the empresa3
+	 */
+	public String getEmpresa3() {
+		return empresa3;
+	}
+
+	/**
+	 * @param empresa3 the empresa3 to set
+	 */
+	public void setEmpresa3(String empresa3) {
+		this.empresa3 = empresa3;
+	}
+
+	/**
+	 * @return the cargo1
+	 */
+	public Vaga getCargo1() {
+		return cargo1;
+	}
+
+	/**
+	 * @param cargo1 the cargo1 to set
+	 */
+	public void setCargo1(Vaga cargo1) {
+		this.cargo1 = cargo1;
+	}
+
+	/**
+	 * @return the cargo2
+	 */
+	public Vaga getCargo2() {
+		return cargo2;
+	}
+
+	/**
+	 * @param cargo2 the cargo2 to set
+	 */
+	public void setCargo2(Vaga cargo2) {
+		this.cargo2 = cargo2;
+	}
+
+	/**
+	 * @return the cargo3
+	 */
+	public Vaga getCargo3() {
+		return cargo3;
+	}
+
+	/**
+	 * @param cargo3 the cargo3 to set
+	 */
+	public void setCargo3(Vaga cargo3) {
+		this.cargo3 = cargo3;
+	}
+
+	/**
+	 * @return the descricaoCargo1
+	 */
+	public String getDescricaoCargo1() {
+		return descricaoCargo1;
+	}
+
+	/**
+	 * @param descricaoCargo1 the descricaoCargo1 to set
+	 */
+	public void setDescricaoCargo1(String descricaoCargo1) {
+		this.descricaoCargo1 = descricaoCargo1;
+	}
+
+	/**
+	 * @return the descricaoCargo2
+	 */
+	public String getDescricaoCargo2() {
+		return descricaoCargo2;
+	}
+
+	/**
+	 * @param descricaoCargo2 the descricaoCargo2 to set
+	 */
+	public void setDescricaoCargo2(String descricaoCargo2) {
+		this.descricaoCargo2 = descricaoCargo2;
+	}
+
+	/**
+	 * @return the descricaoCargo3
+	 */
+	public String getDescricaoCargo3() {
+		return descricaoCargo3;
+	}
+
+	/**
+	 * @param descricaoCargo3 the descricaoCargo3 to set
+	 */
+	public void setDescricaoCargo3(String descricaoCargo3) {
+		this.descricaoCargo3 = descricaoCargo3;
+	}
+
+	public String getFormulario() {
+        return formulario;
+    }
+
+    public void setFormulario(String formulario) {
+        this.formulario = formulario;
+    }
+
+    /**
+	 * @return the totalRecrutamento
+	 */
+	public int getTotalRecrutamento() {
+		return totalRecrutamento;
+	}
+
+	/**
+	 * @param totalRecrutamento the totalRecrutamento to set
+	 */
+	public void setTotalRecrutamento(int totalRecrutamento) {
+		this.totalRecrutamento = totalRecrutamento;
+	}
+
+	/**
+	 * @return the totalEntrevista
+	 */
+	public int getTotalEntrevista() {
+		return totalEntrevista;
+	}
+
+	/**
+	 * @param totalEntrevista the totalEntrevista to set
+	 */
+	public void setTotalEntrevista(int totalEntrevista) {
+		this.totalEntrevista = totalEntrevista;
+	}
+
+	/**
+	 * @return the totalPreSelecao
+	 */
+	public int getTotalPreSelecao() {
+		return totalPreSelecao;
+	}
+
+	/**
+	 * @param totalPreSelecao the totalPreSelecao to set
+	 */
+	public void setTotalPreSelecao(int totalPreSelecao) {
+		this.totalPreSelecao = totalPreSelecao;
+	}
+
+	/**
+	 * @return the totalAprovacao
+	 */
+	public int getTotalAprovacao() {
+		return totalAprovacao;
+	}
+	/**
+	 * @param totalAprovacao the totalAprovacao to set
+	 */
+	public void setTotalAprovacao(int totalAprovacao) {
+		this.totalAprovacao = totalAprovacao;
+	}
+	
+	/**
+	 * @return the ocupado
+	 */
+	public int getOcupado() {
+		return ocupado;
+	}
+
+	/**
+	 * @param ocupado the ocupado to set
+	 */
+	public void setOcupado(int ocupado) {
+		this.ocupado = ocupado;
+	}
+
+	/**
+	 * @return the ocupadoDetalhes
+	 */
+	public String getOcupadoDetalhes() {
+		return ocupadoDetalhes;
+	}
+
+	/**
+	 * @param ocupadoDetalhes the ocupadoDetalhes to set
+	 */
+	public void setOcupadoDetalhes(String ocupadoDetalhes) {
+		this.ocupadoDetalhes = ocupadoDetalhes;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Candidato other = (Candidato) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	@Override
+    public String toString() {
+        return this.nome;
+    }
+}
