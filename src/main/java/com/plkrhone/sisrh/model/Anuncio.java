@@ -129,7 +129,7 @@ public class Anuncio implements AbstractEntity,Serializable {
     
     //area de curriculos
     @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(name="anuncio_curriculo", joinColumns=
+    @JoinTable(name="anu_curriculo", joinColumns=
 		{@JoinColumn(name="anuncio_id")}, inverseJoinColumns=
 			{@JoinColumn(name="candidato_id")})
     private Set<Candidato> curriculoSet = new HashSet<>();
@@ -139,7 +139,7 @@ public class Anuncio implements AbstractEntity,Serializable {
     private Set<AnuncioEntrevista> entrevistaSet = new HashSet<>();
     //pre selecao
     @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(name="anuncio_pre_selecao", joinColumns=
+    @JoinTable(name="anu_pre_selecao", joinColumns=
 		{@JoinColumn(name="anuncio_id")}, inverseJoinColumns=
 			{@JoinColumn(name="candidato_id")})
     private Set<Candidato> preSelecaoSet = new HashSet<>();

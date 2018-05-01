@@ -1,15 +1,13 @@
 package com.plkrhone.sisrh.model.anuncio;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
@@ -24,9 +22,9 @@ public class AnuncioEntrevistaFormulario implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	@OneToMany
-	@JoinColumn(name="texto_id")
-	private Set<AnuncioEntrevistaFormularioTexto> textos = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name="formulario_id")
+	private AnuncioEntrevistaFormularioTexto formulario;
 	private String descricao;
 	/**
 	 * @return the id
@@ -41,17 +39,18 @@ public class AnuncioEntrevistaFormulario implements Serializable{
 		this.id = id;
 	}
 	
+
 	/**
-	 * @return the textos
+	 * @return the formulario
 	 */
-	public Set<AnuncioEntrevistaFormularioTexto> getTextos() {
-		return textos;
+	public AnuncioEntrevistaFormularioTexto getFormulario() {
+		return formulario;
 	}
 	/**
-	 * @param textos the textos to set
+	 * @param formulario the formulario to set
 	 */
-	public void setTextos(Set<AnuncioEntrevistaFormularioTexto> textos) {
-		this.textos = textos;
+	public void setFormulario(AnuncioEntrevistaFormularioTexto formulario) {
+		this.formulario = formulario;
 	}
 	/**
 	 * @return the descricao

@@ -13,9 +13,9 @@ import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaFormularioTexto;
 import com.plkrhone.sisrh.repository.AbstractRepository;
 import com.plkrhone.sisrh.repository.interfaces.AnuncioEntrevistaFormularioTextoDAO;
 
-public class AnuncioEntrevistaFormulariosTextosImpl extends AbstractRepository<AnuncioEntrevistaFormularioTexto,Long> implements AnuncioEntrevistaFormularioTextoDAO{
+public class AnuncioEntrevistaFormulariosImpl extends AbstractRepository<AnuncioEntrevistaFormularioTexto,Long> implements AnuncioEntrevistaFormularioTextoDAO{
 
-	public AnuncioEntrevistaFormulariosTextosImpl(EntityManager manager) {
+	public AnuncioEntrevistaFormulariosImpl(EntityManager manager) {
 		super(manager);
 	}
 	@SuppressWarnings("unchecked")

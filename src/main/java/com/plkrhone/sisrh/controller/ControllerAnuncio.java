@@ -105,7 +105,6 @@ import javafx.stage.WindowEvent;
  * Created by Tiago on 08/08/2017.
  */
 public class ControllerAnuncio extends PersistenciaController implements Initializable {
-
 	@FXML
 	private JFXTabPane tab;
 

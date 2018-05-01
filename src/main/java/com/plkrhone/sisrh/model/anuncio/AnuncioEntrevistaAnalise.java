@@ -30,16 +30,16 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 
 	/**
 	 * 
-	 */
+	 */ 
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	@OneToMany(cascade= CascadeType.ALL)
+	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="anu_entrevista_id")
     private Set<AnuncioEntrevistaFormulario> formularios = new HashSet<>();
 	
-	@OneToMany(cascade= CascadeType.ALL)
+	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="anu_entrevista_id")
     private Set<AnuncioEntrevistaPerfil> perfis = new HashSet<>();
 	
@@ -154,6 +154,12 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	 */
 	public void setAnuncioEntrevista(AnuncioEntrevista anuncioEntrevista) {
 		this.anuncioEntrevista = anuncioEntrevista;
+	}
+	
+	public void removerPerfil(AnuncioEntrevistaPerfil perfil) {
+		for(AnuncioEntrevistaPerfil p : ) {
+			
+		}
 	}
 
 	/* (non-Javadoc)

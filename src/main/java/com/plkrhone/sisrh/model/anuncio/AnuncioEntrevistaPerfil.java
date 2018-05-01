@@ -1,15 +1,13 @@
 package com.plkrhone.sisrh.model.anuncio;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -23,9 +21,9 @@ public class AnuncioEntrevistaPerfil implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	@OneToMany
-	@JoinColumn(name="texto_id")
-	private Set<AnuncioEntrevistaPerfilTexto> textos = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name="perfil_id")
+	private AnuncioEntrevistaPerfilTexto perfil;
 	private String descricao;
 	/**
 	 * @return the id
@@ -41,16 +39,16 @@ public class AnuncioEntrevistaPerfil implements Serializable{
 	}
 	
 	/**
-	 * @return the textos
+	 * @return the perfil
 	 */
-	public Set<AnuncioEntrevistaPerfilTexto> getTextos() {
-		return textos;
+	public AnuncioEntrevistaPerfilTexto getPerfil() {
+		return perfil;
 	}
 	/**
-	 * @param textos the textos to set
+	 * @param perfil the perfil to set
 	 */
-	public void setTextos(Set<AnuncioEntrevistaPerfilTexto> textos) {
-		this.textos = textos;
+	public void setPerfil(AnuncioEntrevistaPerfilTexto perfil) {
+		this.perfil = perfil;
 	}
 	/**
 	 * @return the descricao

@@ -5,7 +5,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -17,27 +22,42 @@ import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevista;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaAnalise;
+import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaFormulario;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaFormularioTexto;
+import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaPerfil;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaPerfilTexto;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaAnaliseImp;
+import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaFormulariosImpl;
+import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaPerfisTextosImpl;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistasImp;
 import com.plkrhone.sisrh.util.UserSession;
 import com.plkrhone.sisrh.util.office.FileOfficeEnum;
 import com.plkrhone.sisrh.util.office.OfficeEditor;
 import com.plkrhone.sisrh.util.office.OfficeEditorProducer;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
@@ -55,33 +75,142 @@ public class ControllerEntrevista extends PersistenciaController implements Init
     @FXML
     private JFXButton btExcluir;
 
-	private AnuncioEntrevistaAnalise e;
+	private AnuncioEntrevistaAnalise entrevista;
 	private AnuncioEntrevista anuncioEntrevista;
 	private Stage stage;
 	private AnuncioEntrevistaAnaliseImp entrevistas;
 	private AnuncioEntrevistasImp anunciosEntrevistas;
+		
+	private AnuncioEntrevistaFormulariosImpl formsImpl;
+	private AnuncioEntrevistaPerfisTextosImpl perfisImpl;
 	
-	private AnuncioEntrevistaPerfilTexto perfilTexto;
-	private AnuncioEntrevistaFormularioTexto formTexto;
+	private Map<String, Object[]> mapPerfil = new HashMap<>();
+	private Map<String, Object[]> mapFormulario = new HashMap<>();
+	private String CHAVE_PERFIL="P";
+	private String CHAVE_FORMULARIO="F";
 	
 	private OfficeEditor officeJob = OfficeEditorProducer.newConfig(FileOfficeEnum.entrevista.getDescricao());
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		try {
+			loadFactory();
+			
+			perfisImpl = new AnuncioEntrevistaPerfisTextosImpl(getManager());
+			formsImpl = new AnuncioEntrevistaFormulariosImpl(getManager());
+			
+			List<AnuncioEntrevistaPerfilTexto> perfis = perfisImpl.findByInativo(false);
+			perfis.forEach(c->{
+				criarCheckBoxNoPerfil(c);
+			});
+			
+			List<AnuncioEntrevistaFormularioTexto> textos = formsImpl.findByInativo(false);
+			textos.forEach(c->{//montar formulario
+				criarTextAreaForm(c,textos.size());
+			});;
+			
+		}catch(Exception e) {
+			
+		}finally {
+			close();
+		}
+	}
+	
+	private void criarCheckBoxNoPerfil(AnuncioEntrevistaPerfilTexto c) {
+		JFXCheckBox checkBox = new JFXCheckBox();
+		checkBox.setId(CHAVE_PERFIL+c.getId().longValue());
+		checkBox.setText(c.getNome());
+		checkBox.setFont(Font.font("System Bold", FontWeight.BOLD,12));
+		checkBox.setPadding(new Insets(0,10,20,0));
+		
+		checkBox.selectedProperty().addListener(new ChangeListener<Boolean>(){
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				
+			}
+		});
+		mapPerfil.put(checkBox.getId(), new Object[] {c,checkBox});//armazenando perfis em um mapa
+		pnPerfil.getChildren().add(checkBox);		
+	}
+	private void criarTextAreaForm(AnuncioEntrevistaFormularioTexto c, int size) {
+		Tab tab = new Tab(""+c.getSequencia());
+		AnchorPane panel = new AnchorPane();
+		VBox vbox = new VBox();
+		Label label = new Label(c.getPergunta());
+		label.setPadding(new Insets(30,10,30,0));
+		label.setFont(Font.font("System Bold", FontWeight.BOLD, 16));
+		
+		JFXTextArea textArea = new JFXTextArea(c.getDescricao());
+		textArea.setPadding(new Insets(0,10,50,0));
+		textArea.setFont(Font.font("System Bold", 12));
+		textArea.setMinHeight(100);
+		textArea.setEditable(false);
+		
+		Label label2 = new Label("Descreva suas anotações abaixo:");
+		label2.setPadding(new Insets(0,10,20,0));
+		label2.setFont(Font.font("System Bold", FontWeight.BOLD, 16));
+		
+		JFXTextArea textAreaValue = new JFXTextArea();
+		textAreaValue.setPadding(new Insets(0,10,20,0));
+		textAreaValue.setFont(Font.font("System Bold", FontWeight.BOLD, 16));
+		
+		textAreaValue.setId(CHAVE_FORMULARIO+c.getSequencia());
+		
+		mapFormulario.put(textAreaValue.getId(),new Object[] {c,textAreaValue});
+		
+		ButtonBar bar = new ButtonBar();
+		if(c.getSequencia()>1) {
+			JFXButton button = new JFXButton("<");
+			button.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					formRequisicaoRetroceder(event);
+				}
+			});
+			bar.getButtons().add(button);
+		}
+		if(c.getSequencia()<size) {
+			JFXButton button = new JFXButton(">");
+			button.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					formRequisicaoAvancar(event);
+				}
+			});
+			bar.getButtons().add(button);
+		}
+		vbox.getChildren().addAll(label,textArea,label2,textAreaValue,bar);
+		tab.setContent(vbox);
+		tabPane.getTabs().add(tab);
 		
 	}
 	public void iniciar(AnuncioEntrevista  ae,Stage stage) {
 		this.anuncioEntrevista=ae;
 		this.stage=stage;
-		if(ae.getEntrevista()!=null) preencherFormulario(ae.getEntrevista());
-	}
-	@FXML
-	void excluir(ActionEvent event) {
-		if (e != null && e.getId() != null) {
+		if(ae.getEntrevista()!=null) {
 			try {
 				loadFactory();
 				entrevistas = new AnuncioEntrevistaAnaliseImp(getManager());
-				entrevistas.remove(e);
-				this.e = null;
+				entrevista = entrevistas.findById(ae.getEntrevista().getId());
+				preencherFormulario(entrevista);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally{
+				close();
+			}
+		
+		}
+	}
+	@FXML
+	void excluir(ActionEvent event) {
+		if (entrevista != null && entrevista.getId() != null) {
+			try {
+				loadFactory();
+				entrevistas = new AnuncioEntrevistaAnaliseImp(getManager());
+				entrevista = entrevistas.findById(entrevista.getId());
+				entrevistas.remove(entrevista);
+				this.entrevista = null;
 				stage.close();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -136,36 +265,28 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 
 	}
 	void preencherFormulario(AnuncioEntrevistaAnalise entrevista) {
-		ckDesenvoltura.setSelected(entrevista.getBoaDesenvoltura() == 1);
-		ckComunicacao.setSelected(entrevista.getBoaComunicacao() == 1);
-		ckAtualizar.setSelected(entrevista.getCapaCidadeDeAtualizacao() == 1);
-		ckDeterminacao.setSelected(entrevista.getDeterminacao() == 1);
-		ckElegancia.setSelected(entrevista.getElegancia() == 1);
-		ckLideranca.setSelected(entrevista.getLideranca() == 1);
-		ckEtica.setSelected(entrevista.getEtica() == 1);
-		ckPontualidade.setSelected(entrevista.getPontualidade() == 1);
-		ckProfissionalismo.setSelected(entrevista.getProfissionalismo() == 1);
-		ckSimpatia.setSelected(entrevista.getSimpatia() == 1);
-
-		tx1.setText(entrevista.getD1());
-		tx2.setText(entrevista.getD2());
-		tx3.setText(entrevista.getD3());
-		tx4.setText(entrevista.getD4());
-		tx5.setText(entrevista.getD5());
-		tx6.setText(entrevista.getD6());
-		tx7.setText(entrevista.getD7());
-		tx8.setText(entrevista.getD8());
-		tx9.setText(entrevista.getD9());
-		tx10.setText(entrevista.getD10());
-		tx11.setText(entrevista.getD11());
-		tx12.setText(entrevista.getD12());
-		tx13.setText(entrevista.getD13());
-		tx14.setText(entrevista.getD14());
-		tx15.setText(entrevista.getD15());
-		tx16.setText(entrevista.getD16());
-
+		Set<AnuncioEntrevistaFormulario> form = entrevista.getFormularios();
+		form.forEach(o->{
+			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getFormulario().getId());
+			if(object == null) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Um formulario foi removido");
+				alert.setContentText("Um formulario foi desativado");
+			}
+			if(object[1] instanceof JFXTextArea) {
+				((JFXTextArea)object[1]).setText(o.getDescricao());
+			}
+		});
+		
+		Set<AnuncioEntrevistaPerfil> perfil = entrevista.getPerfis();
+		perfil.forEach(o->{
+			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getPerfil().getId());
+			if(object[1] instanceof JFXCheckBox) {
+				((JFXCheckBox)object[1]).setSelected(true);
+			}
+		});
 	}
-
+	
 	private Tab proximaTabVagas(boolean avancar) {
 		int t = tabPane.getSelectionModel().getSelectedIndex();
 		if (avancar) {
@@ -176,50 +297,26 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 	}
 	@FXML
 	void salvar(ActionEvent event) {
-		AnuncioEntrevistaAnalise entrevista;
-		if(this.e==null) {
+		if(this.entrevista==null) {
 			entrevista = new AnuncioEntrevistaAnalise();
 			entrevista.setCriadoEm(Calendar.getInstance());
 			entrevista.setCriadoPor(UserSession.getInstance().getUsuario());
 		}
-		else
-			entrevista = this.e;
-			
+		Set<AnuncioEntrevistaPerfil> anuPerf = entrevista.getPerfis();
+		mapPerfil.values().forEach(c->{
+			if(c[1] instanceof JFXCheckBox) {
+				System.out.println(((JFXCheckBox)c[1]).getId()+"-> selected ? "+((JFXCheckBox)c[1]).isSelected());
+			}
+		});		
+		
 		entrevista.setAnuncioEntrevista(this.anuncioEntrevista);
-		entrevista.setBoaDesenvoltura(ckDesenvoltura.isSelected() ? 1 : 0);
-		entrevista.setBoaComunicacao(ckComunicacao.isSelected() ? 1 : 0);
-		entrevista.setCapaCidadeDeAtualizacao(ckAtualizar.isSelected() ? 1 : 0);
-		entrevista.setDeterminacao(ckDeterminacao.isSelected() ? 1 : 0);
-		entrevista.setElegancia(ckElegancia.isSelected() ? 1 : 0);
-		entrevista.setLideranca(ckLideranca.isSelected() ? 1 : 0);
-		entrevista.setEtica(ckEtica.isSelected() ? 1 : 0);
-		entrevista.setPontualidade(ckPontualidade.isSelected() ? 1 : 0);
-		entrevista.setProfissionalismo(ckProfissionalismo.isSelected() ? 1 : 0);
-		entrevista.setSimpatia(ckSimpatia.isSelected() ? 1 : 0);
-
-		entrevista.setD1(tx1.getText());
-		entrevista.setD2(tx2.getText());
-		entrevista.setD3(tx3.getText());
-		entrevista.setD4(tx4.getText());
-		entrevista.setD5(tx5.getText());
-		entrevista.setD6(tx6.getText());
-		entrevista.setD7(tx7.getText());
-		entrevista.setD8(tx8.getText());
-		entrevista.setD9(tx9.getText());
-		entrevista.setD10(tx10.getText());
-		entrevista.setD11(tx11.getText());
-		entrevista.setD12(tx12.getText());
-		entrevista.setD13(tx13.getText());
-		entrevista.setD14(tx14.getText());
-		entrevista.setD15(tx15.getText());
-		entrevista.setD16(tx16.getText());
+		
 		this.anuncioEntrevista.setEntrevista(entrevista);
-		this.e = entrevista;
 		try {
 			loadFactory();
-			anunciosEntrevistas = new AnuncioEntrevistasImp(getManager());
-			anunciosEntrevistas.save(this.anuncioEntrevista);
-			this.stage.close();	
+			//anunciosEntrevistas = new AnuncioEntrevistasImp(getManager());
+			//anunciosEntrevistas.save(this.anuncioEntrevista);
+			//this.stage.close();	
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -235,8 +332,8 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			e.printStackTrace();
 		}
 	}
-	public Entrevista getEntrevista() {
-		return this.e;
+	public AnuncioEntrevistaAnalise getEntrevista() {
+		return this.entrevista;
 	}
 
 }

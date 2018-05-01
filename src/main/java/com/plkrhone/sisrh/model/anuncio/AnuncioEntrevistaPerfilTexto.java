@@ -28,7 +28,6 @@ public class AnuncioEntrevistaPerfilTexto implements AbstractEntity,Serializable
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private int sequencia;
 	private String nome;
 	private boolean inativo;
 	@Temporal(value=TemporalType.TIMESTAMP)
@@ -42,18 +41,6 @@ public class AnuncioEntrevistaPerfilTexto implements AbstractEntity,Serializable
 	public Number getId() {
 		// TODO Auto-generated method stub
 		return this.id;
-	}
-	/**
-	 * @return the sequencia
-	 */
-	public int getSequencia() {
-		return sequencia;
-	}
-	/**
-	 * @param sequencia the sequencia to set
-	 */
-	public void setSequencia(int sequencia) {
-		this.sequencia = sequencia;
 	}
 	/**
 	 * @return the nome

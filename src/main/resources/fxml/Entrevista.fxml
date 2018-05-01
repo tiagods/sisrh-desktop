@@ -33,7 +33,7 @@
       <FlowPane fx:id="pnPerfil" layoutX="80.0" layoutY="56.0" prefHeight="72.0" prefWidth="905.0" />
       <JFXTabPane fx:id="tabPane" layoutX="13.0" layoutY="145.0" prefHeight="398.0" prefWidth="972.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="1">
+          <Tab text="21">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="297.0" prefWidth="972.0">
                      <children>
@@ -77,11 +77,11 @@
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="2">
+            <Tab text="20">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="297.0" prefWidth="972.0">
                      <children>
-                        <VBox prefHeight="370.0" prefWidth="972.0">
+                        <VBox prefHeight="370.0" prefWidth="972.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <Label text="Qual seu hobby?">
                                  <font>

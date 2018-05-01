@@ -19,7 +19,7 @@ import com.plkrhone.sisrh.model.AbstractEntity;
 import com.plkrhone.sisrh.model.Usuario;
 
 @Entity
-@Table(name="anu_ent_for_texto)")
+@Table(name="anu_ent_for_texto")
 public class AnuncioEntrevistaFormularioTexto implements AbstractEntity,Serializable{
 	
 	/**
@@ -31,6 +31,7 @@ public class AnuncioEntrevistaFormularioTexto implements AbstractEntity,Serializ
 	private Long id;
 	private int sequencia;
 	private String pergunta;
+	@Column(columnDefinition="text")
 	private String descricao;
 	private boolean inativo;
 	@Temporal(value=TemporalType.TIMESTAMP)
