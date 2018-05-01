@@ -3,6 +3,7 @@ package com.plkrhone.sisrh.model.anuncio;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -21,6 +24,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.plkrhone.sisrh.model.AbstractEntity;
+import com.plkrhone.sisrh.model.Candidato;
 import com.plkrhone.sisrh.model.Usuario;
 
 
@@ -39,10 +43,11 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
     @JoinColumn(name="anu_entrevista_id")
     private Set<AnuncioEntrevistaFormulario> formularios = new HashSet<>();
 	
-	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL, orphanRemoval=true)
-    @JoinColumn(name="anu_entrevista_id")
-    private Set<AnuncioEntrevistaPerfil> perfis = new HashSet<>();
-	
+	@ManyToMany(fetch=FetchType.LAZY)
+    @JoinTable(name="anu_ent_perfil", joinColumns=
+		{@JoinColumn(name="anu_entrevista_id")}, inverseJoinColumns=
+			{@JoinColumn(name="perfil_id")})
+    private Set<AnuncioEntrevistaPerfilTexto> perfis = new HashSet<>();
 	@Column(name="formulario_entrevista")
 	private String formularioEntrevista;
 	
@@ -57,7 +62,7 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="anu_entrevista_analise_id")
 	private AnuncioEntrevista anuncioEntrevista;
-
+	
 	/**
 	 * @return the id
 	 */
@@ -89,14 +94,14 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	/**
 	 * @return the perfis
 	 */
-	public Set<AnuncioEntrevistaPerfil> getPerfis() {
+	public Set<AnuncioEntrevistaPerfilTexto> getPerfis() {
 		return perfis;
 	}
 
 	/**
 	 * @param perfis the perfis to set
 	 */
-	public void setPerfis(Set<AnuncioEntrevistaPerfil> perfis) {
+	public void setPerfis(Set<AnuncioEntrevistaPerfilTexto> perfis) {
 		this.perfis = perfis;
 	}
 
@@ -156,12 +161,6 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 		this.anuncioEntrevista = anuncioEntrevista;
 	}
 	
-	public void removerPerfil(AnuncioEntrevistaPerfil perfil) {
-		for(AnuncioEntrevistaPerfil p : ) {
-			
-		}
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -191,6 +190,29 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public void addOrRemovePerfil(AnuncioEntrevistaPerfilTexto anuncioEntrevistaPerfilTexto, boolean selected) {
+		if(selected) {
+			perfis.add(anuncioEntrevistaPerfilTexto);
+		}
+		else {
+			if(perfis.contains(anuncioEntrevistaPerfilTexto))
+				perfis.remove(anuncioEntrevistaPerfilTexto);			
+		}
+	}
+	public void addOrRemoveFormulario(AnuncioEntrevistaFormularioTexto aeft, String texto) {
+		Optional<AnuncioEntrevistaFormulario> form = 
+				formularios.stream().filter(c->c.getFormulario().getId().longValue()==aeft.getId().longValue()).findAny();
+		if(form.isPresent()) {
+			
+		}
+		else {
+			AnuncioEntrevistaFormulario f = new AnuncioEntrevistaFormulario()
+			f.setDescricao(texto);
+			f.setFormulario(aeft);
+			formularios.add(f);
+		}
 	}
 	
 	

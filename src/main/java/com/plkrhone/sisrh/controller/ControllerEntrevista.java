@@ -270,20 +270,18 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getFormulario().getId());
 			if(object == null) {
 				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Um formulario foi removido");
-				alert.setContentText("Um formulario foi desativado");
+				alert.setTitle("Um formulario foi desativado");
+				alert.setContentText("Um formulario foi desativado, será mostrado na impressão");
+				alert.showAndWait();
 			}
 			if(object[1] instanceof JFXTextArea) {
 				((JFXTextArea)object[1]).setText(o.getDescricao());
 			}
 		});
-		
-		Set<AnuncioEntrevistaPerfil> perfil = entrevista.getPerfis();
-		perfil.forEach(o->{
-			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getPerfil().getId());
-			if(object[1] instanceof JFXCheckBox) {
-				((JFXCheckBox)object[1]).setSelected(true);
-			}
+		entrevista.getPerfis().forEach(o->{
+			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getId().longValue());
+			if(object[1] instanceof JFXCheckBox) ((JFXCheckBox)object[1]).setSelected(true);
+			
 		});
 	}
 	
@@ -302,9 +300,9 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			entrevista.setCriadoEm(Calendar.getInstance());
 			entrevista.setCriadoPor(UserSession.getInstance().getUsuario());
 		}
-		Set<AnuncioEntrevistaPerfil> anuPerf = entrevista.getPerfis();
 		mapPerfil.values().forEach(c->{
 			if(c[1] instanceof JFXCheckBox) {
+				entrevista.addOrRemovePerfil((AnuncioEntrevistaPerfilTexto)c[0],((JFXCheckBox)c[1]).isSelected());
 				System.out.println(((JFXCheckBox)c[1]).getId()+"-> selected ? "+((JFXCheckBox)c[1]).isSelected());
 			}
 		});		
