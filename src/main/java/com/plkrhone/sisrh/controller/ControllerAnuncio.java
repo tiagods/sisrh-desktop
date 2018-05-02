@@ -398,8 +398,10 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 
 	@FXML
 	private JFXButton btRemoverFormulario;
+	
 	@FXML
 	private JFXTextField txDocumento;
+	
 	@FXML
 	private Tab tabCadastroContrato;
 
@@ -858,7 +860,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		new ComboBoxAutoCompleteUtil(cbVaga1Cargo);
 
 		cbVaga1CargaHoraria.getItems().addAll("8 horas", "6 horas");
-		cbVaga1CargaHoraria.setEditable(true);
+		//cbVaga1CargaHoraria.setEditable(true);
 
 		ToggleGroup tgVaga1_1 = new ToggleGroup();
 		tgVaga1_1.getToggles().addAll(rbVaga1Clt, rbVaga1Estagiario, rbVaga1Temporario);
@@ -934,7 +936,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		cbVaga3Estado.valueProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				try {
-					loadFactory();
+					loadFactory(getManager());
 					cidades = new CidadesImp(getManager());
 					List<Cidade> listCidades = cidades.findByEstado(newValue);
 					cbVaga3Municipio.getItems().setAll(listCidades);
@@ -1410,7 +1412,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 					: anuncio.getDataEncerramento().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 			dtAdmissao.setValue(anuncio.getDataAdmissao() == null ? null
 					: anuncio.getDataAdmissao().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-
+			txDocumento.setText("");
 			FormularioRequisicao form = anuncio.getFormularioRequisicao();
 			if (form != null) {
 				txDocumento.setText(form.getFormulario());
@@ -1682,7 +1684,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 					desbloquear(false, pnCadastro.getChildren());
 					anuncio = null;
 				} catch (Exception e) {
-					alert = new Alert(Alert.AlertType.INFORMATION);
+					alert = new Alert(Alert.AlertType.ERROR);
 					alert.setContentText("Falha ao excluir o registro!\n" + e);
 					alert.showAndWait();
 					e.printStackTrace();
@@ -1848,21 +1850,20 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 			fr.setAssistenciaMedicaValor(txVaga41AMedicaDetalhes.getText());
 		}
 		fr.setOutroBeneficio(txVaga41Outro.getText());
-		try {			
-			if (!txDocumento.getText().trim().equals("") && !txDocumento.getText().startsWith(PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/")) {
-				try {
-					storage.transferTo(txDocumento.getText(),
-							PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/" + txDocumento.getText());
-					txDocumento
-							.setText(PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/" + txDocumento.getText());
-					fr.setFormulario(txDocumento.getText());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}catch(NullPointerException ex) {
-			ex.printStackTrace();
-		}
+		System.out.println("txdocumentos is null "+(txDocumento==null) +" value="+txDocumento.getText()+"|");
+				
+//		if (!txDocumento.getText().trim().equals("")) {
+//			try {
+//				//&& !txDocumento.getText().startsWith(PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/")
+//				storage.transferTo(txDocumento.getText(),
+//						PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/" + txDocumento.getText());
+//				txDocumento
+//				.setText(PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/" + txDocumento.getText());
+//				fr.setFormulario(txDocumento.getText());
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
 		// area do contrato
 		anuncio.setDataEnvioContrato(dtEnvioContrato.getValue() == null ? null
 				: GregorianCalendar.from(dtEnvioContrato.getValue().atStartOfDay(ZoneId.systemDefault())));
@@ -2056,7 +2057,6 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 								loadFactory();
 								anuncios = new AnunciosImp(getManager());
 								Anuncio a = anuncios.findById(tbAnuncio.getItems().get(getIndex()).getId());
-								System.out.println(a.getNome());
 								preencherFormulario(a);
 								tab.getSelectionModel().select(tabCadastro);
 
@@ -2101,6 +2101,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				}
 			}
 		});
+		colunaNome.setPrefWidth(150);
 		TableColumn<Candidato, Calendar> colunaIdade = new TableColumn<>("Idade");
 		colunaIdade.setCellValueFactory(new PropertyValueFactory<>("dataNascimento"));
 		colunaIdade.setCellFactory((TableColumn<Candidato, Calendar> param) -> new TableCell<Candidato, Calendar>() {
@@ -2132,6 +2133,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				}
 			}
 		});
+		colunaCriadoEm.setPrefWidth(100);
 		TableColumn<Candidato, Number> colunaPossuiIndicacao = new TableColumn<>("Indicação");
 		colunaPossuiIndicacao.setCellValueFactory(new PropertyValueFactory<>("indicacao"));
 		colunaPossuiIndicacao
@@ -2178,6 +2180,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				}
 			}
 		});
+		colunaSelecoes.setPrefWidth(100);
 		TableColumn<Candidato, String> colunaVer = new TableColumn<>("");
 		colunaVer.setCellValueFactory(new PropertyValueFactory<>(""));
 		colunaVer.setCellFactory((TableColumn<Candidato, String> param) -> {
@@ -2271,6 +2274,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 						}
 					}
 				});
+		colunaNome.setPrefWidth(150);
 		TableColumn<AnuncioEntrevista, Candidato> colunaIdade = new TableColumn<>("Idade");
 		colunaIdade.setCellValueFactory(new PropertyValueFactory<>("candidato"));
 		colunaIdade.setCellFactory(
@@ -2293,7 +2297,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				});
 
 		TableColumn<AnuncioEntrevista, Candidato> colunaCriadoEm = new TableColumn<>("Atualização");
-		colunaCriadoEm.setCellValueFactory(new PropertyValueFactory<>("ultimaModificacao"));
+		colunaCriadoEm.setCellValueFactory(new PropertyValueFactory<>("candidato"));
 		colunaCriadoEm.setCellFactory(
 				(TableColumn<AnuncioEntrevista, Candidato> param) -> new TableCell<AnuncioEntrevista, Candidato>() {
 					@Override
@@ -2303,11 +2307,12 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 							setText(null);
 							setStyle("");
 						} else {
-							if (item.getCriadoEm() != null)
-								setText(new SimpleDateFormat("dd/MM/yyyy").format(item.getCriadoEm().getTime()));
+							if (item.getUltimaModificacao() != null)
+								setText(new SimpleDateFormat("dd/MM/yyyy").format(item.getUltimaModificacao().getTime()));
 						}
 					}
 				});
+		colunaCriadoEm.setPrefWidth(100);
 		TableColumn<AnuncioEntrevista, Candidato> colunaPossuiIndicacao = new TableColumn<>("Indicação");
 		colunaPossuiIndicacao.setCellValueFactory(new PropertyValueFactory<>("candidato"));
 		colunaPossuiIndicacao.setCellFactory(
@@ -2356,7 +2361,8 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 						}
 					}
 				});
-		TableColumn<AnuncioEntrevista, AnuncioEntrevistaAnalise> colunaStatusEntrevista = new TableColumn<>("Status Entrevista");
+		colunaSelecoes.setPrefWidth(100);
+		TableColumn<AnuncioEntrevista, AnuncioEntrevistaAnalise> colunaStatusEntrevista = new TableColumn<>("Entrevista");
 		colunaStatusEntrevista.setCellValueFactory(new PropertyValueFactory<>("entrevista"));
 		colunaStatusEntrevista.setCellFactory(
 				(TableColumn<AnuncioEntrevista, AnuncioEntrevistaAnalise> param) -> new TableCell<AnuncioEntrevista, AnuncioEntrevistaAnalise>() {
@@ -2367,13 +2373,20 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 							setText(null);
 							setStyle("");
 						} else {
-							setText(item == null ? "Pendente" : "Realizada");
+							if(item==null) {
+								setText("Pendente");
+								setStyle("-fx-text-fill:red");
+							}
+							else {
+								setText("Realizada");
+								setStyle("-fx-text-fill:green");
+							}
 						}
 					}
 				});
+		colunaStatusEntrevista.setPrefWidth(100);
 		TableColumn<AnuncioEntrevista, AnuncioEntrevistaAnalise> colunaEntrevista = new TableColumn<>("");
 		colunaEntrevista.setCellValueFactory(new PropertyValueFactory<>("entrevista"));
-		colunaEntrevista.setPrefWidth(150);
 		colunaEntrevista.setCellFactory((TableColumn<AnuncioEntrevista, AnuncioEntrevistaAnalise> param) -> {
 			final TableCell<AnuncioEntrevista, AnuncioEntrevistaAnalise> cell = new TableCell<AnuncioEntrevista, AnuncioEntrevistaAnalise>() {
 				final JFXButton button = new JFXButton();
@@ -2417,6 +2430,8 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 			};
 			return cell;
 		});
+		colunaEntrevista.setPrefWidth(150);
+		
 		TableColumn<AnuncioEntrevista, String> colunaVer = new TableColumn<>("");
 		colunaVer.setCellValueFactory(new PropertyValueFactory<>(""));
 		colunaVer.setCellFactory((TableColumn<AnuncioEntrevista, String> param) -> {
@@ -2527,6 +2542,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 			};
 			return cell;
 		});
+		colunaAvaliacao.setPrefWidth(100);
 		TableColumn<AnuncioEntrevista, String> colunaRemover = new TableColumn<>("");
 		colunaRemover.setCellValueFactory(new PropertyValueFactory<>(""));
 		colunaRemover.setCellFactory((TableColumn<AnuncioEntrevista, String> param) -> {
@@ -2590,6 +2606,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				}
 			}
 		});
+		colunaNome.setPrefWidth(150);
 		TableColumn<Candidato, Calendar> colunaIdade = new TableColumn<>("Idade");
 		colunaIdade.setCellValueFactory(new PropertyValueFactory<>("dataNascimento"));
 		colunaIdade.setCellFactory((TableColumn<Candidato, Calendar> param) -> new TableCell<Candidato, Calendar>() {
@@ -2606,7 +2623,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				}
 			}
 		});
-
+		
 		TableColumn<Candidato, Calendar> colunaCriadoEm = new TableColumn<>("Atualização");
 		colunaCriadoEm.setCellValueFactory(new PropertyValueFactory<>("ultimaModificacao"));
 		colunaCriadoEm.setCellFactory((TableColumn<Candidato, Calendar> param) -> new TableCell<Candidato, Calendar>() {
@@ -2621,6 +2638,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				}
 			}
 		});
+		colunaCriadoEm.setPrefWidth(100);
 		TableColumn<Candidato, Number> colunaPossuiIndicacao = new TableColumn<>("Indicação");
 		colunaPossuiIndicacao.setCellValueFactory(new PropertyValueFactory<>("possuiIndicacao"));
 		colunaPossuiIndicacao
@@ -2667,6 +2685,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				}
 			}
 		});
+		colunaSelecoes.setPrefWidth(100);
 		TableColumn<Candidato, String> colunaVer = new TableColumn<>("");
 		colunaVer.setCellValueFactory(new PropertyValueFactory<>(""));
 		colunaVer.setCellFactory((TableColumn<Candidato, String> param) -> {

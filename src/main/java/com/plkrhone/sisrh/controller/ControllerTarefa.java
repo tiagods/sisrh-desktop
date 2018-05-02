@@ -54,6 +54,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
@@ -364,7 +365,9 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 		cbAnuncioStatusPesquisa.getItems().addAll(AnuncioStatus.values());
 		cbTarefaStatusPesquisa.getItems().addAll("Aberto", "Finalizado", "Qualquer");
 		cbTarefaStatusPesquisa.getSelectionModel().select("Aberto");
-
+		
+		
+		
 		new ComboBoxAutoCompleteUtil<>(cbAnuncioPesquisa);
 		new ComboBoxAutoCompleteUtil<>(cbClientePesquisa);
 		new ComboBoxAutoCompleteUtil<>(cbAnuncio);
@@ -518,9 +521,9 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 		}
 		try {
 			loadFactory();
-			anuncios = new AnunciosImp(getManager());
+			//anuncios = new AnunciosImp(getManager());
 			tarefas = new TarefasImp(getManager());
-			Anuncio anuncio = anuncios.findById(cbAnuncio.getValue().getId());
+			//Anuncio anuncio = anuncios.findById(cbAnuncio.getValue().getId());
 			Tarefa tarefa = new Tarefa();
 			if (!txCodigo.getText().equals("")) {
 				tarefa.setId(Long.parseLong(txCodigo.getText()));
@@ -558,11 +561,21 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 				return;
 			}
 			tarefa.setDataFimEvento(GregorianCalendar.from(dataEventoFim.atZone(ZoneId.systemDefault())));
-			anuncio.setEntrevistaSet(cbAnuncioEntrevista.getItems().stream().collect(Collectors.toSet()));
-			anuncios.save(anuncio);
+			
+			//anuncio.setEntrevistaSet(cbAnuncioEntrevista.getItems().stream().collect(Collectors.toSet()));
+			//cbAnuncioEntrevista.getValue()
+			//anuncios.save(anuncio);
+			
 			tarefa.setAnuncioEntrevista(cbAnuncioEntrevista.getValue());
 			tarefa.setFinalizado(ckFinalizado.isSelected() ? 1 : 0);
-			tarefas.save(tarefa);
+			this.tarefa = tarefas.save(tarefa);
+			
+			alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Sucesso");
+			alert.setHeaderText("Salvo com sucesso!");
+			alert.showAndWait();
+			preencherFormulario(tarefa);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

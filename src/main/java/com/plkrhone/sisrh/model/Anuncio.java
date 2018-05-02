@@ -108,8 +108,7 @@ public class Anuncio implements AbstractEntity,Serializable {
     @Column(name="data_admissao")
     private Calendar dataAdmissao;
     
-    @OneToOne(cascade = CascadeType.ALL, 
-    	       fetch = FetchType.LAZY, optional = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
     //area do formulario
     @JoinColumn(name="formulario_requisicao_id")
     private FormularioRequisicao formularioRequisicao;
@@ -134,7 +133,7 @@ public class Anuncio implements AbstractEntity,Serializable {
 			{@JoinColumn(name="candidato_id")})
     private Set<Candidato> curriculoSet = new HashSet<>();
     //entrevistas
-    @OneToMany(fetch= FetchType.LAZY,cascade= CascadeType.ALL)
+    @OneToMany(fetch= FetchType.LAZY,cascade= CascadeType.ALL,orphanRemoval=true)
     @JoinColumn(name="anuncio_id")
     private Set<AnuncioEntrevista> entrevistaSet = new HashSet<>();
     //pre selecao

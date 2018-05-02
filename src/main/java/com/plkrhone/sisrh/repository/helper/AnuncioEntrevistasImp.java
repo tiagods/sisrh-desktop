@@ -15,7 +15,7 @@ public class AnuncioEntrevistasImp extends AbstractRepository<AnuncioEntrevista,
 	@Override
 	public AnuncioEntrevista findById(Long id) {
 		Query query = getEntityManager().createQuery("from AnuncioEntrevista as a "
-				+ "LEFT JOIN FETCH a.avaliacao LEFT JOIN FETCH a.entrevista"
+				+ "LEFT JOIN FETCH a.avaliacao "
 				+ "where a.id=:id");
 		query.setParameter("id", id);
 		AnuncioEntrevista a = (AnuncioEntrevista)query.getSingleResult();

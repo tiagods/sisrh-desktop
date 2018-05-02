@@ -53,14 +53,16 @@ public class TarefasImp extends AbstractRepository<Tarefa, Long> implements Tare
 	public List<Tarefa> filtrar(Anuncio anuncio, Anuncio.Cronograma cronograma, Anuncio.AnuncioStatus anuncioStatus, 
 			Cliente cliente, Usuario atendente, LocalDateTime dataInicio, LocalDateTime dataFim, int finalizado) {
 		Criteria c = getEntityManager().unwrap(Session.class).createCriteria(Tarefa.class);
+		c.createAlias("anuncio", "anu");
+		
 		if(anuncio!=null)
 			c.add(Restrictions.eq("anuncio",anuncio));
 		if(cronograma!=null)
-			c.createAlias("anuncio", "anu").add(Restrictions.eq("anu.cronograma", cronograma));
+			c.add(Restrictions.eq("anu.cronograma", cronograma));
 		if(anuncioStatus!=null)
 			c.add(Restrictions.eq("anuncioStatus",anuncioStatus));
 		if(cliente!=null)
-			c.createAlias("anuncio", "anu").add(Restrictions.eq("anu.cliente",cliente));
+			c.add(Restrictions.eq("anu.cliente",cliente));
 		if(atendente!=null)
 			c.add(Restrictions.eq("atendente",atendente));
 		if(dataInicio!=null)

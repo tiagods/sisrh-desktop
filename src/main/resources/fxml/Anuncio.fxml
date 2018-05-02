@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<JFXTabPane fx:id="tab" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/estilo.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAnuncio">
+<JFXTabPane fx:id="tab" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/estilo.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAnuncio">
             <tabs>
                 <Tab fx:id="tabPesquisa" text="Pesquisa">
                     <content>
@@ -162,7 +162,7 @@
                                                                                                 <Font name="System Bold" size="12.0" />
                                                                                             </font>
                                                                                         </Label>
-                                                                                        <JFXTextField fx:id="txVaga1HorarioTrabalho" layoutX="153.0" layoutY="128.0" />
+                                                                                        <JFXTextField fx:id="txVaga1HorarioTrabalho" layoutX="168.0" layoutY="128.0" prefHeight="26.0" prefWidth="140.0" />
                                                                                         <Label layoutX="15.0" layoutY="171.0" text="Esse processo seletivo é sigiloso?">
                                                                                             <font>
                                                                                                 <Font name="System Bold" size="12.0" />
@@ -179,10 +179,10 @@
                                                                                             </font>
                                                                                         </JFXRadioButton>
                                                                                         <JFXButton fx:id="btVagaAvancar1" layoutX="598.0" layoutY="273.0" mnemonicParsing="false" onAction="#formRequisicaoAvancar" prefHeight="25.0" prefWidth="75.0" styleClass="btJFXDefault" text="Avançar" />
-                                                            							<JFXTextField fx:id="txDocumento" disable="true" layoutX="777.0" layoutY="53.0" prefHeight="25.0" prefWidth="400.0" />
-                                                                                  		<JFXButton fx:id="btAnexarFormulario" layoutX="803.0" layoutY="90.0" mnemonicParsing="false" onAction="#anexarFormulario" styleClass="btJFXDefault" text="Anexar Formulario" />
-		                                                                                <JFXButton fx:id="btAbrirFormulario" layoutX="929.0" layoutY="90.0" mnemonicParsing="false" onAction="#visualizar" prefHeight="26.0" prefWidth="113.0" styleClass="btJFXDefault" text="Abrir Formulário" />
-		                                                                                <JFXButton fx:id="btRemoverFormulario" layoutX="1052.0" layoutY="90.0" mnemonicParsing="false" onAction="#removerDocumento" prefHeight="26.0" prefWidth="113.0" styleClass="btJFXDefault" text="Remover" />
+                                                            							<JFXTextField fx:id="txDocumento" disable="true" editable="false" layoutX="777.0" layoutY="53.0" prefHeight="25.0" prefWidth="400.0" />
+                                                                                  		<JFXButton fx:id="btAnexarFormulario" layoutX="793.0" layoutY="90.0" mnemonicParsing="false" onAction="#anexarFormulario" prefHeight="30.0" styleClass="btJFXDefault" text="Anexar Formulario" />
+		                                                                                <JFXButton fx:id="btAbrirFormulario" layoutX="929.0" layoutY="90.0" mnemonicParsing="false" onAction="#visualizar" prefHeight="30.0" prefWidth="117.0" styleClass="btJFXDefault" text="Abrir Formulário" />
+		                                                                                <JFXButton fx:id="btRemoverFormulario" layoutX="1052.0" layoutY="90.0" mnemonicParsing="false" onAction="#removerDocumento" prefHeight="30.0" prefWidth="113.0" styleClass="btJFXDefault" text="Remover" />
                                                                                     </children>
                                                                                 </AnchorPane>
                                                                             </content>

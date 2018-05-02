@@ -1,11 +1,8 @@
 package com.plkrhone.sisrh.model.anuncio;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,8 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,14 +37,14 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	 */ 
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(cascade= {CascadeType.MERGE,CascadeType.PERSIST},
+			fetch=FetchType.LAZY,orphanRemoval=true)
     @JoinColumn(name="anu_entrevista_id")
     private Set<AnuncioEntrevistaFormulario> formularios = new HashSet<>();
 	
-	@ManyToMany(cascade=CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="anu_ent_perfil", 
     	joinColumns={@JoinColumn(name="anu_ent_analise_id")}, 
     	inverseJoinColumns={@JoinColumn(name="perfil_id")})
@@ -62,10 +61,10 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	@JoinColumn(name="criado_por_id")
 	private Usuario criadoPor;
 	
-	@OneToOne(fetch=FetchType.LAZY)
+	@OneToOne 
+	@MapsId
 	@JoinColumn(name="anu_entrevista_id")
 	private AnuncioEntrevista anuncioEntrevista;
-	
 	/**
 	 * @return the id
 	 */
@@ -193,31 +192,5 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	public void addOrRemovePerfil(AnuncioEntrevistaPerfilTexto anuncioEntrevistaPerfilTexto, boolean selected) {
-		if(selected && !perfis.contains(anuncioEntrevistaPerfilTexto))
-			perfis.add(anuncioEntrevistaPerfilTexto);
-		else {
-			if(perfis.contains(anuncioEntrevistaPerfilTexto))
-				perfis.remove(anuncioEntrevistaPerfilTexto);			
-		}
-	}
-	public void addOrRemoveFormulario(AnuncioEntrevistaFormularioTexto aeft, String texto) {
-		Optional<AnuncioEntrevistaFormulario> key = formularios.stream().filter(c->c.getFormulario().getId().longValue()==aeft.getId().longValue()).findFirst();
-		if(!key.isPresent()) {
-			if(texto.equals("")) return;
-			
-			AnuncioEntrevistaFormulario f = new AnuncioEntrevistaFormulario();
-			f.setDescricao(texto);
-			f.setFormulario(aeft);
-			formularios.add(f);
-		}
-		else if(!key.get().getDescricao().equals(texto)) {
-			key.get().setDescricao(texto);
-			//formularios.set(formularios.indexOf(key.get()), key.get());
-		}
-	}
-	
-	
+	}	
 }
