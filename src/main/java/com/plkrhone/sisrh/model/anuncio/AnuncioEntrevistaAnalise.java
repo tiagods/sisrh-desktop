@@ -1,8 +1,10 @@
 package com.plkrhone.sisrh.model.anuncio;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,7 +26,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.plkrhone.sisrh.model.AbstractEntity;
-import com.plkrhone.sisrh.model.Candidato;
 import com.plkrhone.sisrh.model.Usuario;
 
 
@@ -39,15 +40,17 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL, orphanRemoval=true)
+	
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="anu_entrevista_id")
     private Set<AnuncioEntrevistaFormulario> formularios = new HashSet<>();
 	
-	@ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(name="anu_ent_perfil", joinColumns=
-		{@JoinColumn(name="anu_entrevista_id")}, inverseJoinColumns=
-			{@JoinColumn(name="perfil_id")})
+	@ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="anu_ent_perfil", 
+    	joinColumns={@JoinColumn(name="anu_ent_analise_id")}, 
+    	inverseJoinColumns={@JoinColumn(name="perfil_id")})
     private Set<AnuncioEntrevistaPerfilTexto> perfis = new HashSet<>();
+
 	@Column(name="formulario_entrevista")
 	private String formularioEntrevista;
 	
@@ -60,7 +63,7 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	private Usuario criadoPor;
 	
 	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="anu_entrevista_analise_id")
+	@JoinColumn(name="anu_entrevista_id")
 	private AnuncioEntrevista anuncioEntrevista;
 	
 	/**
@@ -76,7 +79,7 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	/**
 	 * @return the formularios
 	 */
@@ -193,25 +196,26 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	}
 
 	public void addOrRemovePerfil(AnuncioEntrevistaPerfilTexto anuncioEntrevistaPerfilTexto, boolean selected) {
-		if(selected) {
+		if(selected && !perfis.contains(anuncioEntrevistaPerfilTexto))
 			perfis.add(anuncioEntrevistaPerfilTexto);
-		}
 		else {
 			if(perfis.contains(anuncioEntrevistaPerfilTexto))
 				perfis.remove(anuncioEntrevistaPerfilTexto);			
 		}
 	}
 	public void addOrRemoveFormulario(AnuncioEntrevistaFormularioTexto aeft, String texto) {
-		Optional<AnuncioEntrevistaFormulario> form = 
-				formularios.stream().filter(c->c.getFormulario().getId().longValue()==aeft.getId().longValue()).findAny();
-		if(form.isPresent()) {
+		Optional<AnuncioEntrevistaFormulario> key = formularios.stream().filter(c->c.getFormulario().getId().longValue()==aeft.getId().longValue()).findFirst();
+		if(!key.isPresent()) {
+			if(texto.equals("")) return;
 			
-		}
-		else {
-			AnuncioEntrevistaFormulario f = new AnuncioEntrevistaFormulario()
+			AnuncioEntrevistaFormulario f = new AnuncioEntrevistaFormulario();
 			f.setDescricao(texto);
 			f.setFormulario(aeft);
 			formularios.add(f);
+		}
+		else if(!key.get().getDescricao().equals(texto)) {
+			key.get().setDescricao(texto);
+			//formularios.set(formularios.indexOf(key.get()), key.get());
 		}
 	}
 	

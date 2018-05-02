@@ -9,10 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,6 +31,7 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	private String formulario;
@@ -113,8 +116,7 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
     @Column(name="outro_beneficio")
     private String outroBeneficio;
     
-    @MapsId
-    //@OneToOne(fetch= FetchType.LAZY)
+    @OneToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="anuncio_id")
     private Anuncio anuncio;
 

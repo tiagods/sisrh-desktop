@@ -34,6 +34,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 public class ControllerLogin extends PersistenciaController implements Initializable{
 
@@ -49,8 +50,22 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 		try {
 			loadFactory();
 			UsuariosImp usuarios = new UsuariosImp(getManager());
-			List<Usuario> contas = usuarios.filtrar(null, 1, "nome");
+			List<Usuario> contas = usuarios.filtrar(null, 0, "nome");
+			cbNome.setConverter(new StringConverter<Usuario>() {
+
+				@Override
+				public String toString(Usuario object) {
+					return object.getLogin();
+				}
+
+				@Override
+				public Usuario fromString(String string) {
+					return null;
+				}
+				
+			});
 			cbNome.getItems().addAll(contas);
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {

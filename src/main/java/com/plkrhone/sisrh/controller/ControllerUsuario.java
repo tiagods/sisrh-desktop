@@ -120,7 +120,7 @@ public class ControllerUsuario extends PersistenciaController implements Initial
 		combos();
 		try {
 			usuarios = new UsuariosImp(getManager());
-			List<Usuario> lista = usuarios.filtrar("", 1, "login");
+			List<Usuario> lista = usuarios.filtrar("", 0, "login");
 			System.out.println(lista.size());
 			tbUsuarios.setItems(FXCollections.observableList(lista));
 		} catch (Exception e) {
@@ -229,7 +229,7 @@ public class ControllerUsuario extends PersistenciaController implements Initial
 	void filtrar() {
 		try {
 			String s = cbStatusPesquisa.getValue();
-			int situacao = s.equals("Ativo") ? 1 : (s.equals("Inativo") ? 0 : -1);
+			int situacao = s.equals("Ativo") ? 0 : (s.equals("Inativo") ? 1 : -1);
 			loadFactory();
 			usuarios = new UsuariosImp(getManager());
 			List<Usuario> lista = usuarios.filtrar(txPesquisa.getText().trim(), situacao, "login");

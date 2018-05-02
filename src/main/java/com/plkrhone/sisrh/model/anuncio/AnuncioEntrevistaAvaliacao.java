@@ -24,7 +24,7 @@ public class AnuncioEntrevistaAvaliacao implements AbstractEntity, Serializable{
 	@JoinColumn(name="avaliacao_id")
 	private Avaliacao avaliacao;
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="anuncio_entrevista_id")
+	@JoinColumn(name="anu_entrevista_id")
 	private AnuncioEntrevista anuncioEntrevista;
 	@Temporal(value=TemporalType.TIMESTAMP)
 	@Column(name="data_criacao")

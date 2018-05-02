@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="504.0" prefWidth="779.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAvaliacao">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="504.0" prefWidth="779.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAvaliacao">
     <children>
         <Label alignment="CENTER" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Avaliação/Testes" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
             <font>
@@ -69,7 +69,7 @@
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Label>
-                                <JFXTextArea fx:id="txDescricao" layoutX="106.0" layoutY="110.0" prefHeight="67.0" prefWidth="231.0" promptText="Breve descrição sobre essa sobre prova" />
+                                <JFXTextArea fx:id="txDescricao" layoutX="106.0" layoutY="110.0" prefHeight="67.0" prefWidth="231.0" promptText="Breve descrição sobre essa prova" />
                                 <Label layoutX="270.0" layoutY="200.0" text="Pontuação Máxima:">
                                     <font>
                                         <Font name="System Bold" size="12.0" />

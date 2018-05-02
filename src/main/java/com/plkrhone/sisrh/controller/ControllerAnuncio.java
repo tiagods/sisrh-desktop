@@ -617,7 +617,62 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 			e.printStackTrace();
 		}
 	}
+	private void abrirEntrevista(AnuncioEntrevista ae) {
+		try {
+			loadFactory();
+			Candidato c = ae.getCandidato();
+			anunciosEntrevistas = new AnuncioEntrevistasImp(getManager());
+			anuncios = new AnunciosImp(getManager());
+			anuncio.setCurriculoSet(
+					tbCurriculos.getItems().stream().collect(Collectors.toSet()));
+			anuncio.setEntrevistaSet(
+					tbEntrevista.getItems().stream().collect(Collectors.toSet()));
+			anuncio.setPreSelecaoSet(
+					tbPreSelecionado.getItems().stream().collect(Collectors.toSet()));
+			anuncio.setCandidatoAprovado(cbCandidatoConclusao.getValue());
+			candidatos = new CandidatosImp(getManager());
+			anuncio = anuncios.save(anuncio);
+			observer.notifyUpdate(candidatos);
+			// curriculos
+			tbCurriculos.getItems().clear();
+			tbCurriculos.getItems().addAll(anuncio.getCurriculoSet());
+			// entrevistas
+			tbEntrevista.getItems().clear();
+			tbEntrevista.getItems().addAll(anuncio.getEntrevistaSet());
+			// pre selecao
+			tbPreSelecionado.getItems().clear();
+			tbPreSelecionado.getItems().addAll(anuncio.getPreSelecaoSet());
 
+			Optional<AnuncioEntrevista> newAe = 
+					tbEntrevista.getItems().stream().filter(can -> can.getCandidato().getId() == c.getId()).findFirst();
+			if (newAe.isPresent()) {
+				FXMLLoader loader = carregarFxmlLoader("Entrevista");
+				Stage stage = carregarStage(loader, "");
+				ControllerEntrevista controller = loader.getController();
+				controller.iniciar(newAe.get(), stage);
+				stage.show();
+				stage.setOnCloseRequest(event1 -> {
+					if (event1.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
+						try {
+							loadFactory();
+							anuncios = new AnunciosImp(getManager());
+							tbEntrevista.getItems().clear();
+							tbEntrevista.getItems().addAll(anuncio.getEntrevistaSet());
+							tbEntrevista.refresh();
+						} catch (Exception e) {
+							e.printStackTrace();
+						} finally {
+							close();
+						}
+					}
+				});
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+	}
 	@FXML
 	void anexarFormulario(ActionEvent event) {
 		Set<FileChooser.ExtensionFilter> filters = new HashSet<>();
@@ -1113,7 +1168,6 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 	void fecharAnuncio(ActionEvent event) {
 
 	}
-
 	private void filtrar() {
 		try {
 			loadFactory();
@@ -1309,6 +1363,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		cbVaga3Estado.setValue(Estado.SP);
 		ckVaga4ACombinar.setSelected(true);
 		txVaga4Salario.setText("0,00");
+		rbVaga4ComissaoNao.setSelected(true);
 		rbVaga41VRNao.setSelected(true);
 		txVaga41VRValor.setText("0,00");
 		rbVaga41VTNao.setSelected(true);
@@ -1666,15 +1721,24 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 	@FXML
 	private void salvar(ActionEvent event) {
 		FormularioRequisicao fr =null;
+		AnuncioCronograma ac = null;
+		
 		// tela inicial
 		if (txCodigo.getText().equals("")) {
 			anuncio = new Anuncio();
 			anuncio.setCriadoEm(Calendar.getInstance());
 			anuncio.setCriadoPor(UserSession.getInstance().getUsuario());
 			fr = new FormularioRequisicao();
+			fr.setAnuncio(anuncio);
+			ac = new AnuncioCronograma();
+			ac.setAnuncio(anuncio);
+			anuncio.setFormularioRequisicao(fr);
+			anuncio.setCronogramaDetails(ac);
 		}
-		else if(anuncio.getFormularioRequisicao()!=null)
+		else {
 			fr = anuncio.getFormularioRequisicao();
+			ac = anuncio.getCronogramaDetails();
+		}
 		anuncio.setNome(txNome.getText().trim());
 		anuncio.setCliente(cbCliente.getValue());
 		anuncio.setResponsavel(txResponsavel.getText());
@@ -1799,8 +1863,6 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		}catch(NullPointerException ex) {
 			ex.printStackTrace();
 		}
-		fr.setAnuncio(anuncio);
-		anuncio.setFormularioRequisicao(fr);
 		// area do contrato
 		anuncio.setDataEnvioContrato(dtEnvioContrato.getValue() == null ? null
 				: GregorianCalendar.from(dtEnvioContrato.getValue().atStartOfDay(ZoneId.systemDefault())));
@@ -1826,7 +1888,6 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				: GregorianCalendar.from(dtFimConclusao.getValue().atStartOfDay(ZoneId.systemDefault())));
 
 		// area de datas do cronograma
-		AnuncioCronograma ac = new AnuncioCronograma();
 		ac.setDataInicioDivulgacao(dtInicioDivulgacao.getValue() == null ? null
 				: GregorianCalendar.from(dtInicioDivulgacao.getValue().atStartOfDay(ZoneId.systemDefault())));
 		ac.setDataFimDivulgacao(dtFimDivulgacao.getValue() == null ? null
@@ -1869,10 +1930,11 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 			observer.notifyUpdate(candidatos);
 			preencherFormulario(anuncio);
 		} catch (Exception e) {
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Erro");
-			alert.setContentText("Falha ao salvar o registro!\n" + e);
+			alert.setContentText("Falha ao salvar o registro!" + e);
 			alert.showAndWait();
+			e.printStackTrace();
 		} finally {
 			close();
 		}
@@ -2326,75 +2388,26 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 						button.getStyleClass().add("btJFXDefault");
 						button.setText(item == null ? "Nova Entrevista" : "Editar Entrevista");
 						button.setOnAction(event -> {
-							Alert alert = new Alert(AlertType.CONFIRMATION);
-							alert.setTitle("Confirmação");
-							alert.setHeaderText("Por favor, escolha uma operação para avançar");
-							alert.setContentText("Escolha uma opção.");
-
-							// ButtonType buttonAgendar = new ButtonType("Agendar Entrevista");
-							ButtonType buttonAgora = new ButtonType("Entrevistar Agora");
-							ButtonType buttonCancel = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
-							alert.getButtonTypes().setAll(buttonAgora, buttonCancel);
-
-							Optional<ButtonType> result = alert.showAndWait();
-							// if (result.get() == buttonAgendar){
-							// // ... user chose "One"
-							// }
-							if (result.get() == buttonAgora) {
-								try {
-									loadFactory();
-									AnuncioEntrevista ae = tbEntrevista.getItems().get(getIndex());
-									Candidato c = ae.getCandidato();
-									anunciosEntrevistas = new AnuncioEntrevistasImp(getManager());
-									anuncios = new AnunciosImp(getManager());
-									anuncio.setCurriculoSet(
-											tbCurriculos.getItems().stream().collect(Collectors.toSet()));
-									anuncio.setEntrevistaSet(
-											tbEntrevista.getItems().stream().collect(Collectors.toSet()));
-									anuncio.setPreSelecaoSet(
-											tbPreSelecionado.getItems().stream().collect(Collectors.toSet()));
-									anuncio.setCandidatoAprovado(cbCandidatoConclusao.getValue());
-									candidatos = new CandidatosImp(getManager());
-									anuncio = anuncios.save(anuncio);
-									observer.notifyUpdate(candidatos);
-									// curriculos
-									tbCurriculos.getItems().clear();
-									tbCurriculos.getItems().addAll(anuncio.getCurriculoSet());
-									// entrevistas
-									tbEntrevista.getItems().clear();
-									tbEntrevista.getItems().addAll(anuncio.getEntrevistaSet());
-									// pre selecao
-									tbPreSelecionado.getItems().clear();
-									tbPreSelecionado.getItems().addAll(anuncio.getPreSelecaoSet());
-
-									Optional<AnuncioEntrevista> newAe = tbEntrevista.getItems().stream()
-											.filter(can -> can.getCandidato().getId() == c.getId()).findFirst();
-									if (newAe.isPresent()) {
-										FXMLLoader loader = carregarFxmlLoader("Entrevista");
-										Stage stage = carregarStage(loader, "");
-										ControllerEntrevista controller = loader.getController();
-										controller.iniciar(newAe.get(), stage);
-										stage.show();
-										stage.setOnCloseRequest(event1 -> {
-											if (event1.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
-												try {
-													loadFactory();
-													anuncios = new AnunciosImp(getManager());
-													tbEntrevista.getItems().clear();
-													tbEntrevista.getItems().addAll(anuncio.getEntrevistaSet());
-												} catch (Exception e) {
-													e.printStackTrace();
-												} finally {
-													close();
-												}
-											}
-										});
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								} finally {
-									close();
+							if(button.getText().equals("Nova Entrevista")){
+								Alert alert = new Alert(AlertType.CONFIRMATION);
+								alert.setTitle("Confirmação");
+								alert.setHeaderText("Por favor, escolha uma operação para avançar");
+								alert.setContentText("Escolha uma opção.");
+								// ButtonType buttonAgendar = new ButtonType("Agendar Entrevista");
+								ButtonType buttonAgora = new ButtonType("Entrevistar Agora");
+								ButtonType buttonCancel = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
+								alert.getButtonTypes().setAll(buttonAgora, buttonCancel);
+								
+								Optional<ButtonType> result = alert.showAndWait();
+								// if (result.get() == buttonAgendar){
+								// // ... user chose "One"
+								// }
+								if (result.get() == buttonAgora) {
+									abrirEntrevista(tbEntrevista.getItems().get(getIndex()));
 								}
+							}
+							else {
+								abrirEntrevista(tbEntrevista.getItems().get(getIndex()));
 							}
 						});
 						setGraphic(button);

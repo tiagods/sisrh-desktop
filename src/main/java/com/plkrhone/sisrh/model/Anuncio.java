@@ -163,7 +163,8 @@ public class Anuncio implements AbstractEntity,Serializable {
     @Column(name="data_fim_treinamento")
     private Calendar dataFimTreinamento;
     
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, 
+ 	       fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name="cronograma_id")
     private AnuncioCronograma cronogramaDetails;
     

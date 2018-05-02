@@ -30,7 +30,7 @@ public class DOCEditor extends OfficeEditor{
 		FileOutputStream fos = new FileOutputStream(fi);
 		doc.write(fos);  
 		fos.close();
-	    fis.close();  
+	    fis.close();
 	    return fi;
 	}
 	@Override

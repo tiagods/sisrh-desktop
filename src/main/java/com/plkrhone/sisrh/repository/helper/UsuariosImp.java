@@ -76,12 +76,12 @@ public class UsuariosImp extends AbstractRepository<Usuario, Long> implements Us
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Usuario> filtrar(String nome, int ativo, String ordem) {
+	public List<Usuario> filtrar(String nome, int inativo, String ordem) {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
 		if (nome!=null && !nome.trim().equals(""))
 			criteria.add(Restrictions.ilike("nome", nome, MatchMode.START));
-		if (ativo == 1 || ativo == 0)
-			criteria.add(Restrictions.eq("ativo", ativo));
+		if (inativo == 1 || inativo == 0)
+			criteria.add(Restrictions.eq("inativo", inativo==1));
 		criteria.addOrder(Order.asc(ordem));
 		return (List<Usuario>) criteria.list();
 	}

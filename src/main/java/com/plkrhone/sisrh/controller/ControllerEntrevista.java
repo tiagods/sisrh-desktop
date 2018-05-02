@@ -7,10 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -20,11 +17,10 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import com.plkrhone.sisrh.model.Candidato;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevista;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaAnalise;
-import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaFormulario;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaFormularioTexto;
-import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaPerfil;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaPerfilTexto;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaAnaliseImp;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaFormulariosImpl;
@@ -94,7 +90,6 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
 			loadFactory();
-			
 			perfisImpl = new AnuncioEntrevistaPerfisTextosImpl(getManager());
 			formsImpl = new AnuncioEntrevistaFormulariosImpl(getManager());
 			
@@ -102,7 +97,6 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			perfis.forEach(c->{
 				criarCheckBoxNoPerfil(c);
 			});
-			
 			List<AnuncioEntrevistaFormularioTexto> textos = formsImpl.findByInativo(false);
 			textos.forEach(c->{//montar formulario
 				criarTextAreaForm(c,textos.size());
@@ -121,19 +115,12 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 		checkBox.setText(c.getNome());
 		checkBox.setFont(Font.font("System Bold", FontWeight.BOLD,12));
 		checkBox.setPadding(new Insets(0,10,20,0));
-		
-		checkBox.selectedProperty().addListener(new ChangeListener<Boolean>(){
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				
-			}
-		});
 		mapPerfil.put(checkBox.getId(), new Object[] {c,checkBox});//armazenando perfis em um mapa
 		pnPerfil.getChildren().add(checkBox);		
 	}
 	private void criarTextAreaForm(AnuncioEntrevistaFormularioTexto c, int size) {
 		Tab tab = new Tab(""+c.getSequencia());
-		AnchorPane panel = new AnchorPane();
+		//AnchorPane panel = new AnchorPane();
 		VBox vbox = new VBox();
 		Label label = new Label(c.getPergunta());
 		label.setPadding(new Insets(30,10,30,0));
@@ -153,13 +140,14 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 		textAreaValue.setPadding(new Insets(0,10,20,0));
 		textAreaValue.setFont(Font.font("System Bold", FontWeight.BOLD, 16));
 		
-		textAreaValue.setId(CHAVE_FORMULARIO+c.getSequencia());
+		textAreaValue.setId(CHAVE_FORMULARIO+c.getId().longValue());
 		
 		mapFormulario.put(textAreaValue.getId(),new Object[] {c,textAreaValue});
 		
 		ButtonBar bar = new ButtonBar();
 		if(c.getSequencia()>1) {
 			JFXButton button = new JFXButton("<");
+			button.getStyleClass().add("btJFXDefault");
 			button.setOnAction(new EventHandler<ActionEvent>() {
 				
 				@Override
@@ -171,6 +159,7 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 		}
 		if(c.getSequencia()<size) {
 			JFXButton button = new JFXButton(">");
+			button.getStyleClass().add("btJFXDefault");
 			button.setOnAction(new EventHandler<ActionEvent>() {
 				
 				@Override
@@ -265,9 +254,8 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 
 	}
 	void preencherFormulario(AnuncioEntrevistaAnalise entrevista) {
-		Set<AnuncioEntrevistaFormulario> form = entrevista.getFormularios();
-		form.forEach(o->{
-			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getFormulario().getId());
+		entrevista.getFormularios().forEach(o->{
+			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getFormulario().getId().longValue());
 			if(object == null) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Um formulario foi desativado");
@@ -279,10 +267,10 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			}
 		});
 		entrevista.getPerfis().forEach(o->{
-			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getId().longValue());
+			Object[] object = mapPerfil.get(CHAVE_PERFIL+o.getId().longValue());
 			if(object[1] instanceof JFXCheckBox) ((JFXCheckBox)object[1]).setSelected(true);
-			
 		});
+		System.out.println("Entrevista carregada");
 	}
 	
 	private Tab proximaTabVagas(boolean avancar) {
@@ -303,18 +291,25 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 		mapPerfil.values().forEach(c->{
 			if(c[1] instanceof JFXCheckBox) {
 				entrevista.addOrRemovePerfil((AnuncioEntrevistaPerfilTexto)c[0],((JFXCheckBox)c[1]).isSelected());
-				System.out.println(((JFXCheckBox)c[1]).getId()+"-> selected ? "+((JFXCheckBox)c[1]).isSelected());
+			//	System.out.println(((JFXCheckBox)c[1]).getId()+"-> selected ? "+((JFXCheckBox)c[1]).isSelected());
 			}
 		});		
-		
+		mapFormulario.values().forEach(c->{
+			if(c[1] instanceof JFXTextArea) {
+				AnuncioEntrevistaFormularioTexto a = (AnuncioEntrevistaFormularioTexto)c[0];
+				entrevista.addOrRemoveFormulario(a, ((JFXTextArea)c[1]).getText().trim());
+			//	System.out.println(a.getPergunta()+":sequencia"+a.getSequencia()+"-> text ? "+((JFXTextArea)c[1]).getText());
+			}
+		});
 		entrevista.setAnuncioEntrevista(this.anuncioEntrevista);
-		
 		this.anuncioEntrevista.setEntrevista(entrevista);
 		try {
 			loadFactory();
-			//anunciosEntrevistas = new AnuncioEntrevistasImp(getManager());
-			//anunciosEntrevistas.save(this.anuncioEntrevista);
-			//this.stage.close();	
+			entrevistas = new AnuncioEntrevistaAnaliseImp(getManager());
+			entrevistas.save(entrevista);
+			
+			anunciosEntrevistas = new AnuncioEntrevistasImp(getManager());
+			anunciosEntrevistas.save(anuncioEntrevista);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -324,7 +319,66 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 	@FXML
 	void visualizarFormulario(ActionEvent event) {
 		try{
-			File f = officeJob.edit(new HashMap<>(), new File(FileOfficeEnum.entrevista.getDescricao()));
+			Map<String,String> map = new HashMap<>();
+			String lineSeparator = "\u000b";
+			
+			String candidatoNome="";
+			String candidatoIdade="";
+			String candidatoSexo="";
+			
+			if(anuncioEntrevista!=null && anuncioEntrevista.getCandidato()!=null) {
+				Candidato can = anuncioEntrevista.getCandidato();
+				candidatoNome = can.getNome();
+				candidatoIdade = String.valueOf(can.getIdade());
+				candidatoSexo = can.getSexo();
+			}
+			map.put("{candidato.nome}", candidatoNome);
+			map.put("{candidato.idade}", candidatoIdade);
+			map.put("{candidato.sexo}", candidatoSexo);
+			
+			StringBuilder perfil = new StringBuilder();
+			
+			int i = 1;
+			for(Object[] c : mapPerfil.values()){
+				if(c[1] instanceof JFXCheckBox) {
+					AnuncioEntrevistaPerfilTexto  a = (AnuncioEntrevistaPerfilTexto)c[0];
+					JFXCheckBox check = (JFXCheckBox)c[1];
+					String value = "("+(check.isSelected()?"X":"  ")+")"+a.getNome();
+					perfil.append(value);
+					if(i % 2==0) {
+						perfil.append(lineSeparator);
+					}
+					else 
+						perfil.append("\t\t");
+					i++;
+				}
+			}
+			
+			map.put("{perfil}", perfil.toString());
+			mapFormulario.values().forEach(c->{
+				if(c[1] instanceof JFXTextArea) {
+					AnuncioEntrevistaFormularioTexto a = (AnuncioEntrevistaFormularioTexto)c[0];
+					map.put("{pergunta"+a.getSequencia()+"}", a.getPergunta());
+					map.put("{descricao"+a.getSequencia()+"}", a.getDescricao());
+					map.put("{resposta"+a.getSequencia()+"}", ((JFXTextArea)c[1]).getText().trim());
+				}
+			});
+			StringBuilder extra = new StringBuilder();
+			if(entrevista!=null) {
+				entrevista.getFormularios().forEach(c->{
+					if(c.getFormulario().isInativo()) {
+						extra.append(c.getFormulario().getPergunta());
+						extra.append(lineSeparator);
+						extra.append(c.getFormulario().getDescricao());
+						extra.append(lineSeparator);
+						extra.append(c.getDescricao());
+						extra.append(lineSeparator);
+						extra.append(lineSeparator);
+					}
+				});
+			}
+			map.put("{extras}", extra.toString());
+			File f = officeJob.edit(map, new File(FileOfficeEnum.entrevista.getDescricao()));
 			officeJob.openFile(f);
 		}catch (IOException e) {
 			e.printStackTrace();
@@ -333,5 +387,4 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 	public AnuncioEntrevistaAnalise getEntrevista() {
 		return this.entrevista;
 	}
-
 }

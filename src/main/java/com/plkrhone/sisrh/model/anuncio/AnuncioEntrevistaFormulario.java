@@ -2,6 +2,7 @@ package com.plkrhone.sisrh.model.anuncio;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 
 @Entity
 @Table(name="anu_ent_formulario")
@@ -25,6 +25,7 @@ public class AnuncioEntrevistaFormulario implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="formulario_id")
 	private AnuncioEntrevistaFormularioTexto formulario;
+	@Column(columnDefinition="text")
 	private String descricao;
 	/**
 	 * @return the id
@@ -38,8 +39,6 @@ public class AnuncioEntrevistaFormulario implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-
 	/**
 	 * @return the formulario
 	 */
