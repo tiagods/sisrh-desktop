@@ -3,9 +3,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 import org.json.JSONObject;
 
@@ -19,8 +17,7 @@ public class JSONParser {
         //String url = "https://www.catho.com.br/profissoes/abastecedor-de-maquinas/";
         String url = "https://www.catho.com.br/profissoes/supervisor-industrial/";
         JSONObject payload = jsonParser.getJSONFromUrl(
-                url,
-                null);
+                url);
         System.out.println(payload.get("Name"));
         System.out.println(payload.get("description").toString().replace("&quot;",""));
         System.out.println(payload.get("baseSalary"));
@@ -31,7 +28,7 @@ public class JSONParser {
 
     }
 
-    public JSONObject getJSONFromUrl(String url, List params) {
+    public JSONObject getJSONFromUrl(String url) {
         URL _url;
         HttpURLConnection urlConnection;
 

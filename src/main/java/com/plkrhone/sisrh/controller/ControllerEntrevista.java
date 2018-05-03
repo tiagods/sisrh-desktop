@@ -28,8 +28,6 @@ import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaPerfilTexto;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaAnaliseImp;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaFormulariosImpl;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaPerfisTextosImpl;
-import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistasImp;
-import com.plkrhone.sisrh.repository.helper.AnunciosImp;
 import com.plkrhone.sisrh.util.UserSession;
 import com.plkrhone.sisrh.util.office.FileOfficeEnum;
 import com.plkrhone.sisrh.util.office.OfficeEditor;
@@ -77,8 +75,6 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 	private AnuncioEntrevista anuncioEntrevista;
 	private Stage stage;
 	private AnuncioEntrevistaAnaliseImp entrevistas;
-	private AnuncioEntrevistasImp anunciosEntrevistas;
-
 	private AnuncioEntrevistaFormulariosImpl formsImpl;
 	private AnuncioEntrevistaPerfisTextosImpl perfisImpl;
 
@@ -183,7 +179,7 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			try {
 				loadFactory();
 				entrevistas = new AnuncioEntrevistaAnaliseImp(getManager());
-				entrevista = entrevistas.findById(ae.getEntrevista());
+				entrevista = entrevistas.findById(ae.getEntrevista().getId());
 				preencherFormulario(entrevista);
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -339,16 +335,10 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			});
 			entrevista.setPerfis(perfis);
 			entrevista.setFormularios(formularios);
-
-			entrevista.setAnuncioEntrevista(this.anuncioEntrevista);
-			
+		
 			entrevistas = new AnuncioEntrevistaAnaliseImp(getManager());
-			//entrevista  = entrevistas.save(entrevista);
-				
-			anunciosEntrevistas = new AnuncioEntrevistasImp(getManager());
-			this.anuncioEntrevista = anunciosEntrevistas.findById(this.anuncioEntrevista.getId());
-			this.anuncioEntrevista.setEntrevista(entrevista);
-			anunciosEntrevistas.save(this.anuncioEntrevista);
+			entrevista.setAnuncioEntrevista(anuncioEntrevista);
+			entrevista  = entrevistas.save(entrevista);
 			
 			System.out.println(anuncioEntrevista.getEntrevista()==null?"vazio":"entrevista id "+anuncioEntrevista.getEntrevista().getId());
 
@@ -356,6 +346,8 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			alert.setTitle("Sucesso");
 			alert.setHeaderText("Salvo com sucesso!");
 			alert.showAndWait();
+			
+			preencherFormulario(entrevista);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {

@@ -16,10 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,6 +35,7 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	 */ 
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@OneToMany(cascade= {CascadeType.MERGE,CascadeType.PERSIST},
@@ -61,8 +60,7 @@ public class AnuncioEntrevistaAnalise implements AbstractEntity, Serializable{
 	@JoinColumn(name="criado_por_id")
 	private Usuario criadoPor;
 	
-	@OneToOne 
-	@MapsId
+	@OneToOne
 	@JoinColumn(name="anu_entrevista_id")
 	private AnuncioEntrevista anuncioEntrevista;
 	/**

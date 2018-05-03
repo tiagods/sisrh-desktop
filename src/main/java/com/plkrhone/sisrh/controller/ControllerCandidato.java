@@ -77,7 +77,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class ControllerCandidato extends PersistenciaController implements Initializable {
 	@FXML

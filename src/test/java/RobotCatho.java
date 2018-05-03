@@ -1,20 +1,12 @@
 
-import jdk.nashorn.internal.parser.JSONParser;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-import org.json.JSONObject;
-
-import com.plkrhone.sisrh.model.Vaga;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.Normalizer;
-import java.util.List;
+
+import org.json.JSONObject;
 
 public class RobotCatho {
     public static void main(String[] args){
@@ -53,7 +45,7 @@ public class RobotCatho {
 //        System.out.println("Concluido");
 
     }
-    public static JSONObject getJSONFromUrl(String url, List params) {
+    public static JSONObject getJSONFromUrl(String url) {
         URL _url;
         HttpURLConnection urlConnection;
 

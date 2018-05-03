@@ -25,14 +25,6 @@
 					<target>${java.version}</target>
 				</configuration>
 			</plugin>
-            <plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<version>4.0.2</version>
-				<configuration>
-					<driver>org.postgresql.Driver</driver>
-				</configuration>
-			</plugin>
         </plugins>
     </build>
     <dependencies>

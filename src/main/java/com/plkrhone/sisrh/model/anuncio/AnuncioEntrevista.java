@@ -44,7 +44,7 @@ public class AnuncioEntrevista implements AbstractEntity,Serializable {
 	@OneToMany(fetch=FetchType.LAZY,cascade = CascadeType.ALL)
     private Set<AnuncioEntrevistaAvaliacao> avaliacao = new HashSet<>();
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(mappedBy="anuncioEntrevista",cascade=CascadeType.ALL,optional=true)
 	//@JoinColumn(name="anu_entrevista_id")
 	private AnuncioEntrevistaAnalise entrevista;
 	

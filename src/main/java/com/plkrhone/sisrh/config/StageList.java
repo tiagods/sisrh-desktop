@@ -7,12 +7,12 @@ package com.plkrhone.sisrh.config;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javafx.stage.Stage;
 
 /**
  * @author Tiago
  */
-@SuppressWarnings("restriction")
 public class StageList {
 
     private static StageList instance;
