@@ -146,10 +146,10 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
+			tabela();
 			loadFactory();
 			tarefas = new TarefasImp(getManager());
 			combos();
-			tabela();
 			tbTarefa.getItems().addAll(tarefas.filtrar(null, null, null, null, null, null, null, 0));
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -300,6 +300,13 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 		timeFim.setIs24HourView(true);
 		timeInicio.setIs24HourView(true);
 		
+		ChangeListener<Object> pesquisas = new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+				filtrar();
+			}
+		};
+		
 		cbCronogramaPesquisa.getItems().addAll(null, Cronograma.AGENDAMENTO_DE_ENTREVISTA);
 		cbCrograma.getItems().add(Cronograma.AGENDAMENTO_DE_ENTREVISTA);
 		cbCrograma.getSelectionModel().selectFirst();
@@ -365,6 +372,14 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 		cbTarefaStatusPesquisa.getItems().addAll("Aberto", "Finalizado", "Qualquer");
 		cbTarefaStatusPesquisa.getSelectionModel().select("Aberto");
 		
+		dtInicioPesquisa.valueProperty().addListener(pesquisas);
+		dtFimPesquisa.valueProperty().addListener(pesquisas);
+		cbCronogramaPesquisa.valueProperty().addListener(pesquisas);
+		cbAnuncioPesquisa.valueProperty().addListener(pesquisas);
+		cbClientePesquisa.valueProperty().addListener(pesquisas);
+		cbAtendentePesquisa.valueProperty().addListener(pesquisas);
+		cbAnuncioStatusPesquisa.valueProperty().addListener(pesquisas);
+		cbTarefaStatusPesquisa.valueProperty().addListener(pesquisas);
 		
 		
 		new ComboBoxAutoCompleteUtil<>(cbAnuncioPesquisa);
@@ -518,15 +533,24 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 			alert.show();
 			return;
 		}
+		if(timeInicio.getValue()==null) {
+			alert.setContentText("Hora de inicio do evento incorreta");
+			alert.show();
+			return;
+		}
+		if (!ckDiaTodo.isSelected() && timeFim.getValue()==null) {
+			alert.setContentText("Hora de fim do evento incorreta");
+			alert.show();
+			return;
+		}		
 		try {
 			loadFactory();
 			//anuncios = new AnunciosImp(getManager());
 			tarefas = new TarefasImp(getManager());
 			//Anuncio anuncio = anuncios.findById(cbAnuncio.getValue().getId());
-			Tarefa tarefa = new Tarefa();
-			if (!txCodigo.getText().equals("")) {
-				tarefa.setId(Long.parseLong(txCodigo.getText()));
-			}else {
+			
+			if(tarefa==null) {
+				tarefa = new Tarefa();
 				tarefa.setCriadoEm(Calendar.getInstance());
 				tarefa.setCriadoPor(UserSession.getInstance().getUsuario());
 			}
@@ -535,23 +559,14 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 			tarefa.setAtendente(cbAtendente.getValue());
 			tarefa.setDescricao(txDescricao.getText());
 
-			if(timeInicio.getValue()==null) {
-				alert.setContentText("Hora de inicio do evento incorreta");
-				alert.show();
-				return;
-			}
-			
 			LocalDateTime dataEvento = dtEvento.getValue().atTime(timeInicio.getValue());
 			tarefa.setDataInicioEvento(GregorianCalendar.from(dataEvento.atZone(ZoneId.systemDefault())));
-
 			LocalTime horaFimEvento = LocalTime.of(23, 59, 59);
-			if (!ckDiaTodo.isSelected() && timeFim.getValue()==null) {
-				alert.setContentText("Hora de fim do evento incorreta");
-				alert.show();
-				return;
-			}
-			else if(!ckDiaTodo.isSelected()) {
+			tarefa.setDiaTodo(1);
+			
+			if(!ckDiaTodo.isSelected()) {
 				horaFimEvento = timeFim.getValue();
+				tarefa.setDiaTodo(0);
 			}
 			LocalDateTime dataEventoFim= LocalDate.now().atTime(horaFimEvento);
 			if(dataEvento.isAfter(dataEventoFim)) {
@@ -564,17 +579,13 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 			//anuncio.setEntrevistaSet(cbAnuncioEntrevista.getItems().stream().collect(Collectors.toSet()));
 			//cbAnuncioEntrevista.getValue()
 			//anuncios.save(anuncio);
-			
 			tarefa.setAnuncioEntrevista(cbAnuncioEntrevista.getValue());
 			tarefa.setFinalizado(ckFinalizado.isSelected() ? 1 : 0);
 			this.tarefa = tarefas.save(tarefa);
-			
 			alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Sucesso");
 			alert.setHeaderText("Salvo com sucesso!");
 			alert.showAndWait();
-			preencherFormulario(tarefa);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

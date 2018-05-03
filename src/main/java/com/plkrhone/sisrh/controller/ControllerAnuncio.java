@@ -807,12 +807,14 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		cbCronogramaPesquisa.getItems().add(null);
 		cbCronogramaPesquisa.getItems().addAll(FXCollections.observableList(Arrays.asList(Anuncio.Cronograma.values())));
 		cbCronogramaPesquisa.setValue(null);
-		cbEmpresaPesquisa.getItems().addAll("", "Ativo", "Inativo");
-		cbEmpresaPesquisa.setValue("");
+		cbEmpresaPesquisa.getItems().addAll("Qualquer", "Ativo", "Inativo");
+		cbEmpresaPesquisa.setValue("Qualquer");
 		cbStatusPesquisa.getItems().add(null);
 		cbStatusPesquisa.getItems().addAll(FXCollections.observableList(Arrays.asList(Anuncio.AnuncioStatus.values())));
 		cbStatusPesquisa.setValue(Anuncio.AnuncioStatus.EM_ANDAMENTO);
-
+		
+		
+		
 		vagas = new VagasImp(getManager());
 		List<Vaga> vagaList = vagas.getAll();
 		cbVagaPesquisa.getItems().add(null);
@@ -1075,7 +1077,18 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				dtFimConclusao.setDisable(!selected);
 			}
 		});
-
+		
+		ChangeListener pesquisas = new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+				filtrar();
+			}
+		};
+		cbCronogramaPesquisa.valueProperty().addListener(pesquisas);
+		dtInicialPesquisa.valueProperty().addListener(pesquisas);
+		dtFinalPesquisa.valueProperty().addListener(pesquisas);
+		cbEmpresaPesquisa.valueProperty().addListener(pesquisas);
+		cbStatusPesquisa.valueProperty().addListener(pesquisas);
 	}
 
 	@FXML
@@ -1165,10 +1178,9 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		dtFimConclusao.setDisable(!selected);
 
 	}
-
 	@FXML
 	void fecharAnuncio(ActionEvent event) {
-
+		
 	}
 	private void filtrar() {
 		try {

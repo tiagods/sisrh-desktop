@@ -82,13 +82,13 @@ public class AnunciosImp extends AbstractRepository<Anuncio, Long> implements An
 				
 				switch(data){
 					case "Data de Abertura":
-					pr="data_abertura";
+					pr="dataAbertura";
 					break;
 					case "Data de Admissão":
-						pr="data_admissao";
+						pr="dataAdmissao";
 						break;
 					case "Data de Encerramento":
-							pr="data_encerramento";
+							pr="dataEncerramento";
 							break;
 					default:
 						break;
@@ -107,8 +107,8 @@ public class AnunciosImp extends AbstractRepository<Anuncio, Long> implements An
 					filtro = "nome";
 					break;
 				case "Nome da Vaga":
-					criteria.createAlias("vaga", "vg");
-					filtro = "vg.nome";
+					criteria.createAlias("formularioRequisicao", "vg");
+					filtro = "vg.vaga.nome";
 					//mM = MatchMode.START;
 					break;
 				case "Nome do Cliente":
