@@ -450,7 +450,7 @@ public class ControllerCliente extends PersistenciaController implements Initial
 			txCodigo.setText(String.valueOf(cliente.getId()));
 			if (cliente.getCriadoPor() != null) {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				txCriacao.setText("Criado em: " + cliente.getCriadoEm() != null ? sdf.format(cliente.getCriadoEm())
+				txCriacao.setText("Criado em: " + cliente.getCriadoEm() != null ? sdf.format(cliente.getCriadoEm().getTime())
 						: "" + " por:" + cliente.getCriadoPor().getNome());
 			}
 			txNome.setText(cliente.getNome());

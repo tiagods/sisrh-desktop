@@ -826,7 +826,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	public void preencherFormulario(Candidato candidato) {
 		tabPane.getSelectionModel().select(tabCadastro);
 		txCodigo.setText(candidato.getId() + "");
-		txDataCriacao.setText(new SimpleDateFormat("dd/MM/yyyy").format(candidato.getCriadoEm().getTime()));
+		txDataCriacao.setText(candidato.getCriadoEm()!=null?new SimpleDateFormat("dd/MM/yyyy").format(candidato.getCriadoEm().getTime()):"");
 		txNome.setText(candidato.getNome());
 		if (candidato.getSexo().equals("M"))
 			rbSexoM.setSelected(true);

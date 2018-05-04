@@ -1427,7 +1427,8 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 			txDocumento.setText("");
 			FormularioRequisicao form = anuncio.getFormularioRequisicao();
 			if (form != null) {
-				txDocumento.setText(form.getFormulario());
+				if(form.getFormulario()!=null)
+					txDocumento.setText(form.getFormulario());
 				// 1
 				cbVaga1Cargo.setValue(form.getVaga());
 				if (form.getTipo().equals("CLT")) {
@@ -1864,18 +1865,17 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		fr.setOutroBeneficio(txVaga41Outro.getText());
 		System.out.println("txdocumentos is null "+(txDocumento==null) +" value="+txDocumento.getText()+"|");
 				
-//		if (!txDocumento.getText().trim().equals("")) {
-//			try {
-//				//&& !txDocumento.getText().startsWith(PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/")
-//				storage.transferTo(txDocumento.getText(),
-//						PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/" + txDocumento.getText());
-//				txDocumento
-//				.setText(PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/" + txDocumento.getText());
-//				fr.setFormulario(txDocumento.getText());
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
+		if (!txDocumento.getText().trim().equals("") && !txDocumento.getText().startsWith(PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/")) {
+			try {
+				storage.transferTo(txDocumento.getText(),
+						PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/" + txDocumento.getText());
+				txDocumento
+				.setText(PathStorageEnum.FORMULARIO_REQUISICAO.getDescricao() + "/" + txDocumento.getText());
+				fr.setFormulario(txDocumento.getText());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		// area do contrato
 		anuncio.setDataEnvioContrato(dtEnvioContrato.getValue() == null ? null
 				: GregorianCalendar.from(dtEnvioContrato.getValue().atStartOfDay(ZoneId.systemDefault())));

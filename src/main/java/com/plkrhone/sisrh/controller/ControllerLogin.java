@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.plkrhone.sisrh.config.PaisesConfig;
 import com.plkrhone.sisrh.config.StageList;
+import com.plkrhone.sisrh.config.VersaoConfig;
 import com.plkrhone.sisrh.model.Usuario;
 import com.plkrhone.sisrh.repository.helper.UsuariosImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
@@ -25,6 +26,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -36,11 +38,8 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		long tempoInicial = System.currentTimeMillis();
-		long tempoFinal = System.currentTimeMillis();
-		if (log.isDebugEnabled()) {
-			log.debug("Tela " + getClass().getSimpleName().replace("Controller", "") + " abriu em : "
-					+ (tempoFinal - tempoInicial) + " ms");
-		}
+		
+		lbVersao.setText("Versao "+VersaoConfig.getInstance().getVersao());
 		try {
 			loadFactory();
 			UsuariosImp usuarios = new UsuariosImp(getManager());
@@ -66,7 +65,19 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 			close();
 		}
 		new ComboBoxAutoCompleteUtil<>(cbNome);
-		PaisesConfig.getInstance();
+		Runnable run = new Runnable() {
+			@Override
+			public void run() {
+				PaisesConfig.getInstance();	
+			}
+		};
+		new Thread(run).start();
+		long tempoFinal = System.currentTimeMillis();
+		if (log.isDebugEnabled()) {
+			log.debug("Tela " + getClass().getSimpleName().replace("Controller", "") + " abriu em : "
+					+ (tempoFinal - tempoInicial) + " ms");
+		}
+		
 	}
 
 	@FXML
@@ -77,6 +88,8 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 	private JFXButton btnEntrar;
 	@FXML
 	private JFXButton btnCancelar;
+    @FXML
+    private Label lbVersao;
 
 	@FXML
 	public void enterAcionado(KeyEvent event) {
