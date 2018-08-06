@@ -28,3 +28,4 @@ persistence.xml
 hs_err_pid*
 /target/
 /credentials/
+.idea/
