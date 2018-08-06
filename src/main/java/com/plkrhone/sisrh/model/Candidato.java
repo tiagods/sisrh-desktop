@@ -31,17 +31,23 @@ public class Candidato implements AbstractEntity,Serializable {
 		FUNDAMENTAL_INCOMPLETO("Fundamental Incompleto",1),
 		FUNDAMENTAL_COMPLETO("Fundamental Completo",2),
 	    MEDIO_INCOMPLETO("Médio Incompleto",3),
-	    MEDIO_COMPLETO("Médio Completo",4),
-	    SUPERIOR_INCOMPLETO("Superior Incompleto",5),
-	    SUPERIOR_COMPLETO("Superior Completo",6),
-		TECNICO_INCOMPLETO("Tecnico Incompleto", 7),
-		TECNICO_COMPLETO("Tecnico Completo",8 ),
-	    POS_GRADUACAO_INCOMPLETO("Pós-Graduação Incompleto",9),
-	    POS_GRADUACAO_COMPLETO("Pós-Graduação Completo",10),
-	    MESTRADO_INCOMPLETO("Mestrado Incompleto",11),
-	    MESTRADO_COMPLETO("Mestrado Completo",12),
-	    DOUTORADO_INCOMPLETO("Doutorado Incompleto",13),
-	    DOUTORADO_COMPLETO("Doutorado Completo",14);
+	    MEDIO_ANDAMENTO("Médio Em Andamento",4),
+		MEDIO_COMPLETO("Médio Completo",5),
+		TECNICO_INCOMPLETO("Tecnico Incompleto",6),
+		TECNICO_ANDAMENTO("Tecnico Em Andamento",7),
+		TECNICO_COMPLETO("Tecnico Completo",8),
+	    SUPERIOR_INCOMPLETO("Superior Incompleto",9),
+	    SUPERIOR_ANDAMENTO("Superior Em Andamento",10),
+		SUPERIOR_COMPLETO("Superior Completo",11),
+	    POS_GRADUACAO_INCOMPLETO("Pós-Graduação Incompleto",12),
+		POS_GRADUACAO_ANDAMENOT("Pós-Graduação Em Andamento",13),
+		POS_GRADUACAO_COMPLETO("Pós-Graduação Completo",14),
+	    MESTRADO_INCOMPLETO("Mestrado Incompleto",15),
+		MESTRADO_ANDAMENTO("Mestrado Em Andamento",16),
+	    MESTRADO_COMPLETO("Mestrado Completo",17),
+	    DOUTORADO_INCOMPLETO("Doutorado Incompleto",18),
+		DOUTORADO_ANDAMENTO("Doutorado Em Andamento",19),
+	    DOUTORADO_COMPLETO("Doutorado Completo",20);
 		private String descricao;
 		private int valor;
 		Escolaridade(String descricao,int valor){
@@ -129,10 +135,12 @@ public class Candidato implements AbstractEntity,Serializable {
     @Column(name="detalhes_indicacao")
     private String detalhesIndicacao;
 
+
+
+
 	@ManyToOne
 	@JoinColumn(name="curso_superior_id")
 	private CursoSuperior cursoSuperior;
-
 	private String empresa1;
     private String empresa2;
     private String empresa3;
@@ -153,7 +161,6 @@ public class Candidato implements AbstractEntity,Serializable {
     private String descricaoCargo3;
 
     private String formulario;
-    
     @Column(name="total_recrutamento")
     private int totalRecrutamento = 0;//numero de vezes que o curriculo foi usado em recrutamento
     @Column(name="total_entrevista")
