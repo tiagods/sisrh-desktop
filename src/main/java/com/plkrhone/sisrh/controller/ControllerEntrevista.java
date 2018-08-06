@@ -19,6 +19,7 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.model.Candidato;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevista;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaAnalise;
@@ -28,7 +29,6 @@ import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaPerfilTexto;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaAnaliseImp;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaFormulariosImpl;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistaPerfisTextosImpl;
-import com.plkrhone.sisrh.util.UserSession;
 import com.plkrhone.sisrh.util.office.FileOfficeEnum;
 import com.plkrhone.sisrh.util.office.OfficeEditor;
 import com.plkrhone.sisrh.util.office.OfficeEditorProducer;
@@ -286,7 +286,7 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			if(this.entrevista==null) {
 				entrevista = new AnuncioEntrevistaAnalise();
 				entrevista.setCriadoEm(Calendar.getInstance());
-				entrevista.setCriadoPor(UserSession.getInstance().getUsuario());
+				entrevista.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			}
 			Set<AnuncioEntrevistaFormulario> formularios = entrevista.getFormularios();
 			Set<AnuncioEntrevistaPerfilTexto> perfis = entrevista.getPerfis();

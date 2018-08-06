@@ -3,18 +3,13 @@ package com.plkrhone.sisrh.model;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 /**
  * Created by Tiago on 19/07/2017.
  */
 @Entity
+@Table(name = "vaga")
 public class Vaga implements AbstractEntity,Serializable {
 	/**
 	 * 
@@ -32,6 +27,11 @@ public class Vaga implements AbstractEntity,Serializable {
 	@Column(name = "criado_em")
 	private Calendar criadoEm;
 	private String fonte;
+
+	@ManyToOne
+	@JoinColumn(name = "nivel_id")
+	private CargoNivel nivel;
+
 
 	@Override
 	public Long getId() {

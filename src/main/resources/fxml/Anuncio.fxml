@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<JFXTabPane fx:id="tab" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/estilo.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAnuncio">
+<JFXTabPane fx:id="tab" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/estilo.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAnuncio">
             <tabs>
                 <Tab fx:id="tabPesquisa" text="Pesquisa">
                     <content>
@@ -36,7 +36,7 @@
                                 <JFXDatePicker fx:id="dtInicialPesquisa" layoutX="449.0" layoutY="48.0" promptText="Data Inicial" />
                                 <JFXDatePicker fx:id="dtFinalPesquisa" layoutX="449.0" layoutY="81.0" promptText="Data Final" />
                                 <TableView fx:id="tbAnuncio" layoutX="6.0" layoutY="245.0" prefHeight="400.0" prefWidth="1200.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                <Label layoutX="235.0" layoutY="59.0" prefHeight="25.0" prefWidth="42.0" text="Vaga:">
+                                <Label layoutX="235.0" layoutY="59.0" prefHeight="25.0" prefWidth="42.0" text="Cargo:">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
                                     </font>
@@ -128,23 +128,23 @@
                                                                                                 <Font name="System Bold" size="12.0" />
                                                                                             </font>
                                                                                         </Label>
-                                                                                        <JFXRadioButton fx:id="rbVaga1Clt" layoutX="328.0" layoutY="46.0" mnemonicParsing="false" text="CLT">
+                                                                                        <JFXRadioButton fx:id="rbVaga1Clt" layoutX="441.0" layoutY="51.0" mnemonicParsing="false" text="CLT">
                                                                                             <font>
                                                                                                 <Font name="System Bold" size="12.0" />
                                                                                             </font>
                                                                                         </JFXRadioButton>
-                                                                                        <JFXRadioButton fx:id="rbVaga1Estagiario" layoutX="393.0" layoutY="46.0" mnemonicParsing="false" text="Estagiário">
+                                                                                        <JFXRadioButton fx:id="rbVaga1Estagiario" layoutX="506.0" layoutY="51.0" mnemonicParsing="false" text="Estagiário">
                                                                                             <font>
                                                                                                 <Font name="System Bold" size="12.0" />
                                                                                             </font>
                                                                                         </JFXRadioButton>
-                                                                                        <JFXRadioButton fx:id="rbVaga1Temporario" layoutX="509.0" layoutY="46.0" mnemonicParsing="false" text="Temporário">
+                                                                                        <JFXRadioButton fx:id="rbVaga1Temporario" layoutX="622.0" layoutY="51.0" mnemonicParsing="false" text="Temporário">
                                                                                             <font>
                                                                                                 <Font name="System Bold" size="12.0" />
                                                                                             </font>
                                                                                         </JFXRadioButton>
-                                                                                        <JFXDatePicker fx:id="dtVaga1DataInicio" layoutX="348.0" layoutY="129.0" prefHeight="25.0" prefWidth="100.0" />
-                                                                                        <JFXDatePicker fx:id="dtVaga1DataFim" layoutX="456.0" layoutY="129.0" prefHeight="25.0" prefWidth="100.0" />
+                                                                                        <JFXDatePicker fx:id="dtVaga1DataInicio" layoutX="461.0" layoutY="134.0" prefHeight="25.0" prefWidth="100.0" />
+                                                                                        <JFXDatePicker fx:id="dtVaga1DataFim" layoutX="569.0" layoutY="134.0" prefHeight="25.0" prefWidth="100.0" />
                                                                                         <Label layoutX="16.0" layoutY="46.0" text="Cargo:">
                                                                                             <font>
                                                                                                 <Font name="System Bold" size="12.0" />
@@ -152,7 +152,7 @@
                                                                                         </Label>
                                                                                         <ComboBox fx:id="cbVaga1Cargo" layoutX="99.0" layoutY="40.0" prefHeight="25.0" prefWidth="202.0" />
                                                                                         <JFXComboBox fx:id="cbVaga1CargaHoraria" layoutX="100.0" layoutY="84.0" prefHeight="25.0" prefWidth="202.0" />
-                                                                                        <Label alignment="CENTER" layoutX="328.0" layoutY="88.0" prefHeight="17.0" prefWidth="251.0" text="Período(Estagiário e Temporário)">
+                                                                                        <Label alignment="CENTER" layoutX="441.0" layoutY="93.0" prefHeight="17.0" prefWidth="251.0" text="Período(Estagiário e Temporário)">
                                                                                             <font>
                                                                                                 <Font name="System Bold" size="12.0" />
                                                                                             </font>
@@ -183,6 +183,12 @@
                                                                                   		<JFXButton fx:id="btAnexarFormulario" layoutX="793.0" layoutY="90.0" mnemonicParsing="false" onAction="#anexarFormulario" prefHeight="30.0" styleClass="btJFXDefault" text="Anexar Formulario" />
 		                                                                                <JFXButton fx:id="btAbrirFormulario" layoutX="929.0" layoutY="90.0" mnemonicParsing="false" onAction="#visualizar" prefHeight="30.0" prefWidth="117.0" styleClass="btJFXDefault" text="Abrir Formulário" />
 		                                                                                <JFXButton fx:id="btRemoverFormulario" layoutX="1052.0" layoutY="90.0" mnemonicParsing="false" onAction="#removerDocumento" prefHeight="30.0" prefWidth="113.0" styleClass="btJFXDefault" text="Remover" />
+                                                            <ComboBox fx:id="cbVaga1Cargo1" layoutX="352.0" layoutY="40.0" prefHeight="25.0" prefWidth="89.0" />
+                                                            <Label layoutX="308.0" layoutY="45.0" text="Nivel:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
                                                                                     </children>
                                                                                 </AnchorPane>
                                                                             </content>

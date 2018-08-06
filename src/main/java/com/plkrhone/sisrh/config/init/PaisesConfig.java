@@ -1,4 +1,4 @@
-package com.plkrhone.sisrh.config;
+package com.plkrhone.sisrh.config.init;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,8 +35,5 @@ public class PaisesConfig extends PersistenciaController{
 	}
 	public Set<String> getAll(){
 		return paises;
-	}
-	public static void main(String[] args){
-		PaisesConfig.getInstance();
 	}
 }

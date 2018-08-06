@@ -4,20 +4,20 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
-import com.plkrhone.sisrh.config.PaisesConfig;
+import com.plkrhone.sisrh.config.init.PaisesConfig;
 import com.plkrhone.sisrh.config.StageList;
 import com.plkrhone.sisrh.config.VersaoConfig;
 import com.plkrhone.sisrh.model.Usuario;
 import com.plkrhone.sisrh.repository.helper.UsuariosImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
 import com.plkrhone.sisrh.util.CriptografiaUtil;
-import com.plkrhone.sisrh.util.UserSession;
 import com.plkrhone.sisrh.view.LoginView;
 import com.plkrhone.sisrh.view.MenuView;
 
@@ -120,7 +120,7 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 						new CriptografiaUtil().criptografar(txSenha.getText().trim())
 						);
 				if (usuario != null) {
-					UserSession.getInstance().setUsuario(usuario);
+					UsuarioLogado.getInstance().setUsuario(usuario);
 					MenuView menu = new MenuView();
 					menu.start(new Stage());
 					StageList stages = StageList.getInstance();

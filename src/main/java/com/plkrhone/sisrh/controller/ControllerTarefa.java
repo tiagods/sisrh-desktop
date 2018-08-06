@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -38,7 +39,6 @@ import com.plkrhone.sisrh.repository.helper.ClientesImp;
 import com.plkrhone.sisrh.repository.helper.TarefasImp;
 import com.plkrhone.sisrh.repository.helper.UsuariosImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
-import com.plkrhone.sisrh.util.UserSession;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -367,7 +367,7 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 		cbAtendentePesquisa.getItems().add(null);
 		cbAtendentePesquisa.getItems().addAll(usuarioList);
 		cbAtendente.getItems().addAll(usuarioList);
-		cbAtendente.getSelectionModel().select(UserSession.getInstance().getUsuario());
+		cbAtendente.getSelectionModel().select(UsuarioLogado.getInstance().getUsuario());
 		cbAnuncioStatusPesquisa.getItems().addAll(AnuncioStatus.values());
 		cbTarefaStatusPesquisa.getItems().addAll("Aberto", "Finalizado", "Qualquer");
 		cbTarefaStatusPesquisa.getSelectionModel().select("Aberto");
@@ -552,7 +552,7 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 			if(tarefa==null) {
 				tarefa = new Tarefa();
 				tarefa.setCriadoEm(Calendar.getInstance());
-				tarefa.setCriadoPor(UserSession.getInstance().getUsuario());
+				tarefa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			}
 			tarefa.setAnuncio(cbAnuncio.getValue());
 			tarefa.setCronograma(cbCrograma.getValue());

@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -57,7 +58,6 @@ import com.plkrhone.sisrh.repository.helper.TreinamentosImp;
 import com.plkrhone.sisrh.repository.helper.VagasImp;
 import com.plkrhone.sisrh.repository.helper.filter.CandidatoAnuncioFilter;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
-import com.plkrhone.sisrh.util.UserSession;
 import com.plkrhone.sisrh.util.office.FileOfficeEnum;
 import com.plkrhone.sisrh.util.office.OfficeEditor;
 import com.plkrhone.sisrh.util.office.OfficeEditorProducer;
@@ -1742,7 +1742,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		if (txCodigo.getText().equals("")) {
 			anuncio = new Anuncio();
 			anuncio.setCriadoEm(Calendar.getInstance());
-			anuncio.setCriadoPor(UserSession.getInstance().getUsuario());
+			anuncio.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			fr = new FormularioRequisicao();
 			fr.setAnuncio(anuncio);
 			ac = new AnuncioCronograma();

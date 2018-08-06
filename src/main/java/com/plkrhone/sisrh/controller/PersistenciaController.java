@@ -5,7 +5,7 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.plkrhone.sisrh.config.JPAConfig;
+import com.plkrhone.sisrh.config.init.JPAConfig;
 
 public class PersistenciaController {
 	private EntityManager entityManager;

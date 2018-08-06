@@ -6,33 +6,24 @@ import com.plkrhone.sisrh.model.CursoSuperior;
 import com.plkrhone.sisrh.model.Vaga;
 
 public class CandidatoAnuncioFilter {
-	private Vaga vaga;
+	private Vaga cargo;
 	private Candidato.Escolaridade escolaridade;
 	private CursoSuperior cursoSuperior;
 	
-	public CandidatoAnuncioFilter(Vaga vaga, Candidato.Escolaridade escolaridade, CursoSuperior cursoSuperior){
-		this.vaga=vaga;
+	public CandidatoAnuncioFilter(Vaga cargo, Candidato.Escolaridade escolaridade, CursoSuperior cursoSuperior){
+		this.cargo=cargo;
 		this.escolaridade=escolaridade;
 		this.cursoSuperior=cursoSuperior;
 	}
 
-	/**
-	 * @return the vaga
-	 */
-	public Vaga getVaga() {
-		return vaga;
+	public Vaga getCargo() {
+		return cargo;
 	}
 
-	/**
-	 * @param vaga the vaga to set
-	 */
-	public void setVaga(Vaga vaga) {
-		this.vaga = vaga;
+	public void setCargo(Vaga cargo) {
+		this.cargo = cargo;
 	}
 
-	/**
-	 * @return the escolaridade
-	 */
 	public Escolaridade getEscolaridade() {
 		return escolaridade;
 	}

@@ -1,5 +1,20 @@
 package com.plkrhone.sisrh.controller;
 
+import com.plkrhone.sisrh.config.enums.FXMLEnum;
+import com.plkrhone.sisrh.config.enums.IconsEnum;
+import com.plkrhone.sisrh.model.Cidade;
+import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -16,22 +31,126 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
-public abstract class UtilsController {
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
+public abstract class UtilsController extends PersistenciaController {
 	private JFXButton buttonNovo;
 	private JFXButton buttonEditar;
 	private JFXButton buttonSalvar;
 	private JFXButton buttonExcluir;
 	private JFXButton buttonCancelar;
-	
+
+	public Alert alert(Alert.AlertType alertType, String title, String header, String contentText) {
+		Alert alert = new Alert(alertType);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(contentText);
+		return alert;
+	}
+	public void alert(Alert.AlertType alertType, String title, String header, String contentText, Exception ex, boolean print) {
+		Alert alert = alert(alertType,title,header,contentText);
+		alert.getDialogPane().setExpanded(true);
+		alert.getDialogPane().setMinSize(600,150);
+		if(alert.getAlertType()== Alert.AlertType.ERROR && ex!=null) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			ex.printStackTrace(pw);
+			String exceptionText = sw.toString();
+			Label label = new Label("Mais detalhes do erro:");
+			TextArea textArea = new TextArea(exceptionText);
+			textArea.setEditable(false);
+			textArea.setWrapText(true);
+
+			textArea.setMaxWidth(Double.MAX_VALUE);
+			textArea.setMaxHeight(Double.MAX_VALUE);
+			GridPane.setVgrow(textArea, Priority.ALWAYS);
+			GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+			GridPane expContent = new GridPane();
+			expContent.setMaxWidth(Double.MAX_VALUE);
+			expContent.add(label, 0, 0);
+			expContent.add(textArea, 0, 1);
+			// Set expandable Exception into the dialog pane.
+			alert.getDialogPane().setExpandableContent(expContent);
+
+			if(print) {
+				try {
+					LocalDateTime dateTime = LocalDateTime.now();
+					File log = new File(System.getProperty("user.dir") + "/log/" +
+							dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + "-erro.txt");
+					if (!log.getParentFile().exists())
+						log.getParentFile().mkdir();
+					FileWriter fw = new FileWriter(log, true);
+					String line = System.getProperty("line.separator");
+					fw.write(
+							dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")) + "=" +
+									header + ":" +
+									contentText +
+									line +
+									exceptionText
+					);
+					fw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		alert.showAndWait();
+	}
+	public String carregarArquivo(String title){
+		JFileChooser chooser = new JFileChooser();
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setDialogTitle(title);
+		String local = "";
+		chooser.addChoosableFileFilter(new FileNameExtensionFilter("Planilha do Excel (*.xls)", ".xls"));
+		int retorno = chooser.showSaveDialog(null);
+		if(retorno== JFileChooser.APPROVE_OPTION){
+			local = chooser.getSelectedFile().getAbsolutePath(); //
+		}
+		return local;
+	}
+	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException {
+		ImageView imageview = createImage(30,30,icon);
+		btn.setGraphic(imageview);
+	}
+
+	public Optional<String> cadastroRapido(){
+		TextInputDialog dialog = new TextInputDialog("");
+		dialog.setTitle("Cadastro rapido");
+		dialog.setHeaderText("Crie um novo registro:");
+		dialog.setContentText("Por favor entre com um novo nome");
+		return dialog.showAndWait();
+	}
+	private ImageView createImage(int x, int y, IconsEnum icon) {
+		Image image = new Image(icon.getLocalizacao().toString());
+		ImageView imageview = new ImageView(image);
+		imageview.setFitHeight(x);
+		imageview.setFitWidth(y);
+		imageview.setPreserveRatio(true);
+		return imageview;
+	}
+	public Stage initPanel(FXMLLoader loader, Stage stage, Modality modality, StageStyle ss) throws IOException{
+		final Parent root = loader.load();
+		final Scene scene = new Scene(root);
+		stage.initModality(modality);
+		stage.initStyle(ss);
+		stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
+		stage.setScene(scene);
+		stage.show();
+		return stage;
+	}
+	public FXMLLoader loaderFxml(FXMLEnum e) throws IOException{
+		final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
+		return loader;
+	}
 	public UtilsController(JFXButton buttonNovo, JFXButton buttonEditar, 
 			JFXButton buttonSalvar, JFXButton buttonExcluir,JFXButton buttonCancelar) {
 		this.buttonNovo=buttonNovo;

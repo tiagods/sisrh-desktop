@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -28,7 +29,6 @@ import com.plkrhone.sisrh.repository.helper.AvaliacoesGrupoImp;
 import com.plkrhone.sisrh.repository.helper.AvaliacoesImp;
 import com.plkrhone.sisrh.util.DialogReplace;
 import com.plkrhone.sisrh.util.Keys;
-import com.plkrhone.sisrh.util.UserSession;
 import com.plkrhone.sisrh.util.storage.PathStorageEnum;
 import com.plkrhone.sisrh.util.storage.Storage;
 import com.plkrhone.sisrh.util.storage.StorageProducer;
@@ -115,7 +115,7 @@ public class ControllerAvaliacao extends PersistenciaController implements Initi
 	@FXML
 	private JFXButton btVisualizar;
 
-	Avaliacao avaliacao;
+	private Avaliacao avaliacao;
 	private AvaliacoesImp avaliacoes;
 	private AvaliacoesGrupoImp grupos;
 	
@@ -446,7 +446,7 @@ public class ControllerAvaliacao extends PersistenciaController implements Initi
 			if (txCodigo.getText().equals("")) {
 				avaliacao = new Avaliacao();
 				avaliacao.setCriadoEm(Calendar.getInstance());
-				avaliacao.setCriadoPor(UserSession.getInstance().getUsuario());
+				avaliacao.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 				Avaliacao a = avaliacoes.findByNome(txNome.getText().trim());
 				if (a != null) {
 					alert = new Alert(Alert.AlertType.ERROR);

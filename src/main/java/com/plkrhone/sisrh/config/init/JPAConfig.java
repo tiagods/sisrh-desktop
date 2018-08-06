@@ -1,4 +1,4 @@
-package com.plkrhone.sisrh.config;
+package com.plkrhone.sisrh.config.init;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

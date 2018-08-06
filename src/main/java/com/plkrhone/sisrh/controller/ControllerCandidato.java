@@ -1,6 +1,6 @@
 package com.plkrhone.sisrh.controller;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -29,7 +30,7 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import com.plkrhone.sisrh.config.PaisesConfig;
+import com.plkrhone.sisrh.config.init.PaisesConfig;
 import com.plkrhone.sisrh.model.Anuncio;
 import com.plkrhone.sisrh.model.Candidato;
 import com.plkrhone.sisrh.model.Cidade;
@@ -45,7 +46,6 @@ import com.plkrhone.sisrh.repository.helper.VagasImp;
 import com.plkrhone.sisrh.repository.helper.filter.CandidatoAnuncioFilter;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
 import com.plkrhone.sisrh.util.EnderecoUtil;
-import com.plkrhone.sisrh.util.UserSession;
 import com.plkrhone.sisrh.util.storage.PathStorageEnum;
 import com.plkrhone.sisrh.util.storage.Storage;
 import com.plkrhone.sisrh.util.storage.StorageProducer;
@@ -926,51 +926,65 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	}
 
 	private void salvarFim() {
+		if (txEmail.getText().trim().equals("") || dtNascimento.getValue()==null) {
+			String message ="Os campos a seguir não foram informados \n" +  (txEmail.getText().trim().equals("")? "E-mail não informado, \n":"");
+			message+=dtNascimento.getValue()==null?"Idade ou data de nascimento nao informada":"";
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Campo não informado! Deseja continuar?");
+			alert.setHeaderText("!");
+			alert.setContentText(message);
+			Optional<ButtonType> result = alert.showAndWait();
+			if(result.get()== ButtonType.CANCEL)
+				return;
+		}
 		try {
 			loadFactory();
 			candidatos = new CandidatosImp(getManager());
 			if (txCodigo.getText().equals("")) {
 				candidato = new Candidato();
 				candidato.setCriadoEm(Calendar.getInstance());
-				candidato.setCriadoPor(UserSession.getInstance().getUsuario());
+				candidato.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 				if (!txEmail.getText().trim().equals("")) {
 					Candidato can = candidatos.findByEmail(txEmail.getText().trim());
 					if (can != null) {
 						Alert alert = new Alert(Alert.AlertType.ERROR);
 						alert.setTitle("Erro Registro");
 						alert.setHeaderText("Valor duplicado!");
-						alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome());
-						alert.showAndWait();
-						return;
+						alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome()+"\nClique em OK para salvar");
+						Optional<ButtonType> result = alert.showAndWait();
+						if(result.get()== ButtonType.CANCEL)
+							return;
 					}
 				}
-			}else {
+			}else if(!txEmail.getText().trim().equals("")){
 				Candidato can = candidatos.findByEmail(txEmail.getText().trim());
 				if (can!=null && can.getId() != candidato.getId()) {
-					Alert alert = new Alert(Alert.AlertType.ERROR);
+					Alert alert = new Alert(AlertType.CONFIRMATION);
 					alert.setTitle("Erro Registro");
 					alert.setHeaderText("Valor duplicado!");
-					alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome());
-					alert.showAndWait();
-					return;
+					alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome()+"\nClique em OK para salvar");
+					Optional<ButtonType> result = alert.showAndWait();
+					if(result.get()== ButtonType.CANCEL)
+						return;
 				}
 			}
 			candidato.setNome(txNome.getText());
 			candidato.setSexo(rbSexoF.isSelected() ? "F" : "M");
-
-			if(dtNascimento.getValue()==null) {
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setTitle("Erro Registro");
-				alert.setHeaderText("Campo obrigatorio!");
-				alert.setContentText("é obrigatorio informar a data de nascimento ou a idade!");
-				alert.showAndWait();
-				return;
+//			if(dtNascimento.getValue()==null) {
+//				Alert alert = new Alert(Alert.AlertType.ERROR);
+//				alert.setTitle("Erro Registro");
+//				alert.setHeaderText("Campo obrigatorio!");
+//				alert.setContentText("é obrigatorio informar a data de nascimento ou a idade!");
+//				alert.showAndWait();
+//				return;
+//			}
+			if(dtNascimento.getValue()==null){
+				candidato.setDataNascimento(null);
 			}
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(Date.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-			
-			candidato.setDataNascimento(dtNascimento.getValue()==null?null
-					:GregorianCalendar.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault())));
+			else{
+				candidato.setDataNascimento(dtNascimento.getValue()==null?null
+						:GregorianCalendar.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault())));
+			}
 			candidato.setEstadoCivil(cbEstadoCivil.getValue());
 			candidato.setFumante(ckFumante.isSelected() ? 1 : 0);
 			candidato.setFilhos(ckFilhos.isSelected() ? 1 : 0);
@@ -1046,6 +1060,9 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 			candidato = candidatos.save(candidato);
 			txCodigo.setText(String.valueOf(candidato.getId()));
 			desbloquear(false, pnCadastro.getChildren());
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setContentText("Salvo com sucesso!");
+			alert.showAndWait();
 		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setContentText("Falha ao salvar o registro\n" + e);
@@ -1079,6 +1096,18 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		});
 		TableColumn<Candidato, String> colunaNome = new TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		colunaNome.setCellFactory((TableColumn<Candidato, String> param) -> new TableCell<Candidato, String>() {
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setText(null);
+					setStyle("");
+				} else {
+					setText(item.toUpperCase());
+				}
+			}
+		});
 		TableColumn<Candidato, Number> colunaIdade = new TableColumn<>("Idade");
 		colunaIdade.setCellValueFactory(new PropertyValueFactory<>("idade"));
 		colunaIdade.setCellFactory((TableColumn<Candidato, Number> param) -> new TableCell<Candidato, Number>() {
@@ -1275,21 +1304,18 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	}
 	@FXML
 	void visualizarFormulario(ActionEvent event) {
-		Runnable run = new Runnable() {
-			@Override
-			public void run() {
-				if(!txFormulario.getText().equals("")){
-					try {
-						File file  = storage.downloadFile(txFormulario.getText());
-						if(file!=null)
-							Desktop.getDesktop().open(file);
-					}catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				
-			}
-		};
+		Runnable run = () -> {
+            if(!txFormulario.getText().equals("")){
+                try {
+                    File file  = storage.downloadFile(txFormulario.getText());
+                    if(file!=null)
+                        Desktop.getDesktop().open(file);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        };
 		Platform.runLater(run);
 		
 	}

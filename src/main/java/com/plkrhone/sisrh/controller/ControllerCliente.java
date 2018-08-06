@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
 import com.jfoenix.controls.JFXButton;
@@ -29,7 +30,6 @@ import com.plkrhone.sisrh.repository.helper.ClienteSetoresImp;
 import com.plkrhone.sisrh.repository.helper.ClientesImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
 import com.plkrhone.sisrh.util.EnderecoUtil;
-import com.plkrhone.sisrh.util.UserSession;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -508,7 +508,7 @@ public class ControllerCliente extends PersistenciaController implements Initial
 				}
 				cliente = new Cliente();
 				cliente.setCriadoEm(Calendar.getInstance());
-				cliente.setCriadoPor(UserSession.getInstance().getUsuario());
+				cliente.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			} else {
 				cliente.setId(Long.parseLong(txCodigo.getText()));
 				if (!txCnpj.getPlainText().trim().equals(""))

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -21,7 +22,6 @@ import com.plkrhone.sisrh.model.PfPj;
 import com.plkrhone.sisrh.model.Usuario;
 import com.plkrhone.sisrh.repository.helper.UsuariosImp;
 import com.plkrhone.sisrh.util.CriptografiaUtil;
-import com.plkrhone.sisrh.util.UserSession;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -304,7 +304,7 @@ public class ControllerUsuario extends PersistenciaController implements Initial
 			if (txCodigo.getText().equals("")) {
 				usuario = new Usuario();
 				usuario.setCriadoEm(Calendar.getInstance());
-				usuario.setCriadoPor(UserSession.getInstance().getUsuario());
+				usuario.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 				validarLogin = validarLogin(txLogin.getText());
 				if (!validarLogin)
 					return;

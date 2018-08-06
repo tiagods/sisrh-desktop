@@ -1,42 +1,21 @@
 package com.plkrhone.sisrh.config;
 
+import com.plkrhone.sisrh.config.enums.PropsEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.*;
 
-public class FTPConfig {
+public class FTPConfig extends PropsConfig{
+	Logger log = LoggerFactory.getLogger(FTPConfig.class);
 	private static FTPConfig instance;
-	private String file=getClass().getClassLoader().getResource("ftp.properties").getFile();
-	
-	public static FTPConfig getInstance(){
-		if(instance==null)
-			instance= new FTPConfig();
+	public static FTPConfig getInstance() {
+		if(instance == null)
+			instance = new FTPConfig();
 		return instance;
 	}
-	private FTPConfig(){
-		initializer();
+	private FTPConfig() {
+		super(PropsEnum.FTP);
 	}
-	
-	private void initializer(){
-		File f = new File(file);
-		Properties props = new Properties();
-		InputStream inStream;
-		try {
-			inStream = new FileInputStream(f);
-			props.load(inStream);
-			
-			Enumeration<Object> e = props.elements();
-			while(e.hasMoreElements()){
-				System.out.println(e.nextElement());
-			}
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
 }

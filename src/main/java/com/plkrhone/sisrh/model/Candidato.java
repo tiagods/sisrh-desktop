@@ -34,13 +34,14 @@ public class Candidato implements AbstractEntity,Serializable {
 	    MEDIO_COMPLETO("Médio Completo",4),
 	    SUPERIOR_INCOMPLETO("Superior Incompleto",5),
 	    SUPERIOR_COMPLETO("Superior Completo",6),
-	    POS_GRADUACAO_INCOMPLETO("Pós-Graduação Incompleto",7),
-	    POS_GRADUACAO_COMPLETO("Pós-Graduação Completo",8),
-	    MESTRADO_INCOMPLETO("Mestrado Incompleto",9),
-	    MESTRADO_COMPLETO("Mestrado Completo",10),
-	    DOUTORADO_INCOMPLETO("Doutorado Incompleto",11),
-	    DOUTORADO_COMPLETO("Doutorado Completo",12);
-		
+		TECNICO_INCOMPLETO("Tecnico Incompleto", 7),
+		TECNICO_COMPLETO("Tecnico Completo",8 ),
+	    POS_GRADUACAO_INCOMPLETO("Pós-Graduação Incompleto",9),
+	    POS_GRADUACAO_COMPLETO("Pós-Graduação Completo",10),
+	    MESTRADO_INCOMPLETO("Mestrado Incompleto",11),
+	    MESTRADO_COMPLETO("Mestrado Completo",12),
+	    DOUTORADO_INCOMPLETO("Doutorado Incompleto",13),
+	    DOUTORADO_COMPLETO("Doutorado Completo",14);
 		private String descricao;
 		private int valor;
 		Escolaridade(String descricao,int valor){
@@ -110,9 +111,6 @@ public class Candidato implements AbstractEntity,Serializable {
     private int qtdeFilhos;
     @Enumerated(value=EnumType.STRING)
     private Escolaridade escolaridade;
-    @ManyToOne
-    @JoinColumn(name="curso_superior_id")
-    private CursoSuperior cursoSuperior;
     private String nacionalidade;
     @Embedded
     private PfPj pessoaFisica;
@@ -130,7 +128,12 @@ public class Candidato implements AbstractEntity,Serializable {
     private String empresaIndicacao;
     @Column(name="detalhes_indicacao")
     private String detalhesIndicacao;
-    private String empresa1;
+
+	@ManyToOne
+	@JoinColumn(name="curso_superior_id")
+	private CursoSuperior cursoSuperior;
+
+	private String empresa1;
     private String empresa2;
     private String empresa3;
     @ManyToOne
@@ -148,6 +151,7 @@ public class Candidato implements AbstractEntity,Serializable {
     private String descricaoCargo2;
     @Column(name="descricao_cargo3") 
     private String descricaoCargo3;
+
     private String formulario;
     
     @Column(name="total_recrutamento")
@@ -223,8 +227,6 @@ public class Candidato implements AbstractEntity,Serializable {
 
     public void setDataNascimento(Calendar dataNascimento) {
         this.dataNascimento = dataNascimento;
-        
-        System.out.println("Idade: "+this.idade+"\n");
     }
     
     public int getIdade() {

@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -25,7 +26,6 @@ import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaAvaliacao;
 import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistasAvaliacaoImp;
 import com.plkrhone.sisrh.repository.helper.AvaliacoesImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
-import com.plkrhone.sisrh.util.UserSession;
 import com.plkrhone.sisrh.util.storage.PathStorageEnum;
 import com.plkrhone.sisrh.util.storage.Storage;
 import com.plkrhone.sisrh.util.storage.StorageProducer;
@@ -349,7 +349,7 @@ public class ControllerEntrevistaAvaliacao extends PersistenciaController implem
 			}
 			if(txCodigo.getText().equals("")) {
 	    		ava.setCriadoEm(Calendar.getInstance());
-	    		ava.setCriadoPor(UserSession.getInstance().getUsuario());
+	    		ava.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 	    		tbPrincipal.getItems().add(ava);
 	    	}
 	    	else {
