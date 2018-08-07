@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
+import com.plkrhone.sisrh.model.Cargo;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Disjunction;
@@ -18,7 +20,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.plkrhone.sisrh.model.Candidato;
-import com.plkrhone.sisrh.model.Vaga;
 import com.plkrhone.sisrh.repository.AbstractRepository;
 import com.plkrhone.sisrh.repository.interfaces.CandidatoDAO;
 
@@ -26,6 +27,15 @@ public class CandidatosImp extends AbstractRepository<Candidato, Long> implement
 
 	public CandidatosImp(EntityManager manager) {
 		super(manager);
+	}
+
+	@Override
+	public Candidato findById(Long id) {
+		Query query = getEntityManager().createQuery("from Candidato as a "
+				+ "LEFT JOIN FETCH a.historicos LEFT JOIN FETCH a.cursos "
+				+ "where a.id=:id");
+		query.setParameter("id",id);
+		return (Candidato)query.getSingleResult();
 	}
 
 	@Override
@@ -52,9 +62,9 @@ public class CandidatosImp extends AbstractRepository<Candidato, Long> implement
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Candidato> filtrar(Vaga objetivo, Vaga experiencia, String sexo, int idadeMin,
-			int idadeMax, String indicacao, Candidato.Escolaridade escolaridadeMin, Candidato.Escolaridade escolaridadeMax,
-			LocalDate dataCurriculoMin, LocalDate dataCurriculoMax, String buscarPor, String valorPesquisa, boolean indisponivel) {
+	public List<Candidato> filtrar(Cargo objetivo, Cargo experiencia, String sexo, int idadeMin,
+                                   int idadeMax, String indicacao, Candidato.Escolaridade escolaridadeMin, Candidato.Escolaridade escolaridadeMax,
+                                   LocalDate dataCurriculoMin, LocalDate dataCurriculoMax, String buscarPor, String valorPesquisa, boolean indisponivel) {
 		// TODO Auto-generated method stub
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Candidato.class);
 		

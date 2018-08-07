@@ -36,11 +36,18 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
 	
 	private String formulario;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="vaga_id")
-	private Vaga vaga;
-	
-    private String tipo;
+	@ManyToOne
+	@JoinColumn(name="cargo_id")
+	private Cargo cargo;
+
+	@ManyToOne
+	@JoinColumn(name="nivel_id")
+	private CargoNivel nivel;
+
+	@Column(name = "cargo_ads")
+	private String cargoAds;
+
+	private String tipo;
     
     @Temporal(TemporalType.DATE)
     @Column(name="inicio_periodo")
@@ -68,7 +75,7 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
     
     @ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="curso_superior_id")
-    private CursoSuperior cursoSuperior;
+    private Curso curso;
     
     private String idioma;
     
@@ -149,17 +156,17 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
 	}
 
 	/**
-	 * @return the vaga
+	 * @return the cargo
 	 */
-	public Vaga getVaga() {
-		return vaga;
+	public Cargo getCargo() {
+		return cargo;
 	}
 
 	/**
-	 * @param vaga the vaga to set
+	 * @param cargo the cargo to set
 	 */
-	public void setVaga(Vaga vaga) {
-		this.vaga = vaga;
+	public void setCargo(Cargo cargo) {
+		this.cargo = cargo;
 	}
 
 	/**
@@ -289,17 +296,17 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
 	}
 
 	/**
-	 * @return the cursoSuperior
+	 * @return the curso
 	 */
-	public CursoSuperior getCursoSuperior() {
-		return cursoSuperior;
+	public Curso getCurso() {
+		return curso;
 	}
 
 	/**
-	 * @param cursoSuperior the cursoSuperior to set
+	 * @param curso the curso to set
 	 */
-	public void setCursoSuperior(CursoSuperior cursoSuperior) {
-		this.cursoSuperior = cursoSuperior;
+	public void setCurso(Curso curso) {
+		this.curso = curso;
 	}
 
 	/**
@@ -553,5 +560,20 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
 	public void setAnuncio(Anuncio anuncio) {
 		this.anuncio = anuncio;
 	}
-	    
+
+	public CargoNivel getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(CargoNivel nivel) {
+		this.nivel = nivel;
+	}
+
+	public String getCargoAds() {
+		return cargoAds;
+	}
+
+	public void setCargoAds(String cargoAds) {
+		this.cargoAds = cargoAds;
+	}
 }

@@ -12,10 +12,10 @@ public class RobotCatho {
     public static void main(String[] args){
 //        Session session = HibernateFactory.getSession();
 //        session.beginTransaction();
-//        Criteria criteria = session.createCriteria(Vaga.class).add(Restrictions.isNull("descricao"));
-//        List<Vaga> vagas = criteria.list();
+//        Criteria criteria = session.createCriteria(Cargo.class).add(Restrictions.isNull("descricao"));
+//        List<Cargo> vagas = criteria.list();
 //        try {
-//            for (Vaga v : vagas) {
+//            for (Cargo v : vagas) {
 //                System.out.println(v.getNome());
 //                String valor = Normalizer.normalize(v.getNome().trim(), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 //                valor = valor.replace("+","-plus").replace("#","sharp").replace(".", "").replace(",","");

@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +18,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.model.*;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -31,14 +31,7 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.plkrhone.sisrh.config.init.PaisesConfig;
-import com.plkrhone.sisrh.model.Anuncio;
-import com.plkrhone.sisrh.model.Candidato;
-import com.plkrhone.sisrh.model.Cidade;
-import com.plkrhone.sisrh.model.CursoSuperior;
-import com.plkrhone.sisrh.model.Endereco;
-import com.plkrhone.sisrh.model.Estado;
-import com.plkrhone.sisrh.model.PfPj;
-import com.plkrhone.sisrh.model.Vaga;
+import com.plkrhone.sisrh.model.Curso;
 import com.plkrhone.sisrh.repository.helper.CandidatosImp;
 import com.plkrhone.sisrh.repository.helper.CidadesImp;
 import com.plkrhone.sisrh.repository.helper.CursosSuperioresImp;
@@ -89,7 +82,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	private TableView<Candidato> tbCandidatos;
 
 	@FXML
-	private ComboBox<Vaga> cbObjetivoPesquisa;
+	private ComboBox<Cargo> cbObjetivoPesquisa;
 
 	@FXML
 	private JFXComboBox<String> cbIndicacaoPesquisa;
@@ -116,13 +109,13 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	private JFXComboBox<Candidato.Escolaridade> cbFormacaoMaxPesquisa;
 	
 	@FXML
-	private JFXComboBox<CursoSuperior> cbCursoSuperior;
+	private JFXComboBox<Curso> cbCurso;
 	
 	@FXML
-	private JFXComboBox<CursoSuperior> cbCursoSuperiorPesquisa;
+	private JFXComboBox<Curso> cbCursoSuperiorPesquisa;
 	
 	@FXML
-	private ComboBox<Vaga> cbExperienciaPesquisa;
+	private ComboBox<Cargo> cbExperienciaPesquisa;
 
 	@FXML
 	private JFXCheckBox ckIndisponivelPesquisa;
@@ -201,13 +194,13 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	@FXML
 	private JFXComboBox<Cidade> cbCidade;
 	@FXML
-	private ComboBox<Vaga> cbObjetivo1;
+	private ComboBox<Cargo> cbObjetivo1;
 
 	@FXML
-	private ComboBox<Vaga> cbObjetivo2;
+	private ComboBox<Cargo> cbObjetivo2;
 
 	@FXML
-	private ComboBox<Vaga> cbObjetivo3;
+	private ComboBox<Cargo> cbObjetivo3;
 
 	@FXML
 	private JFXCheckBox ckPossuiIndicacao;
@@ -220,30 +213,6 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 	@FXML
 	private JFXTextArea txDetalhesIndicacao;
-
-	@FXML
-	private JFXTextField txCarreiraEmpresa1;
-
-	@FXML
-	private JFXTextArea txCarreiraDescricao1;
-	@FXML
-	private JFXTextArea txCarreiraDescricao2;
-	@FXML
-	private JFXTextArea txCarreiraDescricao3;
-	@FXML
-	private ComboBox<Vaga> cbCarreiraObjetivo1;
-
-	@FXML
-	private JFXTextField txCarreiraEmpresa2;
-
-	@FXML
-	private ComboBox<Vaga> cbCarreiraObjetivo2;
-
-	@FXML
-	private JFXTextField txCarreiraEmpresa3;
-
-	@FXML
-	private ComboBox<Vaga> cbCarreiraObjetivo3;
 
 	@FXML
 	private JFXTextField txFormulario;
@@ -279,7 +248,11 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	private JFXButton btnExcluir;
 	@FXML
 	private JFXTextField txComplemento;
-	
+
+	@FXML
+	private JFXComboBox<Curso.Nivel> cbCursoEscolaridade;
+
+
 	private Candidato candidato;
 	private Anuncio anuncio = null;
 	private CandidatosImp candidatos;
@@ -439,11 +412,11 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	void combos() {
 		vagas = new VagasImp(getManager());
 		cursos = new CursosSuperioresImp(getManager());
-		List<Vaga> vagasList = new ArrayList<>();
-		Vaga vaga = new Vaga();
-		vaga.setId(new Long(-1));
-		vaga.setNome("Qualquer");
-		vagasList.add(vaga);
+		List<Cargo> vagasList = new ArrayList<>();
+		Cargo cargo = new Cargo();
+		cargo.setId(new Long(-1));
+		cargo.setNome("Qualquer");
+		vagasList.add(cargo);
 		vagasList.addAll(vagas.getAll());
 		cbObjetivoPesquisa.getItems().addAll(vagasList);
 		cbExperienciaPesquisa.getItems().addAll(cbObjetivoPesquisa.getItems());
@@ -501,8 +474,8 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 		cbCursoSuperiorPesquisa.getItems().addAll(cursos.getAll());
 		new ComboBoxAutoCompleteUtil<>(cbCursoSuperiorPesquisa);
-		cbCursoSuperior.getItems().addAll(cbCursoSuperiorPesquisa.getItems());
-		new ComboBoxAutoCompleteUtil<>(cbCursoSuperior);
+		cbCurso.getItems().addAll(cbCursoSuperiorPesquisa.getItems());
+		new ComboBoxAutoCompleteUtil<>(cbCurso);
 		
 		pnCadastroIndicacao.setVisible(false);
 		txQtdFilhos.setDisable(true);
@@ -809,11 +782,11 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 	public void receberAnuncio(Anuncio anuncio, CandidatoAnuncioFilter filter) {
 		this.anuncio = anuncio;
-		cbCursoSuperiorPesquisa.setValue(filter.getCursoSuperior());
+		cbCursoSuperiorPesquisa.setValue(filter.getCurso());
 		cbFormacaoMinPesquisa.setValue(filter.getEscolaridade());
-		cbObjetivoPesquisa.setValue(filter.getVaga());
-		cbExperienciaPesquisa.setValue(filter.getVaga());
-		//cbfilter.getVaga();
+		cbObjetivoPesquisa.setValue(filter.getCargo());
+		cbExperienciaPesquisa.setValue(filter.getCargo());
+		//cbfilter.getCargo();
 		filtrar();
 		tbCandidatos.refresh();
 		desbloquear(true, pnCadastro.getChildren());
@@ -870,17 +843,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		cbObjetivo2.setValue(candidato.getObjetivo2());
 		cbObjetivo3.setValue(candidato.getObjetivo3());
 
-		txCarreiraEmpresa1.setText(candidato.getEmpresa1());
-		txCarreiraEmpresa2.setText(candidato.getEmpresa2());
-		txCarreiraEmpresa3.setText(candidato.getEmpresa3());
 
-		cbCarreiraObjetivo1.setValue(candidato.getCargo1());
-		cbCarreiraObjetivo2.setValue(candidato.getCargo2());
-		cbCarreiraObjetivo3.setValue(candidato.getCargo3());
-
-		txCarreiraDescricao1.setText(candidato.getDescricaoCargo1());
-		txCarreiraDescricao2.setText(candidato.getDescricaoCargo2());
-		txCarreiraDescricao3.setText(candidato.getDescricaoCargo3());
 
 		txFormulario.setText(candidato.getFormulario());
 		if (candidato.getIndicacao() == 1) {
@@ -1003,6 +966,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 			}
 			candidato.setEscolaridade(cbEscolaridade.getValue());
 			candidato.setCursoSuperior(cbCursoSuperior.getValue());
+
 			candidato.setNacionalidade(cbNacionalidade.getValue());
 			PfPj pfpj = new PfPj();
 			
@@ -1026,14 +990,6 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 			candidato.setIndicacao(ckPossuiIndicacao.isSelected() ? 1 : 0);
 			candidato.setEmpresaIndicacao(txEmpresaIndicacao.getText());
 			candidato.setDetalhesIndicacao(txDetalhesIndicacao.getText());
-
-			candidato.setEmpresa1(txCarreiraEmpresa1.getText());
-			candidato.setEmpresa2(txCarreiraEmpresa2.getText());
-			candidato.setEmpresa3(txCarreiraEmpresa3.getText());
-
-			candidato.setCargo1(cbCarreiraObjetivo1.getValue()!=null?(cbCarreiraObjetivo1.getValue().getId()==-1?null:cbCarreiraObjetivo1.getValue()):null);
-			candidato.setCargo2(cbCarreiraObjetivo2.getValue()!=null?(cbCarreiraObjetivo2.getValue().getId()==-1?null:cbCarreiraObjetivo2.getValue()):null);
-			candidato.setCargo3(cbCarreiraObjetivo3.getValue()!=null?(cbCarreiraObjetivo3.getValue().getId()==-1?null:cbCarreiraObjetivo3.getValue()):null);
 
 			candidato.setDescricaoCargo1(txCarreiraDescricao1.getText());
 			candidato.setDescricaoCargo2(txCarreiraDescricao2.getText());

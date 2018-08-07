@@ -16,7 +16,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.plkrhone.sisrh.model.Anuncio;
-import com.plkrhone.sisrh.model.Vaga;
+import com.plkrhone.sisrh.model.Cargo;
 import com.plkrhone.sisrh.repository.AbstractRepository;
 import com.plkrhone.sisrh.repository.interfaces.AnuncioDAO;
 
@@ -62,7 +62,7 @@ public class AnunciosImp extends AbstractRepository<Anuncio, Long> implements An
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Anuncio> filtrar(Anuncio.Cronograma cronograma, Anuncio.AnuncioStatus anuncioStatus, int clienteSituacao, Vaga vaga,
+	public List<Anuncio> filtrar(Anuncio.Cronograma cronograma, Anuncio.AnuncioStatus anuncioStatus, int clienteSituacao, Cargo cargo,
 			String data, LocalDate inicial, LocalDate fim, String pesquisa, String pesquisarPor) {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Anuncio.class);
 		if(cronograma!=null)
@@ -71,8 +71,8 @@ public class AnunciosImp extends AbstractRepository<Anuncio, Long> implements An
 			criteria.add(Restrictions.eq("anuncioStatus",anuncioStatus));
 		if(clienteSituacao!=-1)
 			criteria.createAlias("cliente", "cli").add(Restrictions.eq("cli.situacao",clienteSituacao));
-		if(vaga!=null)
-			criteria.add(Restrictions.eq("vaga",vaga));
+		if(cargo !=null)
+			criteria.add(Restrictions.eq("cargo", cargo));
 		if(data!=null && !data.equals("") && inicial!=null && fim!=null) {
 			if(inicial.isBefore(fim)) {
 				Calendar d1 = GregorianCalendar.from(inicial.atStartOfDay(ZoneId.systemDefault()));
@@ -106,9 +106,9 @@ public class AnunciosImp extends AbstractRepository<Anuncio, Long> implements An
 				case "Nome":
 					filtro = "nome";
 					break;
-				case "Nome da Vaga":
+				case "Nome do Cargo":
 					criteria.createAlias("formularioRequisicao", "vg");
-					filtro = "vg.vaga.nome";
+					filtro = "vg.cargo.nome";
 					//mM = MatchMode.START;
 					break;
 				case "Nome do Cliente":

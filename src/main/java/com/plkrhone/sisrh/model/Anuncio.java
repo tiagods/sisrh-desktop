@@ -45,7 +45,7 @@ public class Anuncio implements AbstractEntity,Serializable {
 	public enum Cronograma{
 		FORMULARIO("Formulário de Requisição"),
 		CONTRATO("Envio/Recebimento de Contrato"),
-		DIVULGACAO_DA_VAGA("Divulgação da Vaga"),
+		DIVULGACAO_DA_VAGA("Divulgação da Cargo"),
 		RECRUTAMENTO_DE_CURRICULOS("Recrutamento de currículos"),
 		AGENDAMENTO_DE_ENTREVISTA("Agendamento de entrevista"),
 		ENTREVISTAS_REALIZADAS("Entrevistas realizadas"),

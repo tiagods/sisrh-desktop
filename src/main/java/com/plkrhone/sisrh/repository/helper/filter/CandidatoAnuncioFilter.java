@@ -2,25 +2,25 @@ package com.plkrhone.sisrh.repository.helper.filter;
 
 import com.plkrhone.sisrh.model.Candidato;
 import com.plkrhone.sisrh.model.Candidato.Escolaridade;
-import com.plkrhone.sisrh.model.CursoSuperior;
-import com.plkrhone.sisrh.model.Vaga;
+import com.plkrhone.sisrh.model.Cargo;
+import com.plkrhone.sisrh.model.Curso;
 
 public class CandidatoAnuncioFilter {
-	private Vaga cargo;
+	private Cargo cargo;
 	private Candidato.Escolaridade escolaridade;
-	private CursoSuperior cursoSuperior;
+	private Curso curso;
 	
-	public CandidatoAnuncioFilter(Vaga cargo, Candidato.Escolaridade escolaridade, CursoSuperior cursoSuperior){
+	public CandidatoAnuncioFilter(Cargo cargo, Candidato.Escolaridade escolaridade, Curso curso){
 		this.cargo=cargo;
 		this.escolaridade=escolaridade;
-		this.cursoSuperior=cursoSuperior;
+		this.curso = curso;
 	}
 
-	public Vaga getCargo() {
+	public Cargo getCargo() {
 		return cargo;
 	}
 
-	public void setCargo(Vaga cargo) {
+	public void setCargo(Cargo cargo) {
 		this.cargo = cargo;
 	}
 
@@ -36,17 +36,17 @@ public class CandidatoAnuncioFilter {
 	}
 
 	/**
-	 * @return the cursoSuperior
+	 * @return the curso
 	 */
-	public CursoSuperior getCursoSuperior() {
-		return cursoSuperior;
+	public Curso getCurso() {
+		return curso;
 	}
 
 	/**
-	 * @param cursoSuperior the cursoSuperior to set
+	 * @param curso the curso to set
 	 */
-	public void setCursoSuperior(CursoSuperior cursoSuperior) {
-		this.cursoSuperior = cursoSuperior;
+	public void setCurso(Curso curso) {
+		this.curso = curso;
 	}
 	
 }

@@ -1,7 +1,8 @@
 package com.plkrhone.sisrh.model.candidato;
 
+import com.plkrhone.sisrh.model.Candidato;
+import com.plkrhone.sisrh.model.Cargo;
 import com.plkrhone.sisrh.model.CargoNivel;
-import com.plkrhone.sisrh.model.Vaga;
 import org.dom4j.tree.AbstractEntity;
 
 import javax.persistence.*;
@@ -15,8 +16,13 @@ public class CandidatoHistorico extends AbstractEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @JoinColumn(name = "candidato_id")
+    private Candidato candidato;
+    @ManyToOne
     @JoinColumn(name = "cargo_id")
-    private Vaga cargo;
+    private Cargo cargo;
+    @Column(name = "cargo_ads")
+    private String cargoAds;
     @ManyToOne
     @JoinColumn(name = "nivel_id")
     private CargoNivel nivel;
@@ -35,11 +41,19 @@ public class CandidatoHistorico extends AbstractEntity implements Serializable {
         this.id = id;
     }
 
-    public Vaga getCargo() {
+    public void setCandidato(Candidato candidato) {
+        this.candidato = candidato;
+    }
+
+    public Candidato getCandidato() {
+        return candidato;
+    }
+
+    public Cargo getCargo() {
         return cargo;
     }
 
-    public void setCargo(Vaga cargo) {
+    public void setCargo(Cargo cargo) {
         this.cargo = cargo;
     }
 
@@ -81,5 +95,13 @@ public class CandidatoHistorico extends AbstractEntity implements Serializable {
 
     public void setFim(Calendar fim) {
         this.fim = fim;
+    }
+
+    public String getCargoAds() {
+        return cargoAds;
+    }
+
+    public void setCargoAds(String cargoAds) {
+        this.cargoAds = cargoAds;
     }
 }

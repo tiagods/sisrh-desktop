@@ -723,7 +723,7 @@ public class ControllerCliente extends PersistenciaController implements Initial
 		colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaId.setPrefWidth(40);
 
-		TableColumn<Anuncio, FormularioRequisicao> colunaNome = new TableColumn<>("Vaga");
+		TableColumn<Anuncio, FormularioRequisicao> colunaNome = new TableColumn<>("Cargo");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("formularioRequisicao"));
 		colunaNome.setCellFactory(
 				(TableColumn<Anuncio, FormularioRequisicao> param) -> new TableCell<Anuncio, FormularioRequisicao>() {
@@ -734,7 +734,7 @@ public class ControllerCliente extends PersistenciaController implements Initial
 							setText(null);
 							setStyle("");
 						} else {
-							setText(item.getVaga() != null ? item.getVaga().getNome() : "");
+							setText(item.getCargo() != null ? item.getCargo().getNome() : "");
 						}
 					}
 				});

@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.model.*;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -34,15 +35,7 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import com.plkrhone.sisrh.model.Anuncio;
-import com.plkrhone.sisrh.model.Candidato;
-import com.plkrhone.sisrh.model.Cidade;
-import com.plkrhone.sisrh.model.Cliente;
-import com.plkrhone.sisrh.model.CursoSuperior;
-import com.plkrhone.sisrh.model.Estado;
-import com.plkrhone.sisrh.model.FormularioRequisicao;
-import com.plkrhone.sisrh.model.Treinamento;
-import com.plkrhone.sisrh.model.Vaga;
+import com.plkrhone.sisrh.model.Curso;
 import com.plkrhone.sisrh.model.anuncio.AnuncioCronograma;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevista;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevistaAnalise;
@@ -118,7 +111,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 	private JFXComboBox<String> cbEmpresaPesquisa;
 
 	@FXML
-	private ComboBox<Vaga> cbVagaPesquisa;
+	private ComboBox<Cargo> cbVagaPesquisa;
 
 	@FXML
 	private JFXComboBox<Anuncio.Cronograma> cbCronogramaPesquisa;
@@ -217,7 +210,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 	private JFXDatePicker dtVaga1DataFim;
 
 	@FXML
-	private ComboBox<Vaga> cbVaga1Cargo;
+	private ComboBox<Cargo> cbVaga1Cargo;
 
 	@FXML
 	private JFXComboBox<String> cbVaga1CargaHoraria;
@@ -274,7 +267,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 	private JFXComboBox<Cidade> cbVaga3Municipio;
 
 	@FXML
-	private JFXComboBox<CursoSuperior> cbVaga3Formacao;
+	private JFXComboBox<Curso> cbVaga3Formacao;
 
 	@FXML
 	private JFXComboBox<Integer> cbVaga3Tempo;
@@ -553,6 +546,12 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 	private JFXButton btSalvarEConcluir;
 
 	@FXML
+	private JFXComboBox<CargoNivel> cbCargoNivel;
+
+	@FXML
+	private JFXTextField txCargoAdc;
+
+	@FXML
 	private JFXButton btNovo;
 
 	@FXML
@@ -816,13 +815,13 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		
 		
 		vagas = new VagasImp(getManager());
-		List<Vaga> vagaList = vagas.getAll();
+		List<Cargo> cargoList = vagas.getAll();
 		cbVagaPesquisa.getItems().add(null);
-		cbVagaPesquisa.getItems().addAll(FXCollections.observableList(vagaList));
+		cbVagaPesquisa.getItems().addAll(FXCollections.observableList(cargoList));
 		new ComboBoxAutoCompleteUtil<>(cbVagaPesquisa);
 		cbDatasFiltro.getItems().addAll("Data de Abertura", "Data de Admissão", "Data de Encerramento");
 		cbDatasFiltro.getSelectionModel().selectFirst();
-		cbFiltro.getItems().addAll("Nome", "Nome da Vaga", "Nome do Cliente");
+		cbFiltro.getItems().addAll("Nome", "Nome da Cargo", "Nome do Cliente");
 		cbFiltro.getSelectionModel().selectFirst();
 
 		// combos da area de cadastro
@@ -857,7 +856,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		rbStatusGrafico.addEventFilter(ActionEvent.ACTION, filterGrafico);
 		rbStatusGrafico.setSelected(true);
 
-		cbVaga1Cargo.getItems().addAll(vagaList);
+		cbVaga1Cargo.getItems().addAll(cargoList);
 
 		new ComboBoxAutoCompleteUtil(cbVaga1Cargo);
 
@@ -906,7 +905,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		txVaga2MotivoOutro.setDisable(true);
 
 		cursos = new CursosSuperioresImp(getManager());
-		List<CursoSuperior> cursoSuperiorsList = cursos.getAll();
+		List<Curso> cursoSuperiorsList = cursos.getAll();
 		cbVaga3Formacao.setItems(FXCollections.observableList(cursoSuperiorsList));
 		cbVaga3Formacao.setValue(null);
 		cbVaga3Formacao.setDisable(true);
@@ -1430,7 +1429,9 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				if(form.getFormulario()!=null)
 					txDocumento.setText(form.getFormulario());
 				// 1
-				cbVaga1Cargo.setValue(form.getVaga());
+				cbVaga1Cargo.setValue(form.getCargo());
+				cbCargoNivel.setValue(form.getNivel());
+				txCargoAdc.setText(form.getCargoAds());
 				if (form.getTipo().equals("CLT")) {
 					rbVaga1Clt.setSelected(true);
 					dtVaga1DataInicio.setDisable(true);
@@ -1469,7 +1470,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 					}
 				}
 				cbVaga3Escolaridade.setValue(form.getEscolaridade());
-				cbVaga3Formacao.setValue(form.getCursoSuperior());
+				cbVaga3Formacao.setValue(form.getCurso());
 				Cidade cidade = form.getCidade();
 				if (cidade != null) {
 					cbVaga3Estado.setValue(cidade.getEstado());
@@ -1767,7 +1768,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 				: GregorianCalendar.from(dtAdmissao.getValue().atStartOfDay(ZoneId.systemDefault())));
 		/*
 		 * //anuncio.setDataAdmissao(Date.from(dtAdmissao.getValue().
-		 * atStartOfDay(ZoneId.systemDefault()).toInstant())); //area da vaga
+		 * atStartOfDay(ZoneId.systemDefault()).toInstant())); //area da cargo
 		 */
 
 		// area do formulario
@@ -1776,11 +1777,13 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		if (cbVaga1Cargo.getValue() == null) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Erro");
-			alert.setContentText("Informe um perfil da Vaga antes de prosseguir!");
+			alert.setContentText("Informe um perfil da Cargo antes de prosseguir!");
 			alert.show();
 			return;
 		}
-		fr.setVaga(cbVaga1Cargo.getValue());
+		fr.setCargo(cbVaga1Cargo.getValue());
+		fr.setNivel(cbCargoNivel.getValue());
+		fr.setCargoAds(txCargoAdc.getText());
 		fr.setCargaHoraria(cbVaga1CargaHoraria.getValue());
 		if (rbVaga1Estagiario.isSelected())
 			fr.setTipo("Estagio");
@@ -1807,7 +1810,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		}
 		// 3
 		fr.setEscolaridade(cbVaga3Escolaridade.getValue());
-		fr.setCursoSuperior(cbVaga3Formacao.getValue());
+		fr.setCurso(cbVaga3Formacao.getValue());
 		fr.setIdioma(txVaga3Idioma.getText());
 		Cidade cidade = fr.getCidade();
 		if (cidade != null) {
@@ -2003,7 +2006,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 						}
 					}
 				});
-		TableColumn<Anuncio, FormularioRequisicao> colunaVaga = new TableColumn<>("Vaga");
+		TableColumn<Anuncio, FormularioRequisicao> colunaVaga = new TableColumn<>("Cargo");
 		colunaVaga.setCellValueFactory(new PropertyValueFactory<>("formularioRequisicao"));
 		colunaVaga.setCellFactory(
 				(TableColumn<Anuncio, FormularioRequisicao> param) -> new TableCell<Anuncio, FormularioRequisicao>() {
@@ -2014,7 +2017,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 							setText(null);
 							setStyle("");
 						} else {
-							setText(item.getVaga() != null ? item.getVaga().getNome() : "");
+							setText(item.getCargo() != null ? item.getCargo().getNome() : "");
 						}
 					}
 				});
@@ -2787,8 +2790,8 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 
 			FormularioRequisicao fr = anuncio.getFormularioRequisicao();
 			if (fr != null)
-				vaga = fr.getVaga() != null ? fr.getVaga().getNome() : "";
-			crono.put("{anuncio.vaga}", vaga);
+				vaga = fr.getCargo() != null ? fr.getCargo().getNome() : "";
+			crono.put("{anuncio.cargo}", vaga);
 			crono.put("{anuncio.cliente.contato}",
 					anuncio.getCliente().getPessoaJuridica() != null
 							? anuncio.getCliente().getPessoaJuridica().getTelefone() + "/"

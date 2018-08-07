@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.plkrhone.sisrh.model.Candidato;
-import com.plkrhone.sisrh.model.Vaga;
+import com.plkrhone.sisrh.model.Cargo;
 
 public interface CandidatoDAO {
 	Candidato save(Candidato candidato);
@@ -14,6 +14,6 @@ public interface CandidatoDAO {
 	List<Candidato> getAll();
 	Candidato findById(Long id);
 	Candidato findByEmail(String email);
-	List<Candidato> filtrar(Vaga objetivo, Vaga experiencia, String sexo, int idadeMin, int idadeMax, String indicacao,
-			Candidato.Escolaridade escolaridadeMin, Candidato.Escolaridade escolaridadeMax, LocalDate dataCurriculoMin, LocalDate dataCurriculoMax, String buscarPor, String valorPesquisa,boolean indisponivel);
+	List<Candidato> filtrar(Cargo objetivo, Cargo experiencia, String sexo, int idadeMin, int idadeMax, String indicacao,
+                            Candidato.Escolaridade escolaridadeMin, Candidato.Escolaridade escolaridadeMax, LocalDate dataCurriculoMin, LocalDate dataCurriculoMax, String buscarPor, String valorPesquisa, boolean indisponivel);
 }

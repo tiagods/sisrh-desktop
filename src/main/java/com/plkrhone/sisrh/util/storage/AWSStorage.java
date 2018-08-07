@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -19,7 +20,7 @@ import com.plkrhone.sisrh.config.AWSConfig;
 
 
 public class AWSStorage extends Storage{
-	private static String bucketName="sisrh";
+	private static String bucketName="";
 	private AmazonS3 builder() {
 		AWSConfig config = AWSConfig.getInstance();
 		AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard().withCredentials(new AWSCredentialsProvider() {
@@ -35,6 +36,7 @@ public class AWSStorage extends Storage{
 			}
 		});
 		builder.withRegion("us-east-1");		
+		bucketName=config.getValue("bucket");
 		AmazonS3 s3 = builder.build();
 		return s3;
 	}
@@ -55,7 +57,6 @@ public class AWSStorage extends Storage{
 		File file = new File(System.getProperty("java.io.tmpdir")+"/"+arquivo);
 		if(!file.getParentFile().exists())
 			file.getParentFile().mkdir();
-		
 		FileOutputStream output = new FileOutputStream(file);
 		byte[] readbuf = new byte[1024];
 		int read_len = 0;

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.plkrhone.sisrh.model.Cargo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,6 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import com.plkrhone.sisrh.model.Vaga;
 import com.plkrhone.sisrh.repository.helper.VagasImp;
 
 import javafx.collections.FXCollections;
@@ -55,7 +55,7 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 	@FXML
 	private JFXTextField txCodigo;
 	@FXML
-	private TableView<Vaga> tbVagas;
+	private TableView<Cargo> tbVagas;
 
 	@FXML
 	private JFXTextField txCriadoEm;
@@ -78,7 +78,7 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 	@FXML
 	private JFXTabPane tab;
 
-	Vaga vaga;
+	Cargo cargo;
 	VagasImp vagas;
 
 	private static Logger log = LoggerFactory.getLogger(ControllerVaga.class);
@@ -89,7 +89,7 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 		tabela();
 		loadFactory();
 		try {
-			List<Vaga> lista = new VagasImp(getManager()).getAll();
+			List<Cargo> lista = new VagasImp(getManager()).getAll();
 			tbVagas.setItems(FXCollections.observableList(lista));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -146,9 +146,9 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 				loadFactory();
 				try {
 					VagasImp vagas = new VagasImp(getManager());
-					Vaga vaga = vagas.findById(Long.parseLong(txCodigo.getText()));
-					vagas.remove(vaga);
-					tbVagas.getItems().remove(vaga);
+					Cargo cargo = vagas.findById(Long.parseLong(txCodigo.getText()));
+					vagas.remove(cargo);
+					tbVagas.getItems().remove(cargo);
 
 					tab.getSelectionModel().select(tabCadastro);
 					alert.setAlertType(Alert.AlertType.INFORMATION);
@@ -156,7 +156,7 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 					alert.showAndWait();
 					limparTela();
 					desbloquear(false);
-					vaga = null;
+					cargo = null;
 				} catch (Exception e) {
 					alert = new Alert(Alert.AlertType.ERROR);
 					alert.setTitle("Erro ao excluir o registro");
@@ -177,9 +177,9 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 		try {
 			loadFactory();
 			vagas = new VagasImp(getManager());
-			List<Vaga> vagaList = vagas.getVagasByNome(txPesquisa.getText().trim());
+			List<Cargo> cargoList = vagas.getVagasByNome(txPesquisa.getText().trim());
 			tbVagas.getItems().clear();
-			tbVagas.setItems(FXCollections.observableArrayList(vagaList));
+			tbVagas.setItems(FXCollections.observableArrayList(cargoList));
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -211,7 +211,7 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 		limparTela();
 		desbloquear(true);
 		tab.getSelectionModel().select(tabCadastro);
-		this.vaga = null;
+		this.cargo = null;
 	}
 
 	@FXML
@@ -219,22 +219,22 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 		filtrar();
 	}
 
-	void preencherFormulario(Vaga vaga) {
-		txCodigo.setText(String.valueOf(vaga.getId()));
-		txNome.setText(vaga.getNome());
-		txCriadoEm.setText(vaga.getCriadoEm() == null ? ""
-				: new SimpleDateFormat("dd/MM/yyyy").format(vaga.getCriadoEm().getTime()));
-		txDescricao.setText(vaga.getDescricao());
-		txFonte.setText(vaga.getFonte());
-		this.vaga = vaga;
+	void preencherFormulario(Cargo cargo) {
+		txCodigo.setText(String.valueOf(cargo.getId()));
+		txNome.setText(cargo.getNome());
+		txCriadoEm.setText(cargo.getCriadoEm() == null ? ""
+				: new SimpleDateFormat("dd/MM/yyyy").format(cargo.getCriadoEm().getTime()));
+		txDescricao.setText(cargo.getDescricao());
+		txFonte.setText(cargo.getFonte());
+		this.cargo = cargo;
 	}
 
 	@FXML
 	void salvar(ActionEvent event) {
 		loadFactory();
 		if (txCodigo.getText().equals("")) {
-			vaga = new Vaga();
-			vaga.setCriadoEm(Calendar.getInstance());
+			cargo = new Cargo();
+			cargo.setCriadoEm(Calendar.getInstance());
 			vagas = new VagasImp(getManager());
 			if (vagas.findByNome(txNome.getText().trim()) != null) {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -246,12 +246,12 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 			}
 		} else {
 			Long id = Long.parseLong(txCodigo.getText());
-			vaga.setId(id);
+			cargo.setId(id);
 			if (id <= 2855)// nao deixar editar os registros ja candidatados
 				return;
 			else {
-				Vaga v = vagas.findByNome(txNome.getText().trim());
-				if (v != null && v.getId()!=vaga.getId()) {
+				Cargo v = vagas.findByNome(txNome.getText().trim());
+				if (v != null && v.getId()!= cargo.getId()) {
 					Alert alert = new Alert(Alert.AlertType.ERROR);
 					alert.setTitle("Valor duplicado");
 					alert.setContentText("Ja existe um cadastro com o texto informado");
@@ -261,13 +261,13 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 				}
 			}
 		}
-		vaga.setNome(txNome.getText());
-		vaga.setDescricao(txDescricao.getText());
-		vaga.setFonte(txFonte.getText());
+		cargo.setNome(txNome.getText());
+		cargo.setDescricao(txDescricao.getText());
+		cargo.setFonte(txFonte.getText());
 		try {
 			vagas = new VagasImp(getManager());
-			vaga = vagas.save(vaga);
-			txCodigo.setText(String.valueOf(vaga.getId()));
+			cargo = vagas.save(cargo);
+			txCodigo.setText(String.valueOf(cargo.getId()));
 			desbloquear(false);
 		} catch (Exception e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -282,16 +282,16 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 
 	@SuppressWarnings("unchecked")
 	void tabela() {
-		TableColumn<Vaga, Number> colunaId = new TableColumn<>("*");
+		TableColumn<Cargo, Number> colunaId = new TableColumn<>("*");
 		colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaId.setPrefWidth(40);
-		TableColumn<Vaga, String> colunaNome = new TableColumn<>("Nome");
+		TableColumn<Cargo, String> colunaNome = new TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		colunaNome.setPrefWidth(200);
-		TableColumn<Vaga, String> colunaDescricao = new TableColumn<>("Descricao");
+		TableColumn<Cargo, String> colunaDescricao = new TableColumn<>("Descricao");
 		colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-		colunaDescricao.setCellFactory((TableColumn<Vaga, String> param) -> {
-			final TableCell<Vaga, String> cell = new TableCell<Vaga, String>() {
+		colunaDescricao.setCellFactory((TableColumn<Cargo, String> param) -> {
+			final TableCell<Cargo, String> cell = new TableCell<Cargo, String>() {
 				final JFXTextArea textArea = new JFXTextArea();
 
 				@Override
@@ -312,10 +312,10 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 			return cell;
 		});
 		colunaDescricao.setPrefWidth(400);
-		TableColumn<Vaga, String> colunaEditar = new TableColumn<>("");
+		TableColumn<Cargo, String> colunaEditar = new TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>(""));
-		colunaEditar.setCellFactory((TableColumn<Vaga, String> param) -> {
-			final TableCell<Vaga, String> cell = new TableCell<Vaga, String>() {
+		colunaEditar.setCellFactory((TableColumn<Cargo, String> param) -> {
+			final TableCell<Cargo, String> cell = new TableCell<Cargo, String>() {
 				final JFXButton button = new JFXButton("Editar");
 
 				@Override
@@ -329,8 +329,8 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 						setText("Editar");
 						button.setOnAction(event -> {
 							tab.getSelectionModel().select(tabCadastro);
-							Vaga vaga = tbVagas.getItems().get(getIndex());
-							if (vaga != null && vaga.getId() <= 2855) {
+							Cargo cargo = tbVagas.getItems().get(getIndex());
+							if (cargo != null && cargo.getId() <= 2855) {
 								desbloquear(false);
 								Alert alert = new Alert(Alert.AlertType.INFORMATION);
 								alert.setTitle("Cadastro padronizado");
@@ -341,7 +341,7 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 							} else
 								desbloquear(true);
 							limparTela();
-							preencherFormulario(vaga);
+							preencherFormulario(cargo);
 						});
 						setGraphic(button);
 						setText(null);
