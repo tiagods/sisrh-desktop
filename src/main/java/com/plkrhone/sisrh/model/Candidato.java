@@ -1,7 +1,6 @@
 package com.plkrhone.sisrh.model;
 
 import com.plkrhone.sisrh.model.candidato.CandidatoCurso;
-import com.plkrhone.sisrh.model.candidato.CandidatoHistorico;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -128,8 +127,24 @@ public class Candidato implements AbstractEntity,Serializable {
     @Column(name="detalhes_indicacao")
     private String detalhesIndicacao;
 
-	@OneToMany(fetch = FetchType.LAZY,mappedBy = "candidato",cascade= CascadeType.ALL,orphanRemoval=true)
-	private Set<CandidatoHistorico> historicos;
+	private String empresa1;
+	private String empresa2;
+	private String empresa3;
+	@ManyToOne
+	@JoinColumn(name="cargo1_id")
+	private Cargo cargo1;
+	@ManyToOne
+	@JoinColumn(name="cargo2_id")
+	private Cargo cargo2;
+	@ManyToOne
+	@JoinColumn(name="cargo3_id")
+	private Cargo cargo3;
+	@Column(name="descricao_cargo1")
+	private String descricaoCargo1;
+	@Column(name="descricao_cargo2")
+	private String descricaoCargo2;
+	@Column(name="descricao_cargo3")
+	private String descricaoCargo3;
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "candidato",cascade= CascadeType.ALL,orphanRemoval=true)
 	private Set<CandidatoCurso> cursos;
@@ -356,14 +371,6 @@ public class Candidato implements AbstractEntity,Serializable {
 		this.detalhesIndicacao = detalhesIndicacao;
 	}
 
-	public Set<CandidatoHistorico> getHistoricos() {
-		return historicos;
-	}
-
-	public void setHistoricos(Set<CandidatoHistorico> historicos) {
-		this.historicos = historicos;
-	}
-
 	public Set<CandidatoCurso> getCursos() {
 		return cursos;
 	}
@@ -426,6 +433,78 @@ public class Candidato implements AbstractEntity,Serializable {
 
 	public void setOcupadoDetalhes(String ocupadoDetalhes) {
 		this.ocupadoDetalhes = ocupadoDetalhes;
+	}
+
+	public String getEmpresa1() {
+		return empresa1;
+	}
+
+	public void setEmpresa1(String empresa1) {
+		this.empresa1 = empresa1;
+	}
+
+	public String getEmpresa2() {
+		return empresa2;
+	}
+
+	public void setEmpresa2(String empresa2) {
+		this.empresa2 = empresa2;
+	}
+
+	public String getEmpresa3() {
+		return empresa3;
+	}
+
+	public void setEmpresa3(String empresa3) {
+		this.empresa3 = empresa3;
+	}
+
+	public Cargo getCargo1() {
+		return cargo1;
+	}
+
+	public void setCargo1(Cargo cargo1) {
+		this.cargo1 = cargo1;
+	}
+
+	public Cargo getCargo2() {
+		return cargo2;
+	}
+
+	public void setCargo2(Cargo cargo2) {
+		this.cargo2 = cargo2;
+	}
+
+	public Cargo getCargo3() {
+		return cargo3;
+	}
+
+	public void setCargo3(Cargo cargo3) {
+		this.cargo3 = cargo3;
+	}
+
+	public String getDescricaoCargo1() {
+		return descricaoCargo1;
+	}
+
+	public void setDescricaoCargo1(String descricaoCargo1) {
+		this.descricaoCargo1 = descricaoCargo1;
+	}
+
+	public String getDescricaoCargo2() {
+		return descricaoCargo2;
+	}
+
+	public void setDescricaoCargo2(String descricaoCargo2) {
+		this.descricaoCargo2 = descricaoCargo2;
+	}
+
+	public String getDescricaoCargo3() {
+		return descricaoCargo3;
+	}
+
+	public void setDescricaoCargo3(String descricaoCargo3) {
+		this.descricaoCargo3 = descricaoCargo3;
 	}
 
 	/* (non-Javadoc)

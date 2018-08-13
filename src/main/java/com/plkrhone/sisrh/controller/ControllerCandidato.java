@@ -1,6 +1,7 @@
+
 package com.plkrhone.sisrh.controller;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -17,8 +19,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import com.plkrhone.sisrh.config.init.UsuarioLogado;
-import com.plkrhone.sisrh.model.*;
+import com.plkrhone.sisrh.config.init.PaisesConfig;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -30,8 +31,14 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import com.plkrhone.sisrh.config.init.PaisesConfig;
+import com.plkrhone.sisrh.model.Anuncio;
+import com.plkrhone.sisrh.model.Candidato;
+import com.plkrhone.sisrh.model.Cidade;
 import com.plkrhone.sisrh.model.Curso;
+import com.plkrhone.sisrh.model.Endereco;
+import com.plkrhone.sisrh.model.Estado;
+import com.plkrhone.sisrh.model.PfPj;
+import com.plkrhone.sisrh.model.Cargo;
 import com.plkrhone.sisrh.repository.helper.CandidatosImp;
 import com.plkrhone.sisrh.repository.helper.CidadesImp;
 import com.plkrhone.sisrh.repository.helper.CursosSuperioresImp;
@@ -39,6 +46,7 @@ import com.plkrhone.sisrh.repository.helper.VagasImp;
 import com.plkrhone.sisrh.repository.helper.filter.CandidatoAnuncioFilter;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
 import com.plkrhone.sisrh.util.EnderecoUtil;
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.util.storage.PathStorageEnum;
 import com.plkrhone.sisrh.util.storage.Storage;
 import com.plkrhone.sisrh.util.storage.StorageProducer;
@@ -107,19 +115,19 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 	@FXML
 	private JFXComboBox<Candidato.Escolaridade> cbFormacaoMaxPesquisa;
-	
+
 	@FXML
-	private JFXComboBox<Curso> cbCurso;
-	
+	private JFXComboBox<Curso> cbCursoSuperior;
+
 	@FXML
 	private JFXComboBox<Curso> cbCursoSuperiorPesquisa;
-	
+
 	@FXML
 	private ComboBox<Cargo> cbExperienciaPesquisa;
 
 	@FXML
 	private JFXCheckBox ckIndisponivelPesquisa;
-	
+
 	@FXML
 	private MaskTextField txIdadeInicioPesquisa;
 
@@ -182,7 +190,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 	@FXML
 	private JFXTextField txLogradouro;
-	
+
 	@FXML
 	private MaskedTextField txCep;
 	@FXML
@@ -213,6 +221,30 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 	@FXML
 	private JFXTextArea txDetalhesIndicacao;
+
+	@FXML
+	private JFXTextField txCarreiraEmpresa1;
+
+	@FXML
+	private JFXTextArea txCarreiraDescricao1;
+	@FXML
+	private JFXTextArea txCarreiraDescricao2;
+	@FXML
+	private JFXTextArea txCarreiraDescricao3;
+	@FXML
+	private ComboBox<Cargo> cbCarreiraObjetivo1;
+
+	@FXML
+	private JFXTextField txCarreiraEmpresa2;
+
+	@FXML
+	private ComboBox<Cargo> cbCarreiraObjetivo2;
+
+	@FXML
+	private JFXTextField txCarreiraEmpresa3;
+
+	@FXML
+	private ComboBox<Cargo> cbCarreiraObjetivo3;
 
 	@FXML
 	private JFXTextField txFormulario;
@@ -248,10 +280,6 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	private JFXButton btnExcluir;
 	@FXML
 	private JFXTextField txComplemento;
-
-	@FXML
-	private JFXComboBox<Curso.Nivel> cbCursoEscolaridade;
-
 
 	private Candidato candidato;
 	private Anuncio anuncio = null;
@@ -331,12 +359,12 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	@FXML
 	void anexarFormulario(ActionEvent event) {
 		Runnable run = new Runnable() {
-			
+
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				
-		Set<FileChooser.ExtensionFilter> filters = new HashSet<>();
+
+				Set<FileChooser.ExtensionFilter> filters = new HashSet<>();
 //		alert = new Alert(Alert.AlertType.CONFIRMATION);
 //		alert.setTitle("Informação importante!");
 //		alert.setHeaderText("Deseja usar modelo do Word para imprimir seus formulários pré-prenchidos?");
@@ -349,23 +377,23 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 //			filters.add(new FileChooser.ExtensionFilter("*.pdf", "*.doc|*.pdf|*.docx"));
 //			filters.add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
 //		}
-		
-		filters.add(new FileChooser.ExtensionFilter("pdf, doc, docx", "*.doc","*.pdf","*.docx"));
-		File file = storage.carregarArquivo(new Stage(), filters);
-		if (file != null) {
-			String novoNome = storage.gerarNome(file, PathStorageEnum.CURRICULO.getDescricao());
-			try{
-				storage.uploadFile(file, novoNome);
-				txFormulario.setText(novoNome);
-			} catch(Exception e) {
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setTitle("Armazenamento de arquivo");
-				alert.setHeaderText("Não foi possivel enviar o arquivo para o servidor");
-				alert.setContentText("Um erro desconhecido não permitiu o envio do arquivo para uma pasta do servidor\n"+e);
-				alert.showAndWait();
-				e.printStackTrace();
-			}
-		}
+
+				filters.add(new FileChooser.ExtensionFilter("pdf, doc, docx", "*.doc","*.pdf","*.docx"));
+				File file = storage.carregarArquivo(new Stage(), filters);
+				if (file != null) {
+					String novoNome = storage.gerarNome(file, PathStorageEnum.CURRICULO.getDescricao());
+					try{
+						storage.uploadFile(file, novoNome);
+						txFormulario.setText(novoNome);
+					} catch(Exception e) {
+						Alert alert = new Alert(Alert.AlertType.ERROR);
+						alert.setTitle("Armazenamento de arquivo");
+						alert.setHeaderText("Não foi possivel enviar o arquivo para o servidor");
+						alert.setContentText("Um erro desconhecido não permitiu o envio do arquivo para uma pasta do servidor\n"+e);
+						alert.showAndWait();
+						e.printStackTrace();
+					}
+				}
 			}
 		};
 		Platform.runLater(run);
@@ -375,48 +403,48 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle("CEP");
 		try{
-            loadFactory();
-            EnderecoUtil util = EnderecoUtil.getInstance();
+			loadFactory();
+			EnderecoUtil util = EnderecoUtil.getInstance();
 			if(txCep.getPlainText().trim().length()==8) {
 				Endereco endereco = util.pegarCEP(txCep.getPlainText());
 				if(endereco!=null){
 					txLogradouro.setText(endereco.getLogradouro());
-                    txNumero.setText("");
-                    txComplemento.setText(endereco.getComplemento());
-                    txBairro.setText(endereco.getBairro());
-                    cidades = new CidadesImp(getManager());
-                    cbCidade.getItems().clear();
-                    cbCidade.getItems().addAll(cidades.findByEstado(endereco.getUf()));
-                    Cidade cidade = cidades.findByNome(endereco.getLocalidade());
-                    cbCidade.setValue(cidade);
-                    cbEstado.setValue(endereco.getUf());
+					txNumero.setText("");
+					txComplemento.setText(endereco.getComplemento());
+					txBairro.setText(endereco.getBairro());
+					cidades = new CidadesImp(getManager());
+					cbCidade.getItems().clear();
+					cbCidade.getItems().addAll(cidades.findByEstado(endereco.getUf()));
+					Cidade cidade = cidades.findByNome(endereco.getLocalidade());
+					cbCidade.setValue(cidade);
+					cbEstado.setValue(endereco.getUf());
 				}
 				else {
-				    alert.setContentText("Verifique se o cep informado é valido ou se existe uma conexão com a internet");
-				    alert.show();
+					alert.setContentText("Verifique se o cep informado é valido ou se existe uma conexão com a internet");
+					alert.show();
 				}
-            }
+			}
 			else{
-			    alert.setContentText("Verifique o cep informado");
-			    alert.show();
+				alert.setContentText("Verifique o cep informado");
+				alert.show();
 			}
 		}catch(Exception e){
-		    alert.setTitle("Falha na conexão com o banco de dados");
-		    alert.setContentText("Houve uma falha na conexão com o banco de dados");
-		    alert.show();
-		    
+			alert.setTitle("Falha na conexão com o banco de dados");
+			alert.setContentText("Houve uma falha na conexão com o banco de dados");
+			alert.show();
+
 		}finally {
-		    close();
+			close();
 		}
 	}
 	void combos() {
 		vagas = new VagasImp(getManager());
 		cursos = new CursosSuperioresImp(getManager());
 		List<Cargo> vagasList = new ArrayList<>();
-		Cargo cargo = new Cargo();
-		cargo.setId(new Long(-1));
-		cargo.setNome("Qualquer");
-		vagasList.add(cargo);
+		Cargo vaga = new Cargo();
+		vaga.setId(new Long(-1));
+		vaga.setNome("Qualquer");
+		vagasList.add(vaga);
 		vagasList.addAll(vagas.getAll());
 		cbObjetivoPesquisa.getItems().addAll(vagasList);
 		cbExperienciaPesquisa.getItems().addAll(cbObjetivoPesquisa.getItems());
@@ -448,14 +476,14 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 		cbBuscarPorPesquisa.getItems().addAll(new String[] { "Nome", "Email"});
 		cbBuscarPorPesquisa.getSelectionModel().selectFirst();
-		
+
 		ckIndisponivelPesquisa.setSelected(true);
 		ckIndisponivelPesquisa.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				filtrar();
 			}
-		});		
+		});
 		ChangeListener<Object> pesquisaCombo = new ChangeListener<Object>() {
 			@Override
 			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
@@ -474,15 +502,15 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 		cbCursoSuperiorPesquisa.getItems().addAll(cursos.getAll());
 		new ComboBoxAutoCompleteUtil<>(cbCursoSuperiorPesquisa);
-		cbCurso.getItems().addAll(cbCursoSuperiorPesquisa.getItems());
-		new ComboBoxAutoCompleteUtil<>(cbCurso);
-		
+		cbCursoSuperior.getItems().addAll(cbCursoSuperiorPesquisa.getItems());
+		new ComboBoxAutoCompleteUtil<>(cbCursoSuperior);
+
 		pnCadastroIndicacao.setVisible(false);
 		txQtdFilhos.setDisable(true);
 
 		ToggleGroup group = new ToggleGroup();
 		group.getToggles().addAll(rbSexoF, rbSexoM);
-		
+
 		ckNaoDisponivel.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -523,7 +551,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		dtNascimento.valueProperty().addListener(new ChangeListener<LocalDate>() {
 			@Override
 			public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue,
-					LocalDate newValue) {
+								LocalDate newValue) {
 				if (newValue != null) {
 					LocalDate date1 = LocalDate.now();
 					LocalDate date2 = newValue;
@@ -544,11 +572,11 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		cbEstadoCivil.getItems().addAll(Candidato.EstadoCivil.values());
 		cbEscolaridade.getItems().addAll(Candidato.Escolaridade.values());
 
-		
+
 		cbNacionalidade.getItems().addAll(PaisesConfig.getInstance().getAll());
 		cbNacionalidade.setValue("Brasil");
 		new ComboBoxAutoCompleteUtil<>(cbNacionalidade);
-		
+
 		cbEstado.getItems().setAll(Arrays.asList(Estado.values()));
 		cbEstado.setValue(Estado.SP);
 		cidades = new CidadesImp(getManager());
@@ -571,7 +599,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		});
 		new ComboBoxAutoCompleteUtil<>(cbCidade);
 
-		
+
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -786,7 +814,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		cbFormacaoMinPesquisa.setValue(filter.getEscolaridade());
 		cbObjetivoPesquisa.setValue(filter.getCargo());
 		cbExperienciaPesquisa.setValue(filter.getCargo());
-		//cbfilter.getCargo();
+		//cbfilter.getVaga();
 		filtrar();
 		tbCandidatos.refresh();
 		desbloquear(true, pnCadastro.getChildren());
@@ -843,7 +871,17 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		cbObjetivo2.setValue(candidato.getObjetivo2());
 		cbObjetivo3.setValue(candidato.getObjetivo3());
 
+		txCarreiraEmpresa1.setText(candidato.getEmpresa1());
+		txCarreiraEmpresa2.setText(candidato.getEmpresa2());
+		txCarreiraEmpresa3.setText(candidato.getEmpresa3());
 
+		cbCarreiraObjetivo1.setValue(candidato.getCargo1());
+		cbCarreiraObjetivo2.setValue(candidato.getCargo2());
+		cbCarreiraObjetivo3.setValue(candidato.getCargo3());
+
+		txCarreiraDescricao1.setText(candidato.getDescricaoCargo1());
+		txCarreiraDescricao2.setText(candidato.getDescricaoCargo2());
+		txCarreiraDescricao3.setText(candidato.getDescricaoCargo3());
 
 		txFormulario.setText(candidato.getFormulario());
 		if (candidato.getIndicacao() == 1) {
@@ -889,17 +927,6 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	}
 
 	private void salvarFim() {
-		if (txEmail.getText().trim().equals("") || dtNascimento.getValue()==null) {
-			String message ="Os campos a seguir não foram informados \n" +  (txEmail.getText().trim().equals("")? "E-mail não informado, \n":"");
-			message+=dtNascimento.getValue()==null?"Idade ou data de nascimento nao informada":"";
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Campo não informado! Deseja continuar?");
-			alert.setHeaderText("!");
-			alert.setContentText(message);
-			Optional<ButtonType> result = alert.showAndWait();
-			if(result.get()== ButtonType.CANCEL)
-				return;
-		}
 		try {
 			loadFactory();
 			candidatos = new CandidatosImp(getManager());
@@ -913,41 +940,38 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 						Alert alert = new Alert(Alert.AlertType.ERROR);
 						alert.setTitle("Erro Registro");
 						alert.setHeaderText("Valor duplicado!");
-						alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome()+"\nClique em OK para salvar");
-						Optional<ButtonType> result = alert.showAndWait();
-						if(result.get()== ButtonType.CANCEL)
-							return;
+						alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome());
+						alert.showAndWait();
+						return;
 					}
 				}
-			}else if(!txEmail.getText().trim().equals("")){
+			}else {
 				Candidato can = candidatos.findByEmail(txEmail.getText().trim());
 				if (can!=null && can.getId() != candidato.getId()) {
-					Alert alert = new Alert(AlertType.CONFIRMATION);
+					Alert alert = new Alert(Alert.AlertType.ERROR);
 					alert.setTitle("Erro Registro");
 					alert.setHeaderText("Valor duplicado!");
-					alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome()+"\nClique em OK para salvar");
-					Optional<ButtonType> result = alert.showAndWait();
-					if(result.get()== ButtonType.CANCEL)
-						return;
+					alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome());
+					alert.showAndWait();
+					return;
 				}
 			}
 			candidato.setNome(txNome.getText());
 			candidato.setSexo(rbSexoF.isSelected() ? "F" : "M");
-//			if(dtNascimento.getValue()==null) {
-//				Alert alert = new Alert(Alert.AlertType.ERROR);
-//				alert.setTitle("Erro Registro");
-//				alert.setHeaderText("Campo obrigatorio!");
-//				alert.setContentText("é obrigatorio informar a data de nascimento ou a idade!");
-//				alert.showAndWait();
-//				return;
-//			}
-			if(dtNascimento.getValue()==null){
-				candidato.setDataNascimento(null);
+
+			if(dtNascimento.getValue()==null) {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Erro Registro");
+				alert.setHeaderText("Campo obrigatorio!");
+				alert.setContentText("é obrigatorio informar a data de nascimento ou a idade!");
+				alert.showAndWait();
+				return;
 			}
-			else{
-				candidato.setDataNascimento(dtNascimento.getValue()==null?null
-						:GregorianCalendar.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault())));
-			}
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(Date.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+			candidato.setDataNascimento(dtNascimento.getValue()==null?null
+					:GregorianCalendar.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault())));
 			candidato.setEstadoCivil(cbEstadoCivil.getValue());
 			candidato.setFumante(ckFumante.isSelected() ? 1 : 0);
 			candidato.setFilhos(ckFilhos.isSelected() ? 1 : 0);
@@ -966,10 +990,9 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 			}
 			candidato.setEscolaridade(cbEscolaridade.getValue());
 			candidato.setCursoSuperior(cbCursoSuperior.getValue());
-
 			candidato.setNacionalidade(cbNacionalidade.getValue());
 			PfPj pfpj = new PfPj();
-			
+
 			pfpj.setEmail(txEmail.getText());
 			pfpj.setTelefone(txTelefone.getPlainText());
 			pfpj.setCelular(txCelular.getPlainText());
@@ -990,6 +1013,14 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 			candidato.setIndicacao(ckPossuiIndicacao.isSelected() ? 1 : 0);
 			candidato.setEmpresaIndicacao(txEmpresaIndicacao.getText());
 			candidato.setDetalhesIndicacao(txDetalhesIndicacao.getText());
+
+			candidato.setEmpresa1(txCarreiraEmpresa1.getText());
+			candidato.setEmpresa2(txCarreiraEmpresa2.getText());
+			candidato.setEmpresa3(txCarreiraEmpresa3.getText());
+
+			candidato.setCargo1(cbCarreiraObjetivo1.getValue()!=null?(cbCarreiraObjetivo1.getValue().getId()==-1?null:cbCarreiraObjetivo1.getValue()):null);
+			candidato.setCargo2(cbCarreiraObjetivo2.getValue()!=null?(cbCarreiraObjetivo2.getValue().getId()==-1?null:cbCarreiraObjetivo2.getValue()):null);
+			candidato.setCargo3(cbCarreiraObjetivo3.getValue()!=null?(cbCarreiraObjetivo3.getValue().getId()==-1?null:cbCarreiraObjetivo3.getValue()):null);
 
 			candidato.setDescricaoCargo1(txCarreiraDescricao1.getText());
 			candidato.setDescricaoCargo2(txCarreiraDescricao2.getText());
@@ -1015,10 +1046,13 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 			candidato = candidatos.save(candidato);
 			txCodigo.setText(String.valueOf(candidato.getId()));
+
 			desbloquear(false, pnCadastro.getChildren());
+
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setContentText("Salvo com sucesso!");
 			alert.showAndWait();
+
 		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setContentText("Falha ao salvar o registro\n" + e);
@@ -1052,18 +1086,6 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		});
 		TableColumn<Candidato, String> colunaNome = new TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-		colunaNome.setCellFactory((TableColumn<Candidato, String> param) -> new TableCell<Candidato, String>() {
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				if (item == null) {
-					setText(null);
-					setStyle("");
-				} else {
-					setText(item.toUpperCase());
-				}
-			}
-		});
 		TableColumn<Candidato, Number> colunaIdade = new TableColumn<>("Idade");
 		colunaIdade.setCellValueFactory(new PropertyValueFactory<>("idade"));
 		colunaIdade.setCellFactory((TableColumn<Candidato, Number> param) -> new TableCell<Candidato, Number>() {
@@ -1161,7 +1183,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 					setText(null);
 					setStyle("");
 				} else {
-					if(item.intValue()==0) 
+					if(item.intValue()==0)
 						setText("Sim");
 					else
 						setText("Não");
@@ -1260,19 +1282,22 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 	}
 	@FXML
 	void visualizarFormulario(ActionEvent event) {
-		Runnable run = () -> {
-            if(!txFormulario.getText().equals("")){
-                try {
-                    File file  = storage.downloadFile(txFormulario.getText());
-                    if(file!=null)
-                        Desktop.getDesktop().open(file);
-                }catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+		Runnable run = new Runnable() {
+			@Override
+			public void run() {
+				if(!txFormulario.getText().equals("")){
+					try {
+						File file  = storage.downloadFile(txFormulario.getText());
+						if(file!=null)
+							Desktop.getDesktop().open(file);
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 
-        };
+			}
+		};
 		Platform.runLater(run);
-		
+
 	}
 }
