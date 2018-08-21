@@ -12,6 +12,7 @@ import java.util.Date;
 
 import javax.swing.JOptionPane;
 
+import com.plkrhone.sisrh.config.FTPConfig;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -19,11 +20,8 @@ import com.amazonaws.AmazonServiceException;
 import com.plkrhone.sisrh.util.RandomicoUtil;
 
 public class FTPStorage extends Storage{
-	String server = "ftp.prolinkcontabil.com.br";
-    int port = 21;
-    String user = "prolinkcontabil";
-    String pass = "plk*link815";
-    String dirFTP= "sisrh";
+    FTPConfig cf = FTPConfig.getInstance();
+    //String dirFTP= "sisrh";
     
 	@Override
 	public String gerarNome(File arquivo, String nomeInicial) {
@@ -40,7 +38,7 @@ public class FTPStorage extends Storage{
                 try (InputStream stream = new FileInputStream(arquivo)) {
                     String remoteFile = novoNome;
                     System.out.println("Start uploading first file");
-                    ftp.storeFile(dirFTP+"/"+remoteFile, stream);
+                    ftp.storeFile(cf.getValue("dirFTP")+"/"+remoteFile, stream);
                     stream.close();
                 }
         }catch(IOException e){
@@ -56,7 +54,7 @@ public class FTPStorage extends Storage{
 		FTPClient ftp = new FTPClient();
         try{
             configFTP(ftp);
-            String remoteFile1 = dirFTP+"/"+arquivo;
+            String remoteFile1 = cf.getValue("dirFTP")+"/"+arquivo;
             SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyymmss");
             File dirFiles = new File(System.getProperty("java.io.tmpdir")+"/sisrh");
             if(!dirFiles.exists())
@@ -78,8 +76,8 @@ public class FTPStorage extends Storage{
         }
 	}
 	private FTPClient configFTP(FTPClient ftp) throws IOException{
-		ftp.connect(server,port);
-        ftp.login(user, pass);
+        ftp.connect(cf.getValue("host"),Integer.parseInt(cf.getValue("port")));
+        ftp.login(cf.getValue("user"),cf.getValue("pass"));
         ftp.enterLocalPassiveMode();
         ftp.setFileType(FTP.BINARY_FILE_TYPE);
         return ftp;

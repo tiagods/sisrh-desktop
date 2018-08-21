@@ -491,7 +491,9 @@ public class ControllerAvaliacao extends PersistenciaController implements Initi
 			avaliacao = avaliacoes.save(avaliacao);
 			txCodigo.setText(String.valueOf(avaliacao.getId()));
 			desbloquear(false);
-			
+			alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setContentText("Salvo com sucesso");
+			alert.showAndWait();
 		} catch (Exception e) {
 			alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Parâmentro incorreto");

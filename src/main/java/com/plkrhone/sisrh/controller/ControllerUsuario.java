@@ -238,7 +238,7 @@ public class ControllerUsuario extends PersistenciaController implements Initial
 		}catch(Exception e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setAlertType(Alert.AlertType.ERROR);
-			alert.setContentText("Falaha ao filtrar os registros!\n"+e);
+			alert.setContentText("Falha ao filtrar os registros!\n"+e);
 			alert.showAndWait();
 		}finally {
 			close();
@@ -338,6 +338,9 @@ public class ControllerUsuario extends PersistenciaController implements Initial
 					txConfirmarSenha.setText("");
 					txLogin.setEditable(false);
 
+					alert = new Alert(Alert.AlertType.INFORMATION);
+					alert.setContentText("Salvo com sucesso");
+					alert.showAndWait();
 				} catch (Exception e) {
 					alert.setHeaderText("Falha ao salvar o registro");
 					alert.setContentText("Houve um erro ao tentar salvar o registro!\n" + e);

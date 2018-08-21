@@ -509,6 +509,9 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 				try {
 					loadFactory();
 					tarefas.remove(tarefa);
+					alert = new Alert(AlertType.INFORMATION);
+					alert.setContentText("Excluido com sucesso");
+					alert.showAndWait();
 				}catch (Exception e) {
 					e.printStackTrace();
 				}finally {

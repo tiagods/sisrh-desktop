@@ -1,7 +1,5 @@
 package com.plkrhone.sisrh.model;
 
-import com.plkrhone.sisrh.model.candidato.CandidatoCurso;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -81,7 +79,6 @@ public class Candidato implements AbstractEntity,Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -99,8 +96,10 @@ public class Candidato implements AbstractEntity,Serializable {
     @Column(name="data_nascimento")
     @Temporal(TemporalType.DATE)
 	private Calendar dataNascimento;
+
     @Transient
     private int idade;
+
     @Enumerated(value=EnumType.STRING)
     @Column(name="estado_civil")
     private EstadoCivil estadoCivil;
@@ -146,35 +145,16 @@ public class Candidato implements AbstractEntity,Serializable {
 	@Column(name="descricao_cargo3")
 	private String descricaoCargo3;
 
-	@OneToMany(fetch = FetchType.LAZY,mappedBy = "candidato",cascade= CascadeType.ALL,orphanRemoval=true)
-	private Set<CandidatoCurso> cursos;
+	@Transient
+	//@OneToMany(fetch = FetchType.LAZY,mappedBy = "candidato",cascade= CascadeType.ALL,orphanRemoval=true)
+	private Set<Curso> cursos;
 
-/*
+
+
 	@ManyToOne
 	@JoinColumn(name="curso_superior_id")
 	private Curso cursoSuperior;
 
-	*/
-/*
-	private String empresa1;
-    private String empresa2;
-    private String empresa3;
-    @ManyToOne
-    @JoinColumn(name="cargo1_id")
-    private Cargo cargo1;
-    @ManyToOne
-    @JoinColumn(name="cargo2_id")
-    private Cargo cargo2;
-    @ManyToOne
-    @JoinColumn(name="cargo3_id")
-    private Cargo cargo3;
-    @Column(name="descricao_cargo1")
-    private String descricaoCargo1;
-    @Column(name="descricao_cargo2")
-    private String descricaoCargo2;
-    @Column(name="descricao_cargo3")
-    private String descricaoCargo3;
-*/
     private String formulario;
     @Column(name="total_recrutamento")
     private int totalRecrutamento = 0;//numero de vezes que o curriculo foi usado em recrutamento
@@ -371,14 +351,6 @@ public class Candidato implements AbstractEntity,Serializable {
 		this.detalhesIndicacao = detalhesIndicacao;
 	}
 
-	public Set<CandidatoCurso> getCursos() {
-		return cursos;
-	}
-
-	public void setCursos(Set<CandidatoCurso> cursos) {
-		this.cursos = cursos;
-	}
-
 	public String getFormulario() {
 		return formulario;
 	}
@@ -505,6 +477,14 @@ public class Candidato implements AbstractEntity,Serializable {
 
 	public void setDescricaoCargo3(String descricaoCargo3) {
 		this.descricaoCargo3 = descricaoCargo3;
+	}
+
+	public Curso getCursoSuperior() {
+		return cursoSuperior;
+	}
+
+	public void setCursoSuperior(Curso cursoSuperior) {
+		this.cursoSuperior = cursoSuperior;
 	}
 
 	/* (non-Javadoc)

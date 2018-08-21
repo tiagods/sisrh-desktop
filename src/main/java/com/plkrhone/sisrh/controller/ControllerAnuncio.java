@@ -1945,6 +1945,10 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 			candidatos = new CandidatosImp(getManager());
 			observer.notifyUpdate(candidatos);
 			preencherFormulario(anuncio);
+
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setContentText("Salvo com sucesso");
+			alert.showAndWait();
 		} catch (Exception e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Erro");

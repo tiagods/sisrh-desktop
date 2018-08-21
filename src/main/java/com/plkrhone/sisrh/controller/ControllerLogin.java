@@ -34,6 +34,12 @@ import javafx.util.StringConverter;
 
 public class ControllerLogin extends PersistenciaController implements Initializable{
 
+	private Stage stage;
+
+	public ControllerLogin(Stage stage){
+		this.stage=stage;
+	}
+
 	private static Logger log = LoggerFactory.getLogger(ControllerLogin.class);
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

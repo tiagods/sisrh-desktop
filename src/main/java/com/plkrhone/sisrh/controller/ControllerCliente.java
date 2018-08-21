@@ -548,6 +548,10 @@ public class ControllerCliente extends PersistenciaController implements Initial
 			cliente = clientes.save(cliente);
 			txCodigo.setText(String.valueOf(cliente.getId()));
 			desbloquear(false);
+
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setContentText("Salvo com sucesso");
+			alert.showAndWait();
 		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Erro");
@@ -566,6 +570,18 @@ public class ControllerCliente extends PersistenciaController implements Initial
 		colunaId.setPrefWidth(40);
 		TableColumn<Cliente, String> colunaNome = new TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		colunaNome.setCellFactory((TableColumn<Cliente, String> param) -> new TableCell<Cliente, String>() {
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setText(null);
+					setStyle("");
+				} else {
+					setText(item.toUpperCase());
+				}
+			}
+		});
 		colunaNome.setPrefWidth(120);
 		TableColumn<Cliente, String> colunaResponsavel = new TableColumn<>("Responsavel");
 		colunaResponsavel.setCellValueFactory(new PropertyValueFactory<>("responsavel"));

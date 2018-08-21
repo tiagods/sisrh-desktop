@@ -671,6 +671,9 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 					limparTela(pnCadastro.getChildren());
 					desbloquear(false, pnCadastro.getChildren());
 					candidato = null;
+					alert = new Alert(AlertType.INFORMATION);
+					alert.setContentText("Excluido com sucesso");
+					alert.showAndWait();
 
 				} catch (Exception e) {
 					alert = new Alert(AlertType.ERROR);
@@ -959,16 +962,17 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 			candidato.setNome(txNome.getText());
 			candidato.setSexo(rbSexoF.isSelected() ? "F" : "M");
 
-			if(dtNascimento.getValue()==null) {
+			/*
+			if(dtNascimento.getValue()!=null) {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Erro Registro");
 				alert.setHeaderText("Campo obrigatorio!");
 				alert.setContentText("é obrigatorio informar a data de nascimento ou a idade!");
 				alert.showAndWait();
 				return;
-			}
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(Date.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+			}*/
+			//Calendar calendar = Calendar.getInstance();
+			//calendar.setTime(Date.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
 			candidato.setDataNascimento(dtNascimento.getValue()==null?null
 					:GregorianCalendar.from(dtNascimento.getValue().atStartOfDay(ZoneId.systemDefault())));
@@ -1069,6 +1073,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		TableColumn<Candidato, Number> colunaId = new TableColumn<>("*");
 		colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaId.setPrefWidth(40);
+
 		TableColumn<Candidato, Calendar> colunaDataCriacao = new TableColumn<>("Atualização");
 		colunaDataCriacao.setCellValueFactory(new PropertyValueFactory<>("ultimaModificacao"));
 		colunaDataCriacao.setCellFactory((TableColumn<Candidato, Calendar> param) -> new TableCell<Candidato, Calendar>() {
@@ -1086,6 +1091,20 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 		});
 		TableColumn<Candidato, String> colunaNome = new TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		colunaNome.setCellFactory((TableColumn<Candidato, String> param) -> new TableCell<Candidato, String>() {
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setText(null);
+					setStyle("");
+				} else {
+					setText(item.toUpperCase());
+				}
+			}
+		});
+
+
 		TableColumn<Candidato, Number> colunaIdade = new TableColumn<>("Idade");
 		colunaIdade.setCellValueFactory(new PropertyValueFactory<>("idade"));
 		colunaIdade.setCellFactory((TableColumn<Candidato, Number> param) -> new TableCell<Candidato, Number>() {

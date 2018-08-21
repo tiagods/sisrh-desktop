@@ -269,6 +269,10 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 			cargo = vagas.save(cargo);
 			txCodigo.setText(String.valueOf(cargo.getId()));
 			desbloquear(false);
+
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setContentText("Salvo com sucesso");
+			alert.showAndWait();
 		} catch (Exception e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Erro ao salvar o registro");

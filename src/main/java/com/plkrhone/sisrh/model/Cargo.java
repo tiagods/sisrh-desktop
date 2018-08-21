@@ -28,11 +28,6 @@ public class Cargo implements AbstractEntity,Serializable {
 	private Calendar criadoEm;
 	private String fonte;
 
-	@ManyToOne
-	@JoinColumn(name = "nivel_id")
-	private CargoNivel nivel;
-
-
 	@Override
 	public Long getId() {
 		return id;

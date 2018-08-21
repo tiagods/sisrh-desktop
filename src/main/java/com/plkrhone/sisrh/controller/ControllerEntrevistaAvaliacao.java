@@ -287,6 +287,10 @@ public class ControllerEntrevistaAvaliacao extends PersistenciaController implem
 				tbPrincipal.getItems().clear();
 				tbPrincipal.getItems().addAll(aeAvaliacoes.findByAnuncioEntrevista(anuncioEntrevista));
 				limparTela(pnCadastro.getChildren());
+
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setContentText("Excluido com sucesso");
+				alert.showAndWait();
 			}catch(Exception e) {
 				e.printStackTrace();
 			}finally {
@@ -365,6 +369,9 @@ public class ControllerEntrevistaAvaliacao extends PersistenciaController implem
 			tbPrincipal.getItems().addAll(aeAvaliacoes.findByAnuncioEntrevista(anuncioEntrevista));
 			limparTela(pnCadastro.getChildren());
 			this.aeAva=null;
+			alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setContentText("Salvo com sucesso");
+			alert.showAndWait();
     	}catch (Exception e) {
 			e.printStackTrace();
 		}finally {

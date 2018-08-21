@@ -301,8 +301,6 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 					else if(!selected){
 						perfis.remove(p);			
 					}
-
-					//	System.out.println(((JFXCheckBox)c[1]).getId()+"-> selected ? "+((JFXCheckBox)c[1]).isSelected());
 				}
 			});		
 			mapFormulario.values().forEach(c->{
@@ -343,7 +341,6 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 			System.out.println(anuncioEntrevista.getEntrevista()==null?"vazio":"entrevista id "+anuncioEntrevista.getEntrevista().getId());
 
 			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Sucesso");
 			alert.setHeaderText("Salvo com sucesso!");
 			alert.showAndWait();
 			

@@ -56,12 +56,7 @@ public class AutoCompleteTextField<T>{
       }
     });
 
-    textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2) {
-        entriesPopup.hide();
-      }
-    });
+    textField.focusedProperty().addListener((observableValue, aBoolean, aBoolean2) -> entriesPopup.hide());
 
   }
 
@@ -85,13 +80,9 @@ public class AutoCompleteTextField<T>{
       final String result = searchResult.get(i);
       Label entryLabel = new Label(result);
       CustomMenuItem item = new CustomMenuItem(entryLabel, true);
-      item.setOnAction(new EventHandler<ActionEvent>()
-      {
-        @Override
-        public void handle(ActionEvent actionEvent) {
-        	textField.setText(result);
+      item.setOnAction(actionEvent -> {
+          textField.setText(result);
           entriesPopup.hide();
-        }
       });
       menuItems.add(item);
     }

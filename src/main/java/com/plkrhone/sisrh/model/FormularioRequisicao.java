@@ -74,7 +74,7 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
 	private Candidato.Escolaridade escolaridade;
     
     @ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="curso_superior_id")
+	@JoinColumn(name="curso_id")
     private Curso curso;
     
     private String idioma;
