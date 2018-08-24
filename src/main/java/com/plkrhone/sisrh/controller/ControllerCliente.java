@@ -582,9 +582,10 @@ public class ControllerCliente extends PersistenciaController implements Initial
 				}
 			}
 		});
-		colunaNome.setPrefWidth(120);
+		colunaNome.setPrefWidth(150);
 		TableColumn<Cliente, String> colunaResponsavel = new TableColumn<>("Responsavel");
 		colunaResponsavel.setCellValueFactory(new PropertyValueFactory<>("responsavel"));
+        colunaResponsavel.setPrefWidth(100);
 
 		TableColumn<Cliente, PfPj> colunaContato = new TableColumn<>("Telefone");
 		colunaContato.setCellValueFactory(new PropertyValueFactory<>("pessoaJuridica"));
@@ -729,7 +730,7 @@ public class ControllerCliente extends PersistenciaController implements Initial
 			};
 			return cell;
 		});
-		tbClientes.getColumns().addAll(colunaId, colunaNome, colunaResponsavel, colunaContato, colunaCelular,
+		tbClientes.getColumns().addAll(colunaNome, colunaResponsavel, colunaContato, colunaCelular,
 				colunaClienteProlink, colunaStatus, colunaEditar);
 	}
 

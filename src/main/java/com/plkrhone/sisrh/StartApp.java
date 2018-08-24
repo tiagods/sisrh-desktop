@@ -111,7 +111,7 @@ public class StartApp extends Application {
 					log.debug("Abrindo loader");
 					final FXMLLoader loader = new FXMLLoader(FXMLEnum.LOGIN.getLocalizacao());
 					log.debug("Controller");
-					//loader.setController(new ControllerLogin(stage));
+					loader.setController(new ControllerLogin(stage));
 					log.debug("Loader");
 					Parent root = loader.load();
 					log.debug("Scene");

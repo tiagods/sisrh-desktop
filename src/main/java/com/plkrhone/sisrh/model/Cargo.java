@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Created by Tiago on 19/07/2017.
  */
 @Entity
-@Table(name = "cargo")
+@Table(name = "vaga")
 public class Cargo implements AbstractEntity,Serializable {
 	/**
 	 * 

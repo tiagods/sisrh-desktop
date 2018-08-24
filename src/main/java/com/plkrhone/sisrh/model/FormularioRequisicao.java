@@ -37,7 +37,7 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
 	private String formulario;
 	
 	@ManyToOne
-	@JoinColumn(name="cargo_id")
+	@JoinColumn(name="vaga_id")
 	private Cargo cargo;
 
 	@ManyToOne
@@ -74,7 +74,7 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
 	private Candidato.Escolaridade escolaridade;
     
     @ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="curso_id")
+	@JoinColumn(name="curso_superior_id")
     private Curso curso;
     
     private String idioma;
@@ -88,9 +88,11 @@ public class FormularioRequisicao implements AbstractEntity,Serializable {
     
     @Column(name="tipo_experiencia")
     private String tipoExperiencia;
-    
+
+    @Column(columnDefinition = "text")
     private String competencia;
-    
+
+	@Column(columnDefinition = "text")
     private String atividade;
     
     private BigDecimal salario;

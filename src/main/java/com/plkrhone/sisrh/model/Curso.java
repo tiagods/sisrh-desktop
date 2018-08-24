@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name="curso")
+@Table(name="curso_superior")
 public class Curso implements AbstractEntity,Serializable {
 	/**
 	 * 

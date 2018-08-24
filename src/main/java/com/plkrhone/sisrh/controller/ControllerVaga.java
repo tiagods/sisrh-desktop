@@ -289,6 +289,7 @@ public class ControllerVaga extends PersistenciaController implements Initializa
 		TableColumn<Cargo, Number> colunaId = new TableColumn<>("*");
 		colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaId.setPrefWidth(40);
+
 		TableColumn<Cargo, String> colunaNome = new TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		colunaNome.setPrefWidth(200);

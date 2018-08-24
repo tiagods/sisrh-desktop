@@ -203,6 +203,14 @@ public class Cliente implements AbstractEntity,Serializable {
 
 	@Override
     public String toString() {
-        return this.nome+ "-" + this.cnpj;
+        String[] nomes  = this.nome.split(" ");
+        String result;
+	    if(nomes.length<=3) result = this.nome;
+	    else{
+	        result=nomes[0]+nomes[1]+nomes[2];
+        }
+        return result.toUpperCase() + "-"+this.cnpj;
     }
+
+
 }

@@ -1476,11 +1476,10 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 					cbVaga3Estado.setValue(cidade.getEstado());
 					cbVaga3Municipio.setValue(cidade);
 					cbVaga3Tempo.setValue(form.getTempoExperiencia() == -1 ? null : form.getTempoExperiencia());
-
-					cbVaga3Tipo.setValue(form.getTipoExperiencia());
-					txVaga31Competencia.setText(form.getCompetencia());
-					txVaga32DescricaoAtividades.setText(form.getAtividade());
 				}
+				cbVaga3Tipo.setValue(form.getTipoExperiencia());
+				txVaga31Competencia.setText(form.getCompetencia());
+				txVaga32DescricaoAtividades.setText(form.getAtividade());
 				ckVaga4ACombinar.setSelected(form.getSalarioCombinar() == 1);
 				if (form.getSalarioCombinar() == 1) {
 					txVaga4Salario.setText("0,00");
@@ -1812,6 +1811,7 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 		fr.setEscolaridade(cbVaga3Escolaridade.getValue());
 		fr.setCurso(cbVaga3Formacao.getValue());
 		fr.setIdioma(txVaga3Idioma.getText());
+		fr.setCidade(cbVaga3Municipio.getValue());
 		Cidade cidade = fr.getCidade();
 		if (cidade != null) {
 			cbVaga3Municipio.setValue(cidade);
@@ -1991,10 +1991,12 @@ public class ControllerAnuncio extends PersistenciaController implements Initial
 					setText(null);
 					setStyle("");
 				} else {
-					setText(item.getNome());
+					setText(item.toString());
 				}
 			}
 		});
+		colunaCliente.setPrefWidth(150);
+
 		TableColumn<Anuncio, Cliente> colunaClienteContabil = new TableColumn<>("Cliente Contabil");
 		colunaClienteContabil.setCellValueFactory(new PropertyValueFactory<>("cliente"));
 		colunaClienteContabil

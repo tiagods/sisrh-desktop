@@ -1103,7 +1103,7 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 				}
 			}
 		});
-
+		colunaNome.setPrefWidth(150);
 
 		TableColumn<Candidato, Number> colunaIdade = new TableColumn<>("Idade");
 		colunaIdade.setCellValueFactory(new PropertyValueFactory<>("idade"));
