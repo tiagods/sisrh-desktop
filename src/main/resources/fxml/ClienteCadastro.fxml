@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="750.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="CENTER" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Listagem de Clientes" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <font>
+            <Font size="18.0" fx:id="x1" />
+         </font>
+         <textFill>
+            <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+         </textFill>
+      </Label>
+       <JFXComboBox fx:id="cbSituacao" layoutX="17.0" layoutY="83.0" prefHeight="25.0" prefWidth="144.0" promptText="Situação" />
+       <JFXComboBox fx:id="cbSetorPesquisa" layoutX="184.0" layoutY="83.0" prefHeight="25.0" prefWidth="144.0" />
+       <JFXTextField fx:id="txPesquisa" layoutX="14.0" layoutY="119.0" onKeyReleased="#pesquisar" promptText="Entre com um valor" />
+       <JFXComboBox fx:id="cbFiltro" layoutX="182.0" layoutY="121.0" prefHeight="25.0" prefWidth="145.0" promptText="Filtrar por:" />
+       <PieChart fx:id="grafico" layoutX="486.0" layoutY="83.0" prefHeight="150.0" prefWidth="250.0" />
+       <JFXButton layoutX="620.0" layoutY="261.0" mnemonicParsing="false" onAction="#novo" prefHeight="23.0" prefWidth="120.0" styleClass="btJFXDefault" text="Cadastrar Novo" />
+       <TableView fx:id="tbClientes" layoutX="9.0" layoutY="86.0" prefHeight="277.0" prefWidth="730.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+   </children>
+</AnchorPane>
