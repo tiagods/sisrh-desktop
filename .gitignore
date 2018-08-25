@@ -22,8 +22,8 @@
 ftp.properties
 mail.properties
 aws.properties
-persistence.xml
 database.properties
+persistence.xml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
