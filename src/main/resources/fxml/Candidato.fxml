@@ -18,14 +18,14 @@
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 <?import org.fxutils.maskedtextfield.MaskedTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1003.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerCandidato">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerCandidato">
    <children>
       <Label alignment="CENTER" layoutX="13.0" layoutY="14.0" prefHeight="25.0" prefWidth="976.0" text="Controle de Candidatos" textFill="#9f9f9f">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <JFXTabPane fx:id="tabPane" layoutY="46.0" prefHeight="549.0" prefWidth="1003.0" tabClosingPolicy="UNAVAILABLE">
+      <JFXTabPane fx:id="tabPane" layoutY="46.0" prefHeight="549.0" prefWidth="1003.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <tabs>
             <Tab fx:id="tabPesquisa" text="Pesquisa">
                <content>

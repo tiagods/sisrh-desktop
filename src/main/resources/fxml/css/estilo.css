@@ -64,6 +64,12 @@
     -fx-background-color: rgb(77,102,204);
     -fx-text-fill: WHITE;
 }
+
+.btDefault{
+    -fx-font-size: 12px;
+    -jfx-button-type: RAISED;
+    -fx-text-fill:  #E7DFDD;
+}
 .btJFXDefault:hover{
     -fx-font-size: 11px;
     -jfx-button-type: RAISED;

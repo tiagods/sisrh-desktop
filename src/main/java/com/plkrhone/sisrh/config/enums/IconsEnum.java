@@ -3,6 +3,7 @@ package com.plkrhone.sisrh.config.enums;
 import java.net.URL;
 
 public enum IconsEnum {
+    BUTTON_CLIP("button_clip"),
     BUTTON_EDIT("button_edit"),
     BUTTON_REMOVE("button_trash"),
     BUTTON_OK("button_ok"),

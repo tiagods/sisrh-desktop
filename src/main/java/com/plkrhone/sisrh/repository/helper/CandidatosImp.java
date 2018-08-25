@@ -32,7 +32,7 @@ public class CandidatosImp extends AbstractRepository<Candidato, Long> implement
 	@Override
 	public Candidato findById(Long id) {
 		Query query = getEntityManager().createQuery("from Candidato as a "
-				+ "LEFT JOIN FETCH a.historicos LEFT JOIN FETCH a.cursos "
+				+ "LEFT JOIN FETCH a.cursos "
 				+ "where a.id=:id");
 		query.setParameter("id",id);
 		return (Candidato)query.getSingleResult();

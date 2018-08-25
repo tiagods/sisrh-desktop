@@ -151,6 +151,9 @@ public abstract class UtilsController extends PersistenciaController {
 		final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
 		return loader;
 	}
+
+	public UtilsController(){}
+
 	public UtilsController(JFXButton buttonNovo, JFXButton buttonEditar, 
 			JFXButton buttonSalvar, JFXButton buttonExcluir,JFXButton buttonCancelar) {
 		this.buttonNovo=buttonNovo;

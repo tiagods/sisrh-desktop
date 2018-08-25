@@ -3,6 +3,7 @@ package com.plkrhone.sisrh.controller;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.config.init.PaisesConfig;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
@@ -79,7 +81,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class ControllerCandidato extends PersistenciaController implements Initializable {
+public class ControllerCandidato extends UtilsController implements Initializable {
 	@FXML
 	private JFXTabPane tabPane;
 
@@ -601,9 +603,8 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 
 
 	}
-
-	@SuppressWarnings("rawtypes")
-	private void desbloquear(boolean value, ObservableList<Node> nodes) {
+	@Override
+	public void desbloquear(boolean value, ObservableList<Node> nodes) {
 		nodes.forEach((n) -> {
 			if (n instanceof JFXTextField) {
 				((JFXTextField) n).setEditable(value);
@@ -1089,6 +1090,8 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 				}
 			}
 		});
+
+
 		TableColumn<Candidato, String> colunaNome = new TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		colunaNome.setCellFactory((TableColumn<Candidato, String> param) -> new TableCell<Candidato, String>() {
@@ -1209,6 +1212,34 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 				}
 			}
 		});
+		TableColumn<Candidato, Number> colunaAnexo = new TableColumn<>("");
+		colunaAnexo.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaAnexo.setCellFactory(param -> new TableCell<Candidato, Number>() {
+			JFXButton button = new JFXButton();// excluir
+
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				} else {
+					Candidato c = tbCandidatos.getItems().get(getIndex());
+					button.getStyleClass().add("btDefault");
+					try {
+						buttonTable(button, IconsEnum.BUTTON_CLIP);
+					} catch (IOException e) {
+					}
+					if(c.getFormulario().equals("")) button.setVisible(false);
+					button.setOnAction(event -> {
+						visualizarFormulario(c.getFormulario());
+					});
+					setGraphic(button);
+
+				}
+			}
+		});
 		TableColumn<Candidato, String> colunaEditar = new TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>(""));
 		colunaEditar.setCellFactory((TableColumn<Candidato, String> param) -> {
@@ -1296,27 +1327,26 @@ public class ControllerCandidato extends PersistenciaController implements Initi
 			return cell;
 		});
 		tbCandidatos.getColumns().addAll(colunaId, colunaDataCriacao, colunaNome, colunaIdade, colunaIndicacao,
-				colunaSelecoes, colunaEntrevista, colunaPreAprovacoes, colunaAprovacoes, colunaDisponivel, colunaEditar,
+				colunaSelecoes, colunaEntrevista, colunaPreAprovacoes, colunaAprovacoes, colunaDisponivel, colunaAnexo,colunaEditar,
 				colunaAdicionarAnuncio);
 	}
 	@FXML
 	void visualizarFormulario(ActionEvent event) {
-		Runnable run = new Runnable() {
-			@Override
-			public void run() {
-				if(!txFormulario.getText().equals("")){
-					try {
-						File file  = storage.downloadFile(txFormulario.getText());
-						if(file!=null)
-							Desktop.getDesktop().open(file);
-					}catch (Exception e) {
-						e.printStackTrace();
-					}
+		visualizarFormulario(txFormulario.getText());
+	}
+	void visualizarFormulario(String formulario){
+		Runnable run = () -> {
+			if(!formulario.trim().equals("")){
+				try {
+					File file  = storage.downloadFile(formulario);
+					if(file!=null)
+						Desktop.getDesktop().open(file);
+					System.out.println(file.getAbsolutePath());
+				}catch (Exception e) {
+					alert(AlertType.ERROR,"Erro","","Erro ao baixar o formulario",e,true);
 				}
-
 			}
 		};
-		Platform.runLater(run);
-
+		new Thread(run).start();
 	}
 }

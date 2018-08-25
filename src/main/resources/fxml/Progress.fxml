@@ -3,10 +3,19 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="400.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="400.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ProgressIndicator prefHeight="340.0" prefWidth="600.0" />
-      <Label prefHeight="43.0" prefWidth="197.0" text="Carregando...Aguarde..." />
+      <Label alignment="CENTER" minWidth="60.0" prefHeight="50.0" prefWidth="400.0" style="&#10;" text="Carregando...aguarde..." textAlignment="CENTER" wrapText="false">
+         <font>
+            <Font size="18.0" fx:id="x1" />
+         </font>
+         <textFill>
+            <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+         </textFill>
+      </Label>
    </children>
 </VBox>

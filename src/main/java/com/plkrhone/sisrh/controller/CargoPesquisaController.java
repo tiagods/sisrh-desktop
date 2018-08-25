@@ -2,8 +2,6 @@ package com.plkrhone.sisrh.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -21,33 +19,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.plkrhone.sisrh.repository.helper.VagasImp;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 
 /**
  * Created by Tiago on 21/07/2017.
  */
-public class VagaController extends UtilsController implements Initializable {
+public class CargoPesquisaController extends UtilsController implements Initializable {
 
     @FXML
     private Font x1;
@@ -64,9 +55,9 @@ public class VagaController extends UtilsController implements Initializable {
     private VagasImp cargos;
     private Stage stage;
 
-    private static Logger log = LoggerFactory.getLogger(VagaController.class);
+    private static Logger log = LoggerFactory.getLogger(CargoPesquisaController.class);
 
-    public VagaController(Stage stage) {
+    public CargoPesquisaController(Stage stage) {
         this.stage = stage;
     }
 
@@ -132,8 +123,7 @@ public class VagaController extends UtilsController implements Initializable {
         tabela();
         try {
             loadFactory();
-            List<Cargo> lista = new VagasImp(getManager()).getAll();
-            tbPrincipal.setItems(FXCollections.observableList(lista));
+            filtrar();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -168,7 +158,7 @@ public class VagaController extends UtilsController implements Initializable {
     void tabela() {
         TableColumn<Cargo, Long> colunaId = new TableColumn<>("*");
         colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colunaId.setMaxWidth(40);
+        colunaId.setPrefWidth(40);
 
         TableColumn<Cargo, String> colunaNome = new TableColumn<>("Nome");
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -271,7 +261,7 @@ public class VagaController extends UtilsController implements Initializable {
                 }
             }
         });
-        tbPrincipal.setFixedCellSize(50);
-        tbPrincipal.getColumns().addAll(colunaNome, colunaDescricao, colunaEditar, colunaExcluir);
+        tbPrincipal.setFixedCellSize(70);
+        tbPrincipal.getColumns().addAll(colunaId,colunaNome, colunaDescricao, colunaEditar, colunaExcluir);
     }
 }

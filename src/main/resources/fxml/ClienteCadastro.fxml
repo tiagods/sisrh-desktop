@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
+<?import org.fxutils.maskedtextfield.MaskedTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="750.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="750.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label alignment="CENTER" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Listagem de Clientes" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <Label alignment="CENTER" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Cadastro de Cliente" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <font>
             <Font size="18.0" fx:id="x1" />
          </font>
@@ -20,12 +21,106 @@
             <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
          </textFill>
       </Label>
-       <JFXComboBox fx:id="cbSituacao" layoutX="17.0" layoutY="83.0" prefHeight="25.0" prefWidth="144.0" promptText="Situação" />
-       <JFXComboBox fx:id="cbSetorPesquisa" layoutX="184.0" layoutY="83.0" prefHeight="25.0" prefWidth="144.0" />
-       <JFXTextField fx:id="txPesquisa" layoutX="14.0" layoutY="119.0" onKeyReleased="#pesquisar" promptText="Entre com um valor" />
-       <JFXComboBox fx:id="cbFiltro" layoutX="182.0" layoutY="121.0" prefHeight="25.0" prefWidth="145.0" promptText="Filtrar por:" />
-       <PieChart fx:id="grafico" layoutX="486.0" layoutY="83.0" prefHeight="150.0" prefWidth="250.0" />
-       <JFXButton layoutX="620.0" layoutY="261.0" mnemonicParsing="false" onAction="#novo" prefHeight="23.0" prefWidth="120.0" styleClass="btJFXDefault" text="Cadastrar Novo" />
-       <TableView fx:id="tbClientes" layoutX="9.0" layoutY="86.0" prefHeight="277.0" prefWidth="730.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+       <JFXTextField fx:id="txCodigo" disable="true" layoutX="90.0" layoutY="55.0" prefHeight="25.0" prefWidth="57.0" />
+       <JFXTextField fx:id="txCriacao" alignment="CENTER_RIGHT" disable="true" layoutX="447.0" layoutY="56.0" prefHeight="25.0" prefWidth="226.0" />
+       <Label layoutX="14.0" layoutY="94.0" prefHeight="17.0" prefWidth="76.0" text="Nome:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXTextField fx:id="txNome" layoutX="90.0" layoutY="90.0" prefHeight="25.0" prefWidth="235.0" />
+       <Label layoutX="448.0" layoutY="95.0" prefHeight="17.0" prefWidth="76.0" text="CNPJ:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <MaskedTextField fx:id="txCnpj" layoutX="524.0" layoutY="91.0" mask="##.###.###/####-##" placeholder=" _" />
+       <Label layoutX="14.0" layoutY="125.0" prefHeight="17.0" prefWidth="76.0" text="Responsável:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXTextField fx:id="txResponsavel" layoutX="90.0" layoutY="121.0" />
+       <Label layoutX="448.0" layoutY="126.0" prefHeight="17.0" prefWidth="76.0" text="Email:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXTextField fx:id="txEmail" layoutX="524.0" layoutY="122.0" />
+       <Label layoutX="14.0" layoutY="157.0" prefHeight="17.0" prefWidth="76.0" text="Telefone:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <MaskedTextField fx:id="txTelefone" layoutX="90.0" layoutY="153.0" mask="(##)####-####" placeholder=" _" />
+       <Label layoutX="448.0" layoutY="158.0" prefHeight="17.0" prefWidth="76.0" text="Celular:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <MaskedTextField fx:id="txCelular" layoutX="524.0" layoutY="154.0" mask="(##)#####-####" placeholder=" _" />
+       <Label layoutX="446.0" layoutY="190.0" prefHeight="17.0" prefWidth="76.0" text="Setor:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXComboBox fx:id="cbSetor" layoutX="525.0" layoutY="186.0" prefHeight="25.0" prefWidth="108.0" />
+       <JFXButton layoutX="640.0" layoutY="186.0" mnemonicParsing="false" onAction="#novoSetor" prefHeight="25.0" prefWidth="33.0" styleClass="btJFXDefault" text="+" />
+       <JFXCheckBox fx:id="ckClienteContabil" layoutX="579.0" layoutY="299.0" mnemonicParsing="false" text="Cliente Contabil">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </JFXCheckBox>
+       <JFXCheckBox fx:id="ckDesabilitar" layoutX="579.0" layoutY="326.0" mnemonicParsing="false" text="Desabilitar">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </JFXCheckBox>
+       <Label layoutX="14.0" layoutY="233.0" prefHeight="17.0" prefWidth="76.0" text="CEP:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <MaskedTextField fx:id="txCep" layoutX="93.0" layoutY="228.0" mask="#####-###" prefHeight="26.0" prefWidth="84.0" />
+       <JFXButton layoutX="185.0" layoutY="227.0" mnemonicParsing="false" onAction="#buscarCep" prefHeight="25.0" prefWidth="77.0" styleClass="btJFXDefault" text="Buscar" />
+       <Label layoutX="14.0" layoutY="267.0" prefHeight="17.0" prefWidth="89.0" text="Logradouro:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXTextField fx:id="txLogradouro" layoutX="110.0" layoutY="262.0" prefHeight="26.0" prefWidth="201.0" />
+       <Label layoutX="337.0" layoutY="268.0" prefHeight="17.0" prefWidth="70.0" text="Nº:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXTextField fx:id="txNumero" layoutX="413.0" layoutY="263.0" prefHeight="26.0" prefWidth="84.0" />
+       <Label layoutX="16.0" layoutY="300.0" prefHeight="17.0" prefWidth="70.0" text="Compl.:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXTextField fx:id="txComplemento" layoutX="92.0" layoutY="295.0" prefHeight="26.0" prefWidth="84.0" />
+       <Label layoutX="202.0" layoutY="299.0" prefHeight="17.0" prefWidth="86.0" text="Bairro:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXTextField fx:id="txBairro" layoutX="297.0" layoutY="294.0" prefHeight="26.0" prefWidth="84.0" />
+       <Label layoutX="16.0" layoutY="334.0" prefHeight="17.0" prefWidth="72.0" text="Estado:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXComboBox fx:id="cbEstado" layoutX="94.0" layoutY="330.0" prefHeight="25.0" prefWidth="84.0" />
+       <Label layoutX="203.0" layoutY="334.0" prefHeight="17.0" prefWidth="66.0" text="Cidade:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXComboBox fx:id="cbCidade" layoutX="297.0" layoutY="330.0" prefHeight="25.0" prefWidth="201.0" />
+       <JFXButton layoutX="582.0" layoutY="390.0" mnemonicParsing="false" onAction="#salvar" prefWidth="65.0" styleClass="btJFXDefault" text="Salvar" />
+       <JFXButton layoutX="675.0" layoutY="390.0" mnemonicParsing="false" onAction="#sair" prefWidth="65.0" styleClass="btJFXDefault" text="Sair" />
+       <TableView fx:id="tbPrincipal" layoutX="6.0" layoutY="249.0" prefHeight="148.0" prefWidth="660.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
    </children>
 </AnchorPane>

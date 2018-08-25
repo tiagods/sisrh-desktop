@@ -7,6 +7,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -147,10 +148,7 @@ public class Candidato implements AbstractEntity,Serializable {
 
 	@Transient
 	//@OneToMany(fetch = FetchType.LAZY,mappedBy = "candidato",cascade= CascadeType.ALL,orphanRemoval=true)
-	private Set<Curso> cursos;
-
-
-
+	private Set<Curso> cursos = new HashSet<>();
 	@ManyToOne
 	@JoinColumn(name="curso_superior_id")
 	private Curso cursoSuperior;

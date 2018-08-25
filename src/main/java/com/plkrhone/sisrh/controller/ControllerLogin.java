@@ -2,9 +2,11 @@ package com.plkrhone.sisrh.controller;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.config.init.VersaoSistema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,6 @@ import com.plkrhone.sisrh.model.Usuario;
 import com.plkrhone.sisrh.repository.helper.UsuariosImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
 import com.plkrhone.sisrh.util.CriptografiaUtil;
-import com.plkrhone.sisrh.view.LoginView;
 import com.plkrhone.sisrh.view.MenuView;
 
 import javafx.event.ActionEvent;
@@ -33,8 +34,24 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 public class ControllerLogin extends PersistenciaController implements Initializable{
+	@FXML
+	private JFXPasswordField txSenha;
+	@FXML
+	private JFXComboBox<Usuario> cbNome;
+	@FXML
+	private JFXButton btnEntrar;
+	@FXML
+	private JFXButton btnCancelar;
+	@FXML
+	private Label lbVersao;
+	@FXML
+	private Label lbBanco;
 
 	private Stage stage;
+
+	private UsuarioLogado logado = UsuarioLogado.getInstance();
+
+	private VersaoSistema versao = new VersaoSistema();
 
 	public ControllerLogin(Stage stage){
 		this.stage=stage;
@@ -58,25 +75,28 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 				}
 
 				@Override
-				public Usuario fromString(String string) {
-					return null;
+				public Usuario fromString(String string) {return null;
 				}
 				
 			});
 			cbNome.getItems().addAll(contas);
-			
+			cbNome.getSelectionModel().selectFirst();
+			if(!logado.lastLogin().equals("")){
+				Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(logado.lastLogin())).findFirst();
+				if(result.isPresent()) cbNome.setValue(result.get());
+			}
+			txSenha.setFocusTraversable(true);
+			txSenha.requestFocus();
+			String detalhes = "Versão do Sistema: "+versao.getVersao()+" de "+versao.getDate();
+			lbVersao.setText(detalhes);
+			lbBanco.setText("Versao do Banco:" +versao.getVersaoBanco());
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
 			close();
 		}
 		new ComboBoxAutoCompleteUtil<>(cbNome);
-		Runnable run = new Runnable() {
-			@Override
-			public void run() {
-				PaisesConfig.getInstance();	
-			}
-		};
+		Runnable run = () -> PaisesConfig.getInstance();
 		new Thread(run).start();
 		long tempoFinal = System.currentTimeMillis();
 		if (log.isDebugEnabled()) {
@@ -85,17 +105,6 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 		}
 		
 	}
-
-	@FXML
-	private JFXPasswordField txSenha;
-	@FXML
-	private JFXComboBox<Usuario> cbNome;
-	@FXML
-	private JFXButton btnEntrar;
-	@FXML
-	private JFXButton btnCancelar;
-    @FXML
-    private Label lbVersao;
 
 	@FXML
 	public void enterAcionado(KeyEvent event) {
@@ -129,12 +138,7 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 					UsuarioLogado.getInstance().setUsuario(usuario);
 					MenuView menu = new MenuView();
 					menu.start(new Stage());
-					StageList stages = StageList.getInstance();
-					Stage s = stages.findScene(LoginView.class);
-					if (s!= null) {
-						s.close();
-						stages.removeScene(LoginView.class);
-					}
+					stage.close();
 					if(log.isDebugEnabled())
 						log.debug("Usuario valido");
 				} else {

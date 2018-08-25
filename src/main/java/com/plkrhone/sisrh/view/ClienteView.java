@@ -18,7 +18,7 @@ public class ClienteView extends Application {
     public void start(Stage primaryStage) {
         try {
             //Icons estilo = Icons.getInstance();
-            URL url = getClass().getResource("/fxml/Cliente.fxml");
+            URL url = getClass().getResource("/fxml/ClientePesquisa.fxml");
             Parent root = FXMLLoader.load(url);
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);

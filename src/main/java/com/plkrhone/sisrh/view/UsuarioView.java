@@ -26,7 +26,6 @@ public class UsuarioView extends Application {
             primaryStage.setTitle("Controle de Usuarios");
             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
             primaryStage.show();
-            StageList.getInstance().addScene(VagaView.class, primaryStage);
         } catch (Exception e) {
             e.printStackTrace();
         }

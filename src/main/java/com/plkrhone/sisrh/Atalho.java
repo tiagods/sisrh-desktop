@@ -19,13 +19,9 @@ public class Atalho extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
-			Usuario u  = new Usuario();
-			u.setId(1L);			
-            UsuarioLogado.getInstance().setUsuario(u);
-            Stage stage = new Stage();
+			Stage stage = new Stage();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Menu.fxml"));
-            //MenuController controller = new MenuController();
-            loader.setController(new ControllerMenu());
+            //loader.setController(new ControllerMenu());
             Parent root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -36,9 +32,10 @@ public class Atalho extends Application {
             stage.show();
             
     	}catch (IOException ex) {
+		    ex.printStackTrace();
 		}
 	}
 	public static void main(String[] args) {
-		
+		launch();
 	}
 }

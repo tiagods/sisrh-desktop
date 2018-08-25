@@ -1,10 +1,16 @@
 package com.plkrhone.sisrh.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
 
+import com.plkrhone.sisrh.config.enums.FXMLEnum;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +24,6 @@ import com.plkrhone.sisrh.view.ClienteView;
 import com.plkrhone.sisrh.view.EntrevistaView;
 import com.plkrhone.sisrh.view.TarefaView;
 import com.plkrhone.sisrh.view.UsuarioView;
-import com.plkrhone.sisrh.view.VagaView;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,7 +35,7 @@ import javafx.stage.Stage;
 /**
  * Created by Tiago on 07/07/2017.
  */
-public class ControllerMenu extends PersistenciaController implements Initializable {
+public class ControllerMenu extends UtilsController implements Initializable {
 	
 	private static Logger log = LoggerFactory.getLogger(ControllerMenu.class);
 	@FXML
@@ -69,7 +74,7 @@ public class ControllerMenu extends PersistenciaController implements Initializa
 		cliente.start(new Stage());
 		//
 		// try {
-		// URL url = getClass().getClassLoader().getResource("Cliente.fxml");
+		// URL url = getClass().getClassLoader().getResource("ClientePesquisa.fxml");
 		// Parent root = FXMLLoader.load(url);
 		// pnCenter.getChildren().clear();
 		// pnCenter.getChildren().add(root);
@@ -118,9 +123,19 @@ public class ControllerMenu extends PersistenciaController implements Initializa
 	}
 
 	@FXML
-	void abrirVaga(ActionEvent event) {
-		VagaView vagaView = new VagaView();
-		vagaView.start(new Stage());
+	void abrirCargo(ActionEvent event) {
+		//VagaView vagaView = new VagaView();
+		//vagaView.start(new Stage());
+
+		try {
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.CARGO_PESQUISA);
+			loader.setController(new CargoPesquisaController(stage));
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+		}catch(IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo "+FXMLEnum.CARGO_PESQUISA,e,true);
+		}
 	}
 
 	@FXML

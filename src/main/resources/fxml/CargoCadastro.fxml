@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <JFXTextField fx:id="txCodigo" disable="true" layoutX="107.0" layoutY="60.0" prefHeight="25.0" prefWidth="83.0" />
+        <JFXTextField fx:id="txCriadoEm" disable="true" layoutX="474.0" layoutY="60.0" prefHeight="25.0" prefWidth="83.0" />
+        <JFXTextField fx:id="txNome" layoutX="110.0" layoutY="99.0" prefHeight="25.0" prefWidth="450.0" promptText="Entre com o nome" />
+        <Label layoutX="16.0" layoutY="150.0" text="Descrição:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <JFXTextArea fx:id="txDescricao" layoutX="107.0" layoutY="140.0" prefHeight="200.0" prefWidth="450.0" promptText="Informe um descrição breve" wrapText="true" />
+        <JFXTextField fx:id="txFonte" disable="true" layoutX="317.0" layoutY="344.0" prefHeight="25.0" prefWidth="240.0" />
+        <JFXButton layoutX="441.0" layoutY="457.0" mnemonicParsing="false" onAction="#salvar" prefWidth="65.0" styleClass="btJFXDefault" text="Salvar" />
+        <JFXButton layoutX="522.0" layoutY="457.0" mnemonicParsing="false" onAction="#sair" prefWidth="65.0" styleClass="btJFXDefault" text="Sair" />
+      <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Cadastro de Cargo" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <font>
+            <Font size="18.0" fx:id="x1" />
+         </font>
+         <textFill>
+            <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+         </textFill>
+      </Label>
+    </children>
+</AnchorPane>

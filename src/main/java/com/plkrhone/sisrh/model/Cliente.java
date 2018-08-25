@@ -207,7 +207,7 @@ public class Cliente implements AbstractEntity,Serializable {
         String result;
 	    if(nomes.length<=3) result = this.nome;
 	    else{
-	        result=nomes[0]+nomes[1]+nomes[2];
+	        result=nomes[0]+" "+nomes[1]+" "+nomes[2];
         }
         return result.toUpperCase() + "-"+this.cnpj;
     }
