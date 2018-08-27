@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import com.plkrhone.sisrh.repository.helper.VagasImp;
+import com.plkrhone.sisrh.repository.helper.CargosImpl;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -52,7 +52,7 @@ public class CargoPesquisaController extends UtilsController implements Initiali
     @FXML
     private TableView<Cargo> tbPrincipal;
 
-    private VagasImp cargos;
+    private CargosImpl cargos;
     private Stage stage;
 
     private static Logger log = LoggerFactory.getLogger(CargoPesquisaController.class);
@@ -74,7 +74,7 @@ public class CargoPesquisaController extends UtilsController implements Initiali
                     filtrar();
                     //filtrar(this.paginacao);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros", e, true);
                 } finally {
                     close();
                 }
@@ -93,9 +93,9 @@ public class CargoPesquisaController extends UtilsController implements Initiali
         alert.setContentText("Tem certeza disso?");
         Optional<ButtonType> optional = alert.showAndWait();
         if (optional.get() == ButtonType.OK) {
-            loadFactory();
             try {
-                VagasImp vagas = new VagasImp(getManager());
+                loadFactory();
+                CargosImpl vagas = new CargosImpl(getManager());
                 Cargo c = vagas.findById(cargo.getId());
                 vagas.remove(c);
                 alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Excluido com sucesso!");
@@ -111,7 +111,7 @@ public class CargoPesquisaController extends UtilsController implements Initiali
     }
 
     void filtrar() {
-        cargos = new VagasImp(getManager());
+        cargos = new CargosImpl(getManager());
         List<Cargo> cargoList = cargos.getVagasByNome(txPesquisa.getText().trim());
         tbPrincipal.getItems().clear();
         tbPrincipal.setItems(FXCollections.observableArrayList(cargoList));

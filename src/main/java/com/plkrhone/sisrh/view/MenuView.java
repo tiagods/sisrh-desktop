@@ -2,8 +2,6 @@ package com.plkrhone.sisrh.view;
 
 import java.net.URL;
 
-import com.plkrhone.sisrh.config.StageList;
-
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +25,6 @@ public class MenuView extends Application {
             primaryStage.setTitle("Menu Principal");
             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
             primaryStage.show();
-            StageList.getInstance().addScene(MenuView.class, primaryStage);
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 				@Override
 				public void handle(WindowEvent event) {

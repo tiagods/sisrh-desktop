@@ -13,9 +13,9 @@ import com.plkrhone.sisrh.model.Estado;
 import com.plkrhone.sisrh.repository.AbstractRepository;
 import com.plkrhone.sisrh.repository.interfaces.CidadeDAO;
 
-public class CidadesImp extends AbstractRepository<Cidade, Long> implements CidadeDAO {
+public class CidadesImpl extends AbstractRepository<Cidade, Long> implements CidadeDAO {
 
-	public CidadesImp(EntityManager manager) {
+	public CidadesImpl(EntityManager manager) {
 		super(manager);
 	}
 

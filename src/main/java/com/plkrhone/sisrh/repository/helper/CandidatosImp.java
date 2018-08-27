@@ -32,7 +32,7 @@ public class CandidatosImp extends AbstractRepository<Candidato, Long> implement
 	@Override
 	public Candidato findById(Long id) {
 		Query query = getEntityManager().createQuery("from Candidato as a "
-				+ "LEFT JOIN FETCH a.cursos "
+		//		+ "LEFT JOIN FETCH a.cursos "
 				+ "where a.id=:id");
 		query.setParameter("id",id);
 		return (Candidato)query.getSingleResult();
@@ -69,35 +69,25 @@ public class CandidatosImp extends AbstractRepository<Candidato, Long> implement
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Candidato.class);
 		
 		if(experiencia!=null || objetivo!=null) {
-		Disjunction disj = Restrictions.disjunction();
-			if(objetivo!=null && objetivo.getId()!=-1) {
+			Disjunction disj = Restrictions.disjunction();
+			if(objetivo!=null && objetivo.getId()!=-1L) {
 				disj.add(Restrictions.eq("objetivo1",objetivo)); 
 				disj.add(Restrictions.eq("objetivo2",objetivo));
 				disj.add(Restrictions.eq("objetivo3",objetivo));
 			}
-			if(experiencia!=null && experiencia.getId()!=-1) {
+			if(experiencia!=null && experiencia.getId()!=-1L) {
 				disj.add(Restrictions.eq("cargo1",experiencia)); 
 				disj.add(Restrictions.eq("cargo2",experiencia));
 				disj.add(Restrictions.eq("cargo3",experiencia));
 			}	
 			criteria.add(disj);
 		}
-//		if(experiencia!=null) {
-//			criteria.add(
-//					Restrictions.or(
-//							Restrictions.eq("cargo1",experiencia), 
-//							Restrictions.eq("cargo2",experiencia),
-//							Restrictions.eq("cargo3",experiencia)
-//							)
-//					);
-//		}
 		if(!sexo.equalsIgnoreCase("qualquer")) criteria.add(Restrictions.ilike("sexo", sexo));
 		
 		if(idadeMin>0 || idadeMax>0) {
 			LocalDate localDate = LocalDate.now();
 			LocalDate iMin = localDate.plusYears(-idadeMin);
 			LocalDate iMax = localDate.plusYears((idadeMax==0?-99:-idadeMax));
-			
 			criteria.add(Restrictions.between("dataNascimento", 
 							GregorianCalendar.from(iMax.atStartOfDay(ZoneId.systemDefault())),
 							GregorianCalendar.from(iMin.atStartOfDay(ZoneId.systemDefault()))

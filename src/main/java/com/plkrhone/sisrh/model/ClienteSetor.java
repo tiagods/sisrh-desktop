@@ -23,7 +23,14 @@ public class ClienteSetor implements AbstractEntity,Serializable {
 	private Long id;
     private String nome;
 
-    public Long getId() {
+    public ClienteSetor(Long id, String nome){
+    	this.id=id;
+    	this.nome=nome;
+	}
+
+    public ClienteSetor() {}
+
+	public Long getId() {
         return id;
     }
 

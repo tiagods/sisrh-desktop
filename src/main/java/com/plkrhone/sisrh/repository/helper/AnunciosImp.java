@@ -35,6 +35,7 @@ public class AnunciosImp extends AbstractRepository<Anuncio, Long> implements An
 		Anuncio a = (Anuncio)query.getSingleResult();
 		return a;
 	}
+
 	@Override
 	public Anuncio save(Anuncio e) {
 		getEntityManager().getTransaction().begin();

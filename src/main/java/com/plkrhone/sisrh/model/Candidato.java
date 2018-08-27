@@ -149,11 +149,13 @@ public class Candidato implements AbstractEntity,Serializable {
 	@Transient
 	//@OneToMany(fetch = FetchType.LAZY,mappedBy = "candidato",cascade= CascadeType.ALL,orphanRemoval=true)
 	private Set<Curso> cursos = new HashSet<>();
+
 	@ManyToOne
 	@JoinColumn(name="curso_superior_id")
 	private Curso cursoSuperior;
 
     private String formulario;
+
     @Column(name="total_recrutamento")
     private int totalRecrutamento = 0;//numero de vezes que o curriculo foi usado em recrutamento
     @Column(name="total_entrevista")

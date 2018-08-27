@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
-import com.plkrhone.sisrh.config.StageList;
-
 /**
  * Created by Tiago on 07/07/2017.
  */
@@ -25,7 +23,6 @@ public class TarefaView extends Application {
             primaryStage.setTitle("Controle de Tarefas");
             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
             primaryStage.show();
-            StageList.getInstance().addScene(TarefaView.class, primaryStage);
         } catch (Exception e) {
             e.printStackTrace();
         }

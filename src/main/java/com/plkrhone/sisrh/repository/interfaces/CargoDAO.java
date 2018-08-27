@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.plkrhone.sisrh.model.Cargo;
 
-public interface VagaDAO{
+public interface CargoDAO {
 	Cargo save(Cargo cargo);
 	void remove(Cargo cargo);
 	List<Cargo> getAll();

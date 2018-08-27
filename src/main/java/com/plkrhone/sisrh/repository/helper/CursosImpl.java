@@ -12,9 +12,9 @@ import com.plkrhone.sisrh.model.Curso;
 import com.plkrhone.sisrh.repository.AbstractRepository;
 import com.plkrhone.sisrh.repository.interfaces.CursoDAO;
 
-public class CursosSuperioresImp extends AbstractRepository<Curso, Long> implements CursoDAO {
+public class CursosImpl extends AbstractRepository<Curso, Long> implements CursoDAO {
 
-	public CursosSuperioresImp(EntityManager manager) {
+	public CursosImpl(EntityManager manager) {
 		super(manager);
 	}
 

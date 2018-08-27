@@ -5,9 +5,8 @@ public enum PathStorageEnum {
 	AVALIACAO("avaliacao"),
 	CURRICULO("curriculo"),
 	FORMULARIO_REQUISICAO("formulario-requisicao");
-	
+
 	private String descricao;
-	
 	PathStorageEnum(String descricao) {
 		this.descricao=descricao;
 	}

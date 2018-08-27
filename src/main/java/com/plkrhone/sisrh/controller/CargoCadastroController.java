@@ -3,7 +3,7 @@ package com.plkrhone.sisrh.controller;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.plkrhone.sisrh.model.Cargo;
-import com.plkrhone.sisrh.repository.helper.VagasImp;
+import com.plkrhone.sisrh.repository.helper.CargosImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,8 +34,7 @@ public class CargoCadastroController extends UtilsController implements Initiali
 
     private Stage stage;
     private Cargo cargo;
-    private VagasImp cargos;
-
+    private CargosImpl cargos;
 
     public CargoCadastroController(Stage stage, Cargo cargo){
         this.stage=stage;
@@ -64,15 +63,13 @@ public class CargoCadastroController extends UtilsController implements Initiali
 
     @FXML
     void salvar(ActionEvent event) {
-        cargo.setNome(txNome.getText());
-        cargo.setDescricao(txDescricao.getText());
-        cargo.setFonte(txFonte.getText());
+
         try {
             loadFactory();
             if (txCodigo.getText().equals("")) {
                 cargo = new Cargo();
                 cargo.setCriadoEm(Calendar.getInstance());
-                cargos = new VagasImp(getManager());
+                cargos = new CargosImpl(getManager());
                 if (cargos.findByNome(txNome.getText().trim()) != null) {
                     alert(Alert.AlertType.ERROR,"Duplicidade","","Ja existe um cadastro com o nome informado");
                     return;
@@ -86,7 +83,10 @@ public class CargoCadastroController extends UtilsController implements Initiali
                     return;
                 }
             }
-            cargos= new VagasImp(getManager());
+            cargo.setNome(txNome.getText());
+            cargo.setDescricao(txDescricao.getText());
+            cargo.setFonte(txFonte.getText());
+            cargos= new CargosImpl(getManager());
             cargo = cargos.save(cargo);
             txCodigo.setText(String.valueOf(cargo.getId()));
             alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso!");
@@ -97,6 +97,7 @@ public class CargoCadastroController extends UtilsController implements Initiali
             close();
         }
     }
-
-
+    public Cargo getCargo() {
+        return cargo;
+    }
 }

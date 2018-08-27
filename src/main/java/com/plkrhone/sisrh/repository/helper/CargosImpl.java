@@ -13,11 +13,11 @@ import org.hibernate.criterion.Restrictions;
 
 import com.plkrhone.sisrh.repository.AbstractRepository;
 import com.plkrhone.sisrh.repository.interfaces.Paginacao;
-import com.plkrhone.sisrh.repository.interfaces.VagaDAO;
+import com.plkrhone.sisrh.repository.interfaces.CargoDAO;
 
-public class VagasImp extends AbstractRepository<Cargo, Long> implements VagaDAO {
+public class CargosImpl extends AbstractRepository<Cargo, Long> implements CargoDAO {
 
-	public VagasImp(EntityManager manager) {
+	public CargosImpl(EntityManager manager) {
 		super(manager);
 	}
 	@SuppressWarnings("unchecked")

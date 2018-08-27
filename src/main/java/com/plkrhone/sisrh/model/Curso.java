@@ -17,6 +17,13 @@ public class Curso implements AbstractEntity,Serializable {
 	private String nome;
 	@Enumerated(value = EnumType.STRING)
 	private Nivel nivel;
+
+	public Curso (Long id,String nome){
+		this.id=id;
+		this.nome=nome;
+	}
+	public Curso(){}
+
 	public enum Nivel{
 		PROFISSIONALIZANTE, TECNICO, TECNOLOGO, GRADUACAO, POSGRADUACAO, MESTRADO, DOUTORADO
 	}
@@ -91,9 +98,6 @@ public class Curso implements AbstractEntity,Serializable {
 
 	@Override
 	public String toString() {
-		return this.nome;
+		return this.id==-1L?"":this.nome.toUpperCase()+" ("+nivel+")";
 	}
-
-
-	
 }

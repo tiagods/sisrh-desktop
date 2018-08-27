@@ -25,7 +25,8 @@
             <JFXPasswordField fx:id="txSenha" layoutX="86.0" layoutY="284.0" onKeyPressed="#enterAcionado" prefHeight="28.0" prefWidth="244.0" promptText="Senha">
                <font>
                   <Font size="14.0" />
-               </font></JFXPasswordField>
+               </font>
+            </JFXPasswordField>
             <JFXButton fx:id="btnEntrar" buttonType="RAISED" layoutX="119.0" layoutY="340.0" onAction="#entrar" prefWidth="80.0" styleClass="btJFXDefault" text="Entrar">
                <font>
                   <Font size="14.0" />

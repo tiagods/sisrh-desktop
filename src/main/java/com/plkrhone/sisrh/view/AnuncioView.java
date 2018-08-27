@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
-import com.plkrhone.sisrh.config.StageList;
-
 /**
  * Created by Tiago on 07/07/2017.
  */
@@ -25,7 +23,6 @@ public class AnuncioView extends Application {
             primaryStage.setTitle("Controle de Anuncios");
             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
             primaryStage.show();
-            StageList.getInstance().addScene(AnuncioView.class, primaryStage);
         } catch (Exception e) {
             e.printStackTrace();
             //System.exit(0);

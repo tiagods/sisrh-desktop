@@ -19,8 +19,6 @@ import com.plkrhone.sisrh.repository.helper.AnunciosImp;
 import com.plkrhone.sisrh.repository.helper.TarefasImp;
 import com.plkrhone.sisrh.view.AnuncioView;
 import com.plkrhone.sisrh.view.AvaliacaoView;
-import com.plkrhone.sisrh.view.CandidatoView;
-import com.plkrhone.sisrh.view.ClienteView;
 import com.plkrhone.sisrh.view.EntrevistaView;
 import com.plkrhone.sisrh.view.TarefaView;
 import com.plkrhone.sisrh.view.UsuarioView;
@@ -70,17 +68,15 @@ public class ControllerMenu extends UtilsController implements Initializable {
 
 	@FXML
 	void abrirCliente(ActionEvent event) {
-		ClienteView cliente = new ClienteView();
-		cliente.start(new Stage());
-		//
-		// try {
-		// URL url = getClass().getClassLoader().getResource("ClientePesquisa.fxml");
-		// Parent root = FXMLLoader.load(url);
-		// pnCenter.getChildren().clear();
-		// pnCenter.getChildren().add(root);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+		try {
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.CLIENTE_PESQUISA);
+			loader.setController(new ClientePesquisaController(stage));
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+		}catch(IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo "+FXMLEnum.CLIENTE_PESQUISA,e,true);
+		}
 	}
 
 	@FXML
@@ -102,12 +98,17 @@ public class ControllerMenu extends UtilsController implements Initializable {
 		AvaliacaoView avaliacao = new AvaliacaoView();
 		avaliacao.start(new Stage());
 	}
-
 	@FXML
 	void abrirCandidato(ActionEvent event) {
-			CandidatoView candidatoView = new CandidatoView();
-			candidatoView.start(new Stage());
-		
+		try {
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.CANDIDATO_PESQUISA);
+			loader.setController(new CandidatoPesquisaController(stage,null,null));
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+		}catch(IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo "+FXMLEnum.CANDIDATO_PESQUISA,e,true);
+		}
 	}
 
 	@FXML

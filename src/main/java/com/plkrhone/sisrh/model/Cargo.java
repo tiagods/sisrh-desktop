@@ -28,6 +28,12 @@ public class Cargo implements AbstractEntity,Serializable {
 	private Calendar criadoEm;
 	private String fonte;
 
+	public Cargo(){}
+	public Cargo(Long id, String nome){
+		this.id=id;
+		this.nome=nome;
+	}
+
 	@Override
 	public Long getId() {
 		return id;

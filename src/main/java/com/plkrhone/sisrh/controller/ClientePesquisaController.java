@@ -2,15 +2,12 @@ package com.plkrhone.sisrh.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
-import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.model.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.paint.Color;
@@ -18,40 +15,28 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.fxutils.maskedtextfield.MaskedTextField;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTabPane;
-import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import com.plkrhone.sisrh.repository.helper.CidadesImp;
 import com.plkrhone.sisrh.repository.helper.ClienteSetoresImp;
 import com.plkrhone.sisrh.repository.helper.ClientesImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
-import com.plkrhone.sisrh.util.EnderecoUtil;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 
 /**
  * Created by Tiago on 13/07/2017.
@@ -85,16 +70,33 @@ public class ClientePesquisaController extends UtilsController implements Initia
     private ClienteSetoresImp setores;
     private ClientesImp clientes;
 
+    private Stage stage;
+
+    public ClientePesquisaController(Stage stage){
+        this.stage = stage;
+    }
+
     private void abrirCadastro(Cliente t) {
         try {
             loadFactory();
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.CLIENTE_CADASTRO);
-            loader.setController(new CargoCadastroController(stage, t));
+            ClienteCadastroController controller = new ClienteCadastroController(stage, t);
+            loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage.setOnHiding(event -> {
                 try {
                     loadFactory();
+                    if(controller.isHouveAtualizacaoCombo()) {
+                        setores = new ClienteSetoresImp(getManager());
+                        ClienteSetor setor1 = cbSetorPesquisa.getValue();
+                        cbSetorPesquisa.getItems().clear();
+                        cbSetorPesquisa.getItems().add(new ClienteSetor(-1L, "Qualquer"));
+                        cbSetorPesquisa.getItems().addAll(setores.getAll());
+                        if (setor1 != null)
+                            cbSetorPesquisa.getSelectionModel().select(setor1);
+                        new ComboBoxAutoCompleteUtil<>(cbSetorPesquisa);
+                    }
                     filtrar();
                     //filtrar(this.paginacao);
                 } catch (Exception e) {
@@ -116,21 +118,13 @@ public class ClientePesquisaController extends UtilsController implements Initia
     public void initialize(URL location, ResourceBundle resources) {
         long tempoInicial = System.currentTimeMillis();
         tabela();
-        tabelaCadastro();
         try {
             loadFactory();
-            clientes = new ClientesImp(getManager());
             combos();
             graficos();
-            List<Cliente> lista = clientes.filtrar(1, null, null, null, "nome");
-            tbClientes.setItems(FXCollections.observableList(lista));
+            filtrar();
         } catch (Exception e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Erro");
-            alert.setHeaderText(null);
-            alert.setContentText("Erro ao listar os registros\n" + e);
-            alert.showAndWait();
-            e.printStackTrace();
+            alert(AlertType.ERROR,"Erro","","Erro ao listar os registros", e, true);
         } finally {
             close();
         }
@@ -146,26 +140,48 @@ public class ClientePesquisaController extends UtilsController implements Initia
         cbFiltro.getSelectionModel().select("Nome");
 
         setores = new ClienteSetoresImp(getManager());
-        cbSetor.getItems().add(null);
-        cbSetor.getItems().addAll(setores.getAll());
-        cbSetorPesquisa.getItems().addAll(cbSetor.getItems());
+        cbSetorPesquisa.getItems().add(null);
+        cbSetorPesquisa.getItems().addAll(setores.getAll());
         new ComboBoxAutoCompleteUtil<>(cbSetorPesquisa);
-        new ComboBoxAutoCompleteUtil<>(cbSetor);
 
         cbSetorPesquisa.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                filtrar();
+                try {
+                    loadFactory();
+                    filtrar();
+                    //filtrar(this.paginacao);
+                } catch (Exception e) {
+                    alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros", e, true);
+                } finally {
+                    close();
+                }
             }
         });
 
         cbSituacao.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && !newValue.equals("Situação")) {
-                filtrar();
+                try {
+                    loadFactory();
+                    filtrar();
+                    //filtrar(this.paginacao);
+                } catch (Exception e) {
+                    alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registro", e, true);
+                } finally {
+                    close();
+                }
             }
         });
         cbFiltro.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && !newValue.equals("Filtrar por:") && !newValue.equals("")) {
-                filtrar();
+                try {
+                    loadFactory();
+                    filtrar();
+                    //filtrar(this.paginacao);
+                } catch (Exception e) {
+                    alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registro", e, true);
+                } finally {
+                    close();
+                }
             }
         });
     }
@@ -192,26 +208,14 @@ public class ClientePesquisaController extends UtilsController implements Initia
         }
         return false;
     }
-
     private void filtrar() {
-        try {
-            loadFactory();
-            clientes = new ClientesImp(getManager());
-            int situacao = cbSituacao.getValue().equals("Ativo") ? 1
-                    : (cbSituacao.getValue().equals("Inativo") ? 0 : -1);
-            List<Cliente> list = clientes.filtrar(situacao, cbSetorPesquisa.getValue(), txPesquisa.getText(),
-                    cbFiltro.getValue(), "nome");
-            tbClientes.getItems().clear();
-            tbClientes.getItems().addAll(FXCollections.observableArrayList(list));
-            graficos();
-        } catch (Exception e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Erro");
-            alert.setContentText("Erro ao filtrar os registros");
-            alert.showAndWait();
-        } finally {
-            close();
-        }
+        clientes = new ClientesImp(getManager());
+        int situacao = cbSituacao.getValue().equals("Ativo") ? 1
+                : (cbSituacao.getValue().equals("Inativo") ? 0 : -1);
+        List<Cliente> list = clientes.filtrar(situacao, cbSetorPesquisa.getValue(), txPesquisa.getText(),
+                cbFiltro.getValue(), "nome");
+        tbPrincipal.getItems().clear();
+        tbPrincipal.getItems().addAll(FXCollections.observableArrayList(list));
     }
 
     private void graficos() {
@@ -235,94 +239,10 @@ public class ClientePesquisaController extends UtilsController implements Initia
     }
 
     @FXML
-    void novoSetor(ActionEvent event) {
-
-    }
-
-    @FXML
     public void pesquisar(KeyEvent event) {
         filtrar();
     }
 
-
-
-    @FXML
-    public void salvar(ActionEvent event) {
-        try {
-            loadFactory();
-            clientes = new ClientesImp(getManager());
-
-            if (txCodigo.getText().equals("")) {
-                if (!txCnpj.getPlainText().trim().equals(""))
-                    ;
-                {
-                    Cliente cli = clientes.findByCnpj(txCnpj.getPlainText());
-                    if (cli != null) {
-                        Alert alert = new Alert(AlertType.ERROR);
-                        alert.setTitle("Erro");
-                        alert.setHeaderText("CNPJ já existe");
-                        alert.setContentText("O cnpj informado já foi cadastrado para o cliente: " + cli.getId() + "-"
-                                + cli.getNome());
-                        alert.showAndWait();
-                        return;
-                    }
-                }
-                cliente = new Cliente();
-                cliente.setCriadoEm(Calendar.getInstance());
-                cliente.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
-            } else {
-                cliente.setId(Long.parseLong(txCodigo.getText()));
-                if (!txCnpj.getPlainText().trim().equals(""))
-                    ;
-                {
-                    Cliente cli = clientes.findByCnpj(txCnpj.getPlainText());
-                    if (cli != null && cli.getId() != cliente.getId()) {
-                        Alert alert = new Alert(AlertType.ERROR);
-                        alert.setTitle("Erro");
-                        alert.setHeaderText("CNPJ já existe");
-                        alert.setContentText("O cnpj informado já foi cadastrado para o cliente: " + cli.getId() + "-"
-                                + cli.getNome());
-                        alert.showAndWait();
-                        return;
-                    }
-                }
-            }
-            PfPj pfpj = new PfPj();
-            cliente.setNome(txNome.getText());
-            cliente.setCnpj(txCnpj.getPlainText());
-            cliente.setResponsavel(txResponsavel.getText());
-
-            pfpj.setEmail(txEmail.getText());
-            pfpj.setTelefone(txTelefone.getPlainText());
-            pfpj.setCelular(txCelular.getPlainText());
-            pfpj.setCep(txCep.getPlainText());
-            pfpj.setLogradouro(txLogradouro.getText());
-            pfpj.setNumero(txNumero.getText());
-            pfpj.setComplemento(txComplemento.getText());
-            pfpj.setBairro(txBairro.getText());
-            pfpj.setEstado(cbEstado.getValue());
-            pfpj.setCidade(cbCidade.getValue());
-            cliente.setPessoaJuridica(pfpj);
-            cliente.setSetor(cbSetor.getValue());
-            cliente.setClienteContabil(ckClienteContabil.isSelected() ? 1 : 0);
-            cliente.setSituacao(ckDesabilitar.isSelected() ? 0 : 1);
-            cliente = clientes.save(cliente);
-            txCodigo.setText(String.valueOf(cliente.getId()));
-            desbloquear(false);
-
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setContentText("Salvo com sucesso");
-            alert.showAndWait();
-        } catch (Exception e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Erro");
-            alert.setContentText("Erro ao salvar o registro\n" + e);
-            alert.showAndWait();
-        } finally {
-            close();
-        }
-        filtrar();
-    }
 
     @SuppressWarnings("unchecked")
     private void tabela() {
@@ -458,28 +378,31 @@ public class ClientePesquisaController extends UtilsController implements Initia
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>(""));
         colunaEditar.setCellFactory((TableColumn<Cliente, String> param) -> {
             final TableCell<Cliente, String> cell = new TableCell<Cliente, String>() {
-                final JFXButton button = new JFXButton("Editar");
+                final JFXButton button = new JFXButton("");
 
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    button.getStyleClass().add("btOrange");
                     if (empty) {
                         setGraphic(null);
                         setText(null);
                     } else {
-                        button.getStyleClass().add("btJFXDefault");
+                        button.getStyleClass().add("btDefault");
+                        try {
+                            buttonTable(button, IconsEnum.BUTTON_EDIT);
+                        } catch (IOException e) {
+                        }
                         button.setOnAction(event -> {
-                            tabPane.getSelectionModel().select(tabCadastro);
-                            desbloquear(true);
-                            limparTela();
+                            abrirCadastro(tbPrincipal.getItems().get(getIndex()));
+                        });
+                        button.setOnAction(event -> {
                             try {
                                 loadFactory();
                                 clientes = new ClientesImp(getManager());
-                                Cliente cli = clientes.findById(tbClientes.getItems().get(getIndex()).getId());
-                                preencherFormulario(cli);
+                                Cliente cli = clientes.findById(tbPrincipal.getItems().get(getIndex()).getId());
+                                abrirCadastro(cli);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                alert(AlertType.ERROR,"Erro","","Erro ao carregar registro");
                             } finally {
                                 close();
                             }
@@ -491,104 +414,36 @@ public class ClientePesquisaController extends UtilsController implements Initia
             };
             return cell;
         });
-        tbClientes.getColumns().addAll(colunaNome, colunaResponsavel, colunaContato, colunaCelular,
-                colunaClienteProlink, colunaStatus, colunaEditar);
-    }
+        TableColumn<Cliente, Number> colunaExcluir = new TableColumn<>("");
+        colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaExcluir.setCellFactory(param -> new TableCell<Cliente, Number>() {
+            JFXButton button = new JFXButton();// excluir
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                } else {
 
-    @SuppressWarnings("unchecked")
-    private void tabelaCadastro() {
-        TableColumn<Anuncio, String> colunaId = new TableColumn<>("*");
-        colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colunaId.setPrefWidth(40);
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_REMOVE);
+                    } catch (IOException e) {
+                    }
+                    button.setOnAction(event -> {
+                        boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
+                        if (removed)
+                            tbPrincipal.getItems().remove(getIndex());
+                    });
+                    Cliente c = tbPrincipal.getItems().get(getIndex());
+                    setGraphic(button);
 
-        TableColumn<Anuncio, FormularioRequisicao> colunaNome = new TableColumn<>("Cargo");
-        colunaNome.setCellValueFactory(new PropertyValueFactory<>("formularioRequisicao"));
-        colunaNome.setCellFactory(
-                (TableColumn<Anuncio, FormularioRequisicao> param) -> new TableCell<Anuncio, FormularioRequisicao>() {
-                    @Override
-                    protected void updateItem(FormularioRequisicao item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item == null) {
-                            setText(null);
-                            setStyle("");
-                        } else {
-                            setText(item.getCargo() != null ? item.getCargo().getNome() : "");
-                        }
-                    }
-                });
-        TableColumn<Anuncio, Calendar> colunaData = new TableColumn<>("Inicio");
-        colunaData.setCellValueFactory(new PropertyValueFactory<>("dataAbertura"));
-        colunaData.setCellFactory((TableColumn<Anuncio, Calendar> param) -> new TableCell<Anuncio, Calendar>() {
-            @Override
-            protected void updateItem(Calendar item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item != null ? new SimpleDateFormat("dd/MM/yyyy").format(item.getTime()) : "");
                 }
             }
         });
-        TableColumn<Anuncio, Calendar> colunaDataAdmissao = new TableColumn<>("Previsão Admissão");
-        colunaDataAdmissao.setCellValueFactory(new PropertyValueFactory<>("dataAdmissao"));
-        colunaDataAdmissao.setCellFactory((TableColumn<Anuncio, Calendar> param) -> new TableCell<Anuncio, Calendar>() {
-            @Override
-            protected void updateItem(Calendar item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item != null ? new SimpleDateFormat("dd/MM/yyyy").format(item.getTime()) : "");
-                }
-            }
-        });
-        TableColumn<Anuncio, Calendar> colunaDataFim = new TableColumn<>("Previsão Encerramento");
-        colunaDataFim.setCellValueFactory(new PropertyValueFactory<>("dataEncerramento"));
-        colunaDataFim.setCellFactory((TableColumn<Anuncio, Calendar> param) -> new TableCell<Anuncio, Calendar>() {
-            @Override
-            protected void updateItem(Calendar item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item != null ? new SimpleDateFormat("dd/MM/yyyy").format(item.getTime()) : "");
-                }
-            }
-        });
-        TableColumn<Anuncio, Anuncio.Cronograma> colunaCronograma = new TableColumn<>("Cronograma");
-        colunaCronograma.setCellValueFactory(new PropertyValueFactory<>("cronograma"));
-        colunaCronograma
-                .setCellFactory((TableColumn<Anuncio, Anuncio.Cronograma> param) -> new TableCell<Anuncio, Anuncio.Cronograma>() {
-                    @Override
-                    protected void updateItem(Anuncio.Cronograma item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item == null) {
-                            setText(null);
-                            setStyle("");
-                        } else {
-                            setText(item.getDescricao());
-                        }
-                    }
-                });
-        TableColumn<Anuncio, Anuncio.AnuncioStatus> colunaStatus = new TableColumn<>("Status");
-        colunaStatus.setCellValueFactory(new PropertyValueFactory<>("anuncioStatus"));
-        colunaStatus
-                .setCellFactory((TableColumn<Anuncio, Anuncio.AnuncioStatus> param) -> new TableCell<Anuncio, Anuncio.AnuncioStatus>() {
-                    @Override
-                    protected void updateItem(Anuncio.AnuncioStatus item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item == null) {
-                            setText(null);
-                            setStyle("");
-                        } else {
-                            setText(item != null ? item.getDescricao() : "");
-                        }
-                    }
-                });
-        tbCadastro.getColumns().addAll(colunaId, colunaData, colunaDataAdmissao, colunaDataFim, colunaNome,
-                colunaCronograma, colunaStatus);
+        tbPrincipal.getColumns().addAll(colunaNome, colunaResponsavel, colunaContato, colunaCelular,
+                colunaClienteProlink, colunaStatus, colunaEditar,colunaExcluir);
     }
 }

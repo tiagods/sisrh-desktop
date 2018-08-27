@@ -13,7 +13,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.model.*;
+import com.plkrhone.sisrh.repository.helper.*;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -26,18 +31,9 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTimePicker;
-import com.plkrhone.sisrh.model.Anuncio;
 import com.plkrhone.sisrh.model.Anuncio.AnuncioStatus;
 import com.plkrhone.sisrh.model.Anuncio.Cronograma;
-import com.plkrhone.sisrh.model.Cliente;
-import com.plkrhone.sisrh.model.Tarefa;
-import com.plkrhone.sisrh.model.Usuario;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevista;
-import com.plkrhone.sisrh.repository.helper.AnuncioEntrevistasImp;
-import com.plkrhone.sisrh.repository.helper.AnunciosImp;
-import com.plkrhone.sisrh.repository.helper.ClientesImp;
-import com.plkrhone.sisrh.repository.helper.TarefasImp;
-import com.plkrhone.sisrh.repository.helper.UsuariosImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
 
 import javafx.beans.value.ChangeListener;
@@ -67,7 +63,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class ControllerTarefa extends PersistenciaController implements Initializable {
+public class ControllerTarefa extends UtilsController implements Initializable {
 
 	@FXML
 	private JFXComboBox<Cronograma> cbCronogramaPesquisa;
@@ -172,7 +168,7 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void desbloquear(boolean value, ObservableList<Node> nodes) {
+	public void desbloquear(boolean value, ObservableList<Node> nodes) {
 		nodes.forEach((n) -> {
 			if (n instanceof JFXTextField) {
 				((JFXTextField) n).setEditable(value);
@@ -731,13 +727,29 @@ public class ControllerTarefa extends PersistenciaController implements Initiali
 	@FXML
 	void verPerfil(ActionEvent event) {
 		try {
-			FXMLLoader loader = carregarFxmlLoader("Candidato");
-			Stage stage = carregarStage(loader, "Perfil de Candidatos");
-			ControllerCandidato controllerCandidato = loader.getController();
-			controllerCandidato.preencherFormulario(cbAnuncioEntrevista.getValue().getCandidato());
-			stage.show();
+			loadFactory();
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.CANDIDATO_CADASTRO);
+			CandidatoCadastroController controller = new CandidatoCadastroController(stage,null,null);
+			loader.setController(controller);
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+			stage.setOnHiding(e -> {
+				try {
+					loadFactory();
+					filtrar();
+					//filtrar(this.paginacao);
+				} catch (Exception ex) {
+					alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+							"Falha ao localizar o arquivo" + FXMLEnum.CANDIDATO_CADASTRO, ex, true);
+				} finally {
+					close();
+				}
+			});
 		} catch (IOException e) {
-			e.printStackTrace();
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo" + FXMLEnum.CANDIDATO_CADASTRO, e, true);
+		} finally {
+			close();
 		}
 	}
 

@@ -80,7 +80,7 @@ public class ClientesImp extends AbstractRepository<Cliente, Long> implements Cl
 				c.add(Restrictions.ilike(campo, texto, MatchMode.ANYWHERE));
 			}
 		}
-		if (setor != null)
+		if (setor != null && setor.getId()!=-1L)
 			c.add(Restrictions.eq("setor", setor));
 		c.addOrder(Order.asc(ordenacao));
 		return c.list();

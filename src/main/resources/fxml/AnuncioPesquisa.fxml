@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAnuncio">
+   <children>
+       <Label alignment="CENTER" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Listagem de Anuncios" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+           <font>
+               <Font size="18.0" fx:id="x1" />
+           </font>
+           <textFill>
+               <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+           </textFill>
+       </Label>
+
+       <Label layoutX="233.0" layoutY="70.0" prefHeight="17.0" prefWidth="65.0" text="Empresa:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXComboBox fx:id="cbEmpresaPesquisa" layoutX="302.0" layoutY="67.0" prefHeight="25.0" prefWidth="120.0" />
+       <ComboBox fx:id="cbVagaPesquisa" layoutX="302.0" layoutY="110.0" prefHeight="25.0" prefWidth="120.0" />
+       <JFXComboBox fx:id="cbCronogramaPesquisa" layoutX="107.0" layoutY="67.0" prefHeight="25.0" prefWidth="120.0" />
+       <JFXComboBox fx:id="cbStatusPesquisa" layoutX="107.0" layoutY="111.0" prefHeight="25.0" prefWidth="120.0" />
+       <JFXDatePicker fx:id="dtInicialPesquisa" layoutX="447.0" layoutY="100.0" promptText="Data Inicial" />
+       <JFXDatePicker fx:id="dtFinalPesquisa" layoutX="447.0" layoutY="133.0" promptText="Data Final" />
+       <Label layoutX="233.0" layoutY="111.0" prefHeight="25.0" prefWidth="65.0" text="Cargo:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <Label layoutX="12.0" layoutY="68.0" prefHeight="25.0" prefWidth="95.0" text="Cronograma:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <Label layoutX="12.0" layoutY="113.0" prefHeight="19.0" prefWidth="80.0" text="Status:">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXComboBox fx:id="cbFiltro" layoutX="183.0" layoutY="196.0" prefWidth="150.0" />
+       <JFXTextField fx:id="txPesquisa" layoutX="12.0" layoutY="196.0" onKeyTyped="#pesquisar" promptText="Entre com um valor" />
+       <JFXComboBox fx:id="cbDatasFiltro" layoutX="447.0" layoutY="68.0" prefHeight="25.0" prefWidth="172.0" />
+       <PieChart fx:id="grafico" layoutX="636.0" layoutY="52.0" prefHeight="241.0" prefWidth="562.0" />
+       <JFXRadioButton fx:id="rbStatusGrafico" layoutX="511.0" layoutY="276.0" text="Status" />
+       <JFXRadioButton fx:id="rbCronogramaGrafico" layoutX="511.0" layoutY="252.0" text="Cronograma" />
+       <Label alignment="CENTER" layoutX="527.0" layoutY="219.0" prefHeight="19.0" prefWidth="90.0" text="Visão Geral" textAlignment="CENTER">
+           <font>
+               <Font name="System Bold" size="12.0" />
+           </font>
+       </Label>
+       <JFXButton layoutX="1080.0" layoutY="335.0" mnemonicParsing="false" onAction="#novo" prefHeight="23.0" prefWidth="110.0" styleClass="btJFXDefault" text="Cadastrar Novo" />
+       <TableView fx:id="tbPrincipal" layoutX="6.0" layoutY="245.0" prefHeight="338.0" prefWidth="1200.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+   </children>
+</AnchorPane>

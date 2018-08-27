@@ -3,31 +3,27 @@ package com.plkrhone.sisrh.controller;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.model.*;
-import com.plkrhone.sisrh.repository.helper.CidadesImp;
+import com.plkrhone.sisrh.repository.helper.CidadesImpl;
 import com.plkrhone.sisrh.repository.helper.ClienteSetoresImp;
 import com.plkrhone.sisrh.repository.helper.ClientesImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
-import com.plkrhone.sisrh.util.EnderecoUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ClienteCadastroController extends UtilsController implements Initializable{
     @FXML
@@ -61,7 +57,7 @@ public class ClienteCadastroController extends UtilsController implements Initia
     private MaskedTextField txCelular;
 
     @FXML
-    private JFXComboBox<?> cbSetor;
+    private JFXComboBox<ClienteSetor> cbSetor;
 
     @FXML
     private JFXCheckBox ckClienteContabil;
@@ -85,19 +81,20 @@ public class ClienteCadastroController extends UtilsController implements Initia
     private JFXTextField txBairro;
 
     @FXML
-    private JFXComboBox<?> cbEstado;
+    private JFXComboBox<Estado> cbEstado;
 
     @FXML
-    private JFXComboBox<?> cbCidade;
+    private JFXComboBox<Cidade> cbCidade;
 
     @FXML
-    private TableView<?> tbPrincipal;
+    private TableView<Anuncio> tbPrincipal;
 
     private Stage stage;
     private Cliente cliente;
     private ClienteSetoresImp setores;
     private ClientesImp clientes;
-    private CidadesImp cidades;
+    private CidadesImpl cidades;
+    private boolean houveAtualizacaoCombo = false;
 
     public ClienteCadastroController(Stage stage,Cliente cliente){
         this.stage=stage;
@@ -106,69 +103,28 @@ public class ClienteCadastroController extends UtilsController implements Initia
 
     @FXML
     void buscarCep(javafx.event.ActionEvent event){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("CEP");
-        try{
-            loadFactory();
-            EnderecoUtil util = EnderecoUtil.getInstance();
-            if(txCep.getPlainText().trim().length()==8) {
-                Endereco endereco = util.pegarCEP(txCep.getPlainText());
-                if(endereco!=null){
-                    txLogradouro.setText(endereco.getLogradouro());
-                    txNumero.setText("");
-                    txComplemento.setText(endereco.getComplemento());
-                    txBairro.setText(endereco.getBairro());
-                    cidades = new CidadesImp(getManager());
-                    cbCidade.getItems().clear();
-                    cbCidade.getItems().addAll(cidades.findByEstado(endereco.getUf()));
-                    Cidade cidade = cidades.findByNome(endereco.getLocalidade());
-                    cbCidade.setValue(cidade);
-                    cbEstado.setValue(endereco.getUf());
-                }
-                else {
-                    alert.setContentText("Verifique se o cep informado é valido ou se existe uma conexão com a internet");
-                    alert.show();
-                }
-            }
-            else{
-                alert.setContentText("Verifique o cep informado");
-                alert.show();
-            }
-        }catch(Exception e){
-            alert.setTitle("Falha na conexão com o banco de dados");
-            alert.setContentText("Houve uma falha na conexão com o banco de dados");
-            alert.show();
-            e.printStackTrace();
-        }finally {
-            close();
-        }
+        bucarCep(txCep,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
     }
 
     private void combo(){
-        cbEstado.getItems().setAll(Arrays.asList(Estado.values()));
-        cbEstado.setValue(Estado.SP);
-        cidades = new CidadesImp(getManager());
-        Cidade cidade = cidades.findByNome("São Paulo");
-        cbCidade.getItems().setAll(cidades.findByEstado(Estado.SP));
-        cbCidade.setValue(cidade);
-        cbEstado.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    loadFactory();
-                    cidades = new CidadesImp(getManager());
-                    List<Cidade> listCidades = cidades.findByEstado(newValue);
-                    cbCidade.getItems().setAll(listCidades);
-                } catch (Exception e) {
-                } finally {
-                    close();
-                }
-            }
-        });
-        new ComboBoxAutoCompleteUtil<>(cbCidade);
+        setores = new ClienteSetoresImp(getManager());
+        cbSetor.getItems().add(new ClienteSetor(-1L,"Qualquer"));
+        cbSetor.getItems().addAll(setores.getAll());
+        new ComboBoxAutoCompleteUtil<>(cbSetor);
+        comboRegiao(cbCidade,cbEstado,getManager());
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        tabelaCadastro();
+        try{
+            loadFactory();
+            combo();
+        }catch (Exception e){
+            alert(Alert.AlertType.ERROR,"Erro","","Falha ao carregar combos",e,true);
+        }finally {
+            close();
+        }
         if(cliente!=null) preencherFormulario(cliente);
     }
 
@@ -178,7 +134,7 @@ public class ClienteCadastroController extends UtilsController implements Initia
         if (result.isPresent()) {
             if (result.get().trim().length() == 0) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("Insira um nome para o departamento");
+                alert.setHeaderText("Insira um nome");
                 alert.setContentText(null);
                 alert.showAndWait();
             } else {
@@ -189,20 +145,19 @@ public class ClienteCadastroController extends UtilsController implements Initia
                     if (s == null) {
                         ClienteSetor setor = new ClienteSetor();
                         setor.setNome(result.get().trim());
-                        setores.save(setor);
+                        setor = setores.save(setor);
 
                         // preencher combos
                         List<ClienteSetor> avaliacaoGrupos = setores.getAll();
                         ObservableList<ClienteSetor> novaLista = FXCollections.observableArrayList();
                         novaLista.add(null);
                         novaLista.addAll(avaliacaoGrupos);
-                        ClienteSetor setor1 = cbSetor.getValue();
+
                         cbSetor.getItems().clear();
                         cbSetor.getItems().addAll(novaLista);
-                        cbSetorPesquisa.getItems().clear();
-                        cbSetorPesquisa.getItems().addAll(novaLista);
-                        if (setor1 != null)
-                            cbSetor.getSelectionModel().select(setor1);
+                        new ComboBoxAutoCompleteUtil<>(cbSetor);
+                        cbSetor.setValue(setor);
+                        houveAtualizacaoCombo = true;
                     } else {
                         alert(Alert.AlertType.ERROR,"Valor duplicado","",
                                 "Já existe um cadastro com o texto informado!");
@@ -259,6 +214,165 @@ public class ClienteCadastroController extends UtilsController implements Initia
     }
     @FXML
     void salvar(ActionEvent event) {
+        try {
+            loadFactory();
+            clientes = new ClientesImp(getManager());
 
+            if (txCodigo.getText().equals("")) {
+                if (!txCnpj.getPlainText().trim().equals("")){
+                    Cliente cli = clientes.findByCnpj(txCnpj.getPlainText());
+                    if (cli != null) {
+                        alert(Alert.AlertType.ERROR,"Valor duplicado","",
+                                "O cnpj informado já foi cadastrado para o cliente: " + cli.getId() + "-"
+                                        + cli.getNome());
+                        return;
+                    }
+                }
+                cliente = new Cliente();
+                cliente.setCriadoEm(Calendar.getInstance());
+                cliente.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+            } else {
+                cliente.setId(Long.parseLong(txCodigo.getText()));
+                if (!txCnpj.getPlainText().trim().equals(""))
+                    ;
+                {
+                    Cliente cli = clientes.findByCnpj(txCnpj.getPlainText());
+                    if (cli != null && cli.getId() != cliente.getId()) {
+                        alert(Alert.AlertType.ERROR,"Valor duplicado","",
+                                "O cnpj informado já foi cadastrado para o cliente: " + cli.getId() + "-"
+                                        + cli.getNome());
+                        return;
+                    }
+                }
+            }
+            PfPj pfpj = new PfPj();
+            cliente.setNome(txNome.getText());
+            cliente.setCnpj(txCnpj.getPlainText());
+            cliente.setResponsavel(txResponsavel.getText());
+
+            pfpj.setEmail(txEmail.getText());
+            pfpj.setTelefone(txTelefone.getPlainText());
+            pfpj.setCelular(txCelular.getPlainText());
+            pfpj.setCep(txCep.getPlainText());
+            pfpj.setLogradouro(txLogradouro.getText());
+            pfpj.setNumero(txNumero.getText());
+            pfpj.setComplemento(txComplemento.getText());
+            pfpj.setBairro(txBairro.getText());
+            pfpj.setEstado(cbEstado.getValue());
+            pfpj.setCidade(cbCidade.getValue());
+            cliente.setPessoaJuridica(pfpj);
+            cliente.setSetor(cbSetor.getValue());
+            cliente.setClienteContabil(ckClienteContabil.isSelected() ? 1 : 0);
+            cliente.setSituacao(ckDesabilitar.isSelected() ? 0 : 1);
+            cliente = clientes.save(cliente);
+            txCodigo.setText(String.valueOf(cliente.getId()));
+
+            alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso!");
+            stage.close();
+        } catch (Exception e) {
+            alert(Alert.AlertType.ERROR,"Erro","","Erro ao salvar o registro",e,true);
+        } finally {
+            close();
+        }
+    }
+    @SuppressWarnings("unchecked")
+    private void tabelaCadastro() {
+        TableColumn<Anuncio, String> colunaId = new TableColumn<>("*");
+        colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaId.setPrefWidth(40);
+
+        TableColumn<Anuncio, FormularioRequisicao> colunaNome = new TableColumn<>("Cargo");
+        colunaNome.setCellValueFactory(new PropertyValueFactory<>("formularioRequisicao"));
+        colunaNome.setCellFactory(
+                (TableColumn<Anuncio, FormularioRequisicao> param) -> new TableCell<Anuncio, FormularioRequisicao>() {
+                    @Override
+                    protected void updateItem(FormularioRequisicao item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(item.getCargo() != null ? item.getCargo().getNome() : "");
+                        }
+                    }
+                });
+        TableColumn<Anuncio, Calendar> colunaData = new TableColumn<>("Inicio");
+        colunaData.setCellValueFactory(new PropertyValueFactory<>("dataAbertura"));
+        colunaData.setCellFactory((TableColumn<Anuncio, Calendar> param) -> new TableCell<Anuncio, Calendar>() {
+            @Override
+            protected void updateItem(Calendar item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item != null ? new SimpleDateFormat("dd/MM/yyyy").format(item.getTime()) : "");
+                }
+            }
+        });
+        TableColumn<Anuncio, Calendar> colunaDataAdmissao = new TableColumn<>("Previsão Admissão");
+        colunaDataAdmissao.setCellValueFactory(new PropertyValueFactory<>("dataAdmissao"));
+        colunaDataAdmissao.setCellFactory((TableColumn<Anuncio, Calendar> param) -> new TableCell<Anuncio, Calendar>() {
+            @Override
+            protected void updateItem(Calendar item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item != null ? new SimpleDateFormat("dd/MM/yyyy").format(item.getTime()) : "");
+                }
+            }
+        });
+        TableColumn<Anuncio, Calendar> colunaDataFim = new TableColumn<>("Previsão Encerramento");
+        colunaDataFim.setCellValueFactory(new PropertyValueFactory<>("dataEncerramento"));
+        colunaDataFim.setCellFactory((TableColumn<Anuncio, Calendar> param) -> new TableCell<Anuncio, Calendar>() {
+            @Override
+            protected void updateItem(Calendar item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item != null ? new SimpleDateFormat("dd/MM/yyyy").format(item.getTime()) : "");
+                }
+            }
+        });
+        TableColumn<Anuncio, Anuncio.Cronograma> colunaCronograma = new TableColumn<>("Cronograma");
+        colunaCronograma.setCellValueFactory(new PropertyValueFactory<>("cronograma"));
+        colunaCronograma
+                .setCellFactory((TableColumn<Anuncio, Anuncio.Cronograma> param) -> new TableCell<Anuncio, Anuncio.Cronograma>() {
+                    @Override
+                    protected void updateItem(Anuncio.Cronograma item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(item.getDescricao());
+                        }
+                    }
+                });
+        TableColumn<Anuncio, Anuncio.AnuncioStatus> colunaStatus = new TableColumn<>("Status");
+        colunaStatus.setCellValueFactory(new PropertyValueFactory<>("anuncioStatus"));
+        colunaStatus
+                .setCellFactory((TableColumn<Anuncio, Anuncio.AnuncioStatus> param) -> new TableCell<Anuncio, Anuncio.AnuncioStatus>() {
+                    @Override
+                    protected void updateItem(Anuncio.AnuncioStatus item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(item != null ? item.getDescricao() : "");
+                        }
+                    }
+                });
+        tbPrincipal.getColumns().addAll(colunaId, colunaData, colunaDataAdmissao, colunaDataFim, colunaNome,
+                colunaCronograma, colunaStatus);
+    }
+
+    public boolean isHouveAtualizacaoCombo() {
+        return this.houveAtualizacaoCombo;
     }
 }

@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.config.init.VersaoSistema;
+import javafx.application.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +15,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.plkrhone.sisrh.config.init.PaisesConfig;
-import com.plkrhone.sisrh.config.StageList;
-import com.plkrhone.sisrh.config.VersaoConfig;
 import com.plkrhone.sisrh.model.Usuario;
 import com.plkrhone.sisrh.repository.helper.UsuariosImp;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
@@ -33,7 +32,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
-public class ControllerLogin extends PersistenciaController implements Initializable{
+public class ControllerLogin extends UtilsController implements Initializable{
 	@FXML
 	private JFXPasswordField txSenha;
 	@FXML
@@ -61,22 +60,22 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		long tempoInicial = System.currentTimeMillis();
-		
-		lbVersao.setText("Versao "+VersaoConfig.getInstance().getVersao());
 		try {
+			String detalhes = "Versão do Sistema: "+versao.getVersao()+" de "+versao.getDate();
+			lbVersao.setText(detalhes);
+			lbBanco.setText("Versao do Banco:" +versao.getVersaoBanco());
+
 			loadFactory();
 			UsuariosImp usuarios = new UsuariosImp(getManager());
 			List<Usuario> contas = usuarios.filtrar(null, 0, "nome");
 			cbNome.setConverter(new StringConverter<Usuario>() {
-
 				@Override
 				public String toString(Usuario object) {
 					return object.getLogin();
 				}
 
 				@Override
-				public Usuario fromString(String string) {return null;
-				}
+				public Usuario fromString(String string) {return null;}
 				
 			});
 			cbNome.getItems().addAll(contas);
@@ -85,11 +84,10 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 				Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(logado.lastLogin())).findFirst();
 				if(result.isPresent()) cbNome.setValue(result.get());
 			}
-			txSenha.setFocusTraversable(true);
-			txSenha.requestFocus();
-			String detalhes = "Versão do Sistema: "+versao.getVersao()+" de "+versao.getDate();
-			lbVersao.setText(detalhes);
-			lbBanco.setText("Versao do Banco:" +versao.getVersaoBanco());
+			Platform.runLater(() -> {
+				txSenha.setFocusTraversable(true);
+				txSenha.requestFocus();
+			});
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -103,7 +101,8 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 			log.debug("Tela " + getClass().getSimpleName().replace("Controller", "") + " abriu em : "
 					+ (tempoFinal - tempoInicial) + " ms");
 		}
-		
+
+
 	}
 
 	@FXML
@@ -155,7 +154,6 @@ public class ControllerLogin extends PersistenciaController implements Initializ
 			}
 		}
 	}
-
 	@FXML
 	void sair(ActionEvent event) {
 		System.exit(0);

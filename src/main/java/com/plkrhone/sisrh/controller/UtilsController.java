@@ -3,7 +3,13 @@ package com.plkrhone.sisrh.controller;
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.model.Cidade;
+import com.plkrhone.sisrh.model.Endereco;
+import com.plkrhone.sisrh.model.Estado;
+import com.plkrhone.sisrh.repository.helper.CidadesImpl;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
+import com.plkrhone.sisrh.util.EnderecoUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -34,14 +40,18 @@ import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
+import javax.persistence.EntityManager;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class UtilsController extends PersistenciaController {
+	private boolean habilidarFiltroCidade = true;
+
 	private JFXButton buttonNovo;
 	private JFXButton buttonEditar;
 	private JFXButton buttonSalvar;
@@ -53,6 +63,7 @@ public abstract class UtilsController extends PersistenciaController {
 		alert.setTitle(title);
 		alert.setHeaderText(header);
 		alert.setContentText(contentText);
+		alert.showAndWait();
 		return alert;
 	}
 	public void alert(Alert.AlertType alertType, String title, String header, String contentText, Exception ex, boolean print) {
@@ -167,6 +178,7 @@ public abstract class UtilsController extends PersistenciaController {
 		this.buttonExcluir.setOnAction(new Excluir());
 		this.buttonCancelar.setOnAction(new Cancelar());
 	}
+
 	public class NovoEditar implements EventHandler<ActionEvent>{
 		@Override
 		public void handle(ActionEvent event) {
@@ -208,7 +220,7 @@ public abstract class UtilsController extends PersistenciaController {
 			buttonCancelar.setDisable(true);	
 		}
 	}
-	public void desbloquear(boolean value, ObservableList<Node> nodes) {
+	private void desbloquear(boolean value, ObservableList<Node> nodes) {
 		nodes.forEach((n) -> {
 			if (n instanceof JFXTextField)
 				((JFXTextField) n).setEditable(value);
@@ -257,7 +269,7 @@ public abstract class UtilsController extends PersistenciaController {
 			}
 		});
 	}
-	public void limpar(ObservableList<Node> nodes) {
+	private void limpar(ObservableList<Node> nodes) {
 		nodes.forEach((n) -> {
 			if (n instanceof JFXTextField) {
 				((JFXTextField) n).setText("");
@@ -300,5 +312,78 @@ public abstract class UtilsController extends PersistenciaController {
 			}
 		});
 	}
-	
+
+	public void comboRegiao(JFXComboBox<Cidade> cbCidade, JFXComboBox<Estado> cbEstado, EntityManager manager){
+		CidadesImpl cidades = new CidadesImpl(manager);
+		Cidade cidade = cidades.findByNome("São Paulo");
+		cbCidade.getItems().addAll(cidades.findByEstado(Estado.SP));
+		cbCidade.setValue(cidade);
+		cbEstado.getItems().addAll(Estado.values());
+		cbEstado.setValue(Estado.SP);
+		cbEstado.valueProperty().addListener(new BuscaCep(cbCidade));
+		new ComboBoxAutoCompleteUtil<>(cbCidade);
+	}
+
+	void bucarCep(MaskedTextField txCEP, JFXTextField txLogradouro, JFXTextField txNumero,JFXTextField txComplemento,
+				  JFXTextField txBairro, JFXComboBox<Cidade> cbCidade, JFXComboBox<Estado> cbEstado
+	){
+		try{
+			loadFactory();
+			EnderecoUtil util = EnderecoUtil.getInstance();
+			if(txCEP.getPlainText().trim().length()==8) {
+				Endereco endereco = util.pegarCEP(txCEP.getPlainText());
+				if(endereco!=null){
+					habilidarFiltroCidade = false;
+					CidadesImpl cidades = new CidadesImpl(getManager());
+					Cidade cidade = cidades.findByNome(endereco.getLocalidade());
+					txLogradouro.setText(endereco.getLogradouro());
+					txNumero.setText("");
+					txComplemento.setText(endereco.getComplemento());
+					txBairro.setText(endereco.getBairro());
+					cbCidade.getItems().clear();
+
+					List<Cidade> cidadeList = cidades.findByEstado(endereco.getUf());
+					cbEstado.setValue(endereco.getUf());
+					cbCidade.getItems().addAll(cidadeList);
+					cbCidade.setValue(cidade);
+					new ComboBoxAutoCompleteUtil<>(cbCidade);
+					habilidarFiltroCidade = true;
+
+				}
+				else
+					alert(Alert.AlertType.WARNING,"CEP Invalido",null,
+							"Verifique se o cep informado é valido ou se existe uma conexão com a internet",null, false);
+			}
+			else{
+				alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null, false);
+			}
+		}catch(Exception e){
+			alert(Alert.AlertType.ERROR,"Falha na conexão com o banco de dados",null,
+					"Houve uma falha na conexão com o banco de dados",e,true);
+		}finally {
+			close();
+		}
+	}
+	public class BuscaCep implements ChangeListener<Estado> {
+		private JFXComboBox<Cidade> cbCidade;
+		public BuscaCep(JFXComboBox<Cidade> cbCidade){
+			this.cbCidade=cbCidade;
+		}
+		@Override
+		public void changed(ObservableValue<? extends Estado> observable, Estado oldValue, Estado newValue) {
+			if (newValue != null && habilidarFiltroCidade) {
+				try {
+					loadFactory(getManager());
+					CidadesImpl cidades = new CidadesImpl(getManager());
+					cbCidade.getItems().clear();
+					List<Cidade> listCidades = cidades.findByEstado(newValue);
+					cbCidade.getItems().addAll(listCidades);
+					cbCidade.getSelectionModel().selectFirst();
+				} catch (Exception e) {
+				} finally {
+					close();
+				}
+			}
+		}
+	}
 }
