@@ -7,9 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.net.URL;
-
-import com.plkrhone.sisrh.config.StageList;
-
 /**
  * Created by Tiago on 07/08/2017.
  */

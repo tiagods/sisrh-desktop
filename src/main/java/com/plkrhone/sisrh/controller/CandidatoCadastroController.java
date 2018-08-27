@@ -582,9 +582,9 @@ public class CandidatoCadastroController extends UtilsController implements Init
             candidato.setPessoaFisica(pfpj);
 
             // curriculo
-            candidato.setObjetivo1(cbObjetivo1.getValue().getId()==-1L?null:cbObjetivo1.getValue());
-            candidato.setObjetivo2(cbObjetivo2.getValue().getId()==-1L?null:cbObjetivo2.getValue());
-            candidato.setObjetivo3(cbObjetivo3.getValue().getId()==-1L?null:cbObjetivo3.getValue());
+            candidato.setObjetivo1(cbObjetivo1.getValue()!=null?(cbObjetivo1.getValue().getId()==-1L?null:cbObjetivo1.getValue()):null);
+            candidato.setObjetivo2(cbObjetivo2.getValue()!=null?(cbObjetivo2.getValue().getId()==-1L?null:cbObjetivo2.getValue()):null);
+            candidato.setObjetivo3(cbObjetivo3.getValue()!=null?(cbObjetivo3.getValue().getId()==-1L?null:cbObjetivo3.getValue()):null);
 
             candidato.setIndicacao(ckPossuiIndicacao.isSelected() ? 1 : 0);
             candidato.setEmpresaIndicacao(txEmpresaIndicacao.getText());
@@ -594,9 +594,9 @@ public class CandidatoCadastroController extends UtilsController implements Init
             candidato.setEmpresa2(txCarreiraEmpresa2.getText());
             candidato.setEmpresa3(txCarreiraEmpresa3.getText());
 
-            candidato.setCargo1(cbCarreiraObjetivo1.getValue().getId()==-1L?null:cbCarreiraObjetivo1.getValue());
-            candidato.setCargo2(cbCarreiraObjetivo2.getValue().getId()==-1L?null:cbCarreiraObjetivo2.getValue());
-            candidato.setCargo3(cbCarreiraObjetivo3.getValue().getId()==-1L?null:cbCarreiraObjetivo3.getValue());
+            candidato.setCargo1(cbCarreiraObjetivo1.getValue()!=null?(cbCarreiraObjetivo1.getValue().getId()==-1L?null:cbCarreiraObjetivo1.getValue()):null);
+            candidato.setCargo2(cbCarreiraObjetivo2.getValue()!=null?(cbCarreiraObjetivo2.getValue().getId()==-1L?null:cbCarreiraObjetivo2.getValue()):null);
+            candidato.setCargo3(cbCarreiraObjetivo3.getValue()!=null?(cbCarreiraObjetivo3.getValue().getId()==-1L?null:cbCarreiraObjetivo3.getValue()):null);
 
             candidato.setDescricaoCargo1(txCarreiraDescricao1.getText());
             candidato.setDescricaoCargo2(txCarreiraDescricao2.getText());
@@ -621,6 +621,7 @@ public class CandidatoCadastroController extends UtilsController implements Init
                 candidato.setFormulario(txFormulario.getText());
             candidato = candidatos.save(candidato);
             txCodigo.setText(String.valueOf(candidato.getId()));
+
             alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso");
         } catch (Exception e) {
             alert(Alert.AlertType.ERROR,"Erro","","Falha ao salvar o registro", e, true);
