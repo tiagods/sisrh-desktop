@@ -469,12 +469,6 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
     private JFXButton btnNovoTreinamentoConclusao;
 
     @FXML
-    private JFXButton btnRemoverCandidato;
-
-    @FXML
-    private JFXButton btnAprovarCandidato;
-
-    @FXML
     private JFXDatePicker dtAdmissao;
 
     @FXML

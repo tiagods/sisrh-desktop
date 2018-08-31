@@ -447,29 +447,32 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <Label layoutX="16.0" layoutY="23.0" prefHeight="44.0" prefWidth="90.0" text="Candidato Selecionado:" wrapText="true">
+                                                                <Label layoutX="568.0" layoutY="239.0" prefHeight="44.0" prefWidth="90.0" text="Candidato Selecionado:" wrapText="true">
                                                                     <font>
                                                                         <Font name="System Bold" size="12.0" />
                                                                     </font>
                                                                 </Label>
-                                                                <JFXComboBox fx:id="cbCandidatoConclusao" layoutX="109.0" layoutY="33.0" prefHeight="26.0" prefWidth="370.0" promptText="Nome do Candidado" />
-                                                                <JFXCheckBox fx:id="ckTreinamentoConclusao" layoutX="13.0" layoutY="143.0" mnemonicParsing="false" text="Haverá Treinamento?">
+                                                                <JFXComboBox fx:id="cbCandidatoConclusao" layoutX="661.0" layoutY="249.0" prefHeight="26.0" prefWidth="370.0" promptText="Nome do Candidado" />
+                                                                <JFXCheckBox fx:id="ckTreinamentoConclusao" layoutX="10.0" layoutY="248.0" mnemonicParsing="false" text="Haverá Treinamento?">
                                                                     <font>
                                                                         <Font name="System Bold" size="12.0" />
                                                                     </font>
                                                                 </JFXCheckBox>
-                                                                <JFXComboBox fx:id="cbNomeTreinamento" layoutX="189.0" layoutY="139.0" onAction="#criarTreinamento" prefHeight="26.0" prefWidth="285.0" promptText="Nome do Treinamento" />
-                                                                <JFXDatePicker fx:id="dtInicioConclusao" layoutX="188.0" layoutY="185.0" prefHeight="25.0" prefWidth="100.0" promptText="Inicio" />
-                                                                <JFXDatePicker fx:id="dtFimConclusao" layoutX="309.0" layoutY="185.0" prefHeight="25.0" prefWidth="100.0" promptText="Fim" />
-                                                                <Label layoutX="13.0" layoutY="189.0" prefHeight="17.0" prefWidth="160.0" text="Previsão do Treinamento:">
+                                                                <JFXComboBox fx:id="cbNomeTreinamento" layoutX="186.0" layoutY="244.0" onAction="#criarTreinamento" prefHeight="26.0" prefWidth="285.0" promptText="Nome do Treinamento" />
+                                                                <JFXDatePicker fx:id="dtInicioConclusao" layoutX="185.0" layoutY="290.0" prefHeight="25.0" prefWidth="100.0" promptText="Inicio" />
+                                                                <JFXDatePicker fx:id="dtFimConclusao" layoutX="306.0" layoutY="290.0" prefHeight="25.0" prefWidth="100.0" promptText="Fim" />
+                                                                <Label layoutX="10.0" layoutY="294.0" prefHeight="17.0" prefWidth="160.0" text="Previsão do Treinamento:">
                                                                     <font>
                                                                         <Font name="System Bold" size="12.0" />
                                                                     </font>
                                                                 </Label>
-                                                                <JFXButton fx:id="btnVerCandidatoConclusao" layoutX="488.0" layoutY="33.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Ver Perfil" />
-                                                                <JFXButton fx:id="btnNovoTreinamentoConclusao" layoutX="485.0" layoutY="139.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" styleClass="btJFXDefault" text="Novo" />
-																<JFXButton fx:id="btnRemoverCandidato" layoutX="293.0" layoutY="85.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Remover Candidato" />
-																<JFXButton fx:id="btnAprovarCandidato" layoutX="162.0" layoutY="85.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Aprovar Candidato" />
+                                                                <JFXButton fx:id="btnVerCandidatoConclusao" layoutX="1040.0" layoutY="249.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Ver Perfil" />
+                                                                <JFXButton fx:id="btnNovoTreinamentoConclusao" layoutX="482.0" layoutY="244.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" styleClass="btJFXDefault" text="Novo" />
+																<JFXButton fx:id="btnRemoverCandidato" layoutX="845.0" layoutY="301.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Remover Candidato" />
+																<JFXButton fx:id="btnAprovarCandidato" layoutX="714.0" layoutY="301.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Aprovar Candidato" />
+                                          <JFXButton fx:id="btnAprovarCandidato" layoutX="438.0" layoutY="25.0" mnemonicParsing="false" styleClass="btJFXDefault" text="Aprovar Candidato" />
+                                          <JFXComboBox fx:id="cbConclusaoCandidato" layoutX="34.0" layoutY="25.0" prefHeight="25.0" prefWidth="392.0" promptText="Candidado Aprovado" />
+                                          <TableView fx:id="tbConclusaoCandidato" layoutX="1.0" layoutY="67.0" prefHeight="163.0" prefWidth="1180.0" tableMenuButtonVisible="true" />
                                                             </children>
                                                         </AnchorPane>
                                                     </content>
