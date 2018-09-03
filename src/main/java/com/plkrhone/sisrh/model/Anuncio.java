@@ -6,6 +6,7 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import com.plkrhone.sisrh.model.anuncio.AnuncioCandidatoConclusao;
 import com.plkrhone.sisrh.model.anuncio.AnuncioCronograma;
 import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevista;
 
@@ -108,7 +109,7 @@ public class Anuncio implements AbstractEntity,Serializable {
     @Column(name="data_admissao")
     private Calendar dataAdmissao;
     
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     //area do formulario
     @JoinColumn(name="formulario_requisicao_id")
     private FormularioRequisicao formularioRequisicao;
@@ -133,8 +134,7 @@ public class Anuncio implements AbstractEntity,Serializable {
 			{@JoinColumn(name="candidato_id")})
     private Set<Candidato> curriculoSet = new HashSet<>();
     //entrevistas
-    @OneToMany(fetch= FetchType.LAZY,cascade= CascadeType.ALL,orphanRemoval=true)
-    @JoinColumn(name="anuncio_id")
+    @OneToMany(mappedBy = "anuncio", fetch= FetchType.LAZY,cascade= CascadeType.ALL,orphanRemoval=true)
     private Set<AnuncioEntrevista> entrevistaSet = new HashSet<>();
     //pre selecao
     @ManyToMany(fetch=FetchType.LAZY)
@@ -142,26 +142,12 @@ public class Anuncio implements AbstractEntity,Serializable {
 		{@JoinColumn(name="anuncio_id")}, inverseJoinColumns=
 			{@JoinColumn(name="candidato_id")})
     private Set<Candidato> preSelecaoSet = new HashSet<>();
-    
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="candidato_aprovado_id")
-    private Candidato candidatoAprovado;
-    
-    @Column(name="havera_treinamento")
-    private int haveraTreinamento = 0;
-    
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="treinamento_id")
-    private Treinamento treinamento;
-    
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="data_inicio_treinamento")
-    private Calendar dataInicioTreinamento;
-    
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="data_fim_treinamento")
-    private Calendar dataFimTreinamento;
-    
+
+    //area de conclusao
+    @OneToMany(mappedBy = "anuncio",fetch= FetchType.LAZY,
+            cascade= CascadeType.ALL,orphanRemoval=true)
+    private Set<AnuncioCandidatoConclusao> conclusaoSet = new HashSet<>();
+
     @OneToOne(cascade = CascadeType.ALL, 
  	       fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name="cronograma_id")
@@ -303,46 +289,8 @@ public class Anuncio implements AbstractEntity,Serializable {
         this.preSelecaoSet = preSelecaoSet;
     }
 
-    public Candidato getCandidatoAprovado() {
-        return candidatoAprovado;
-    }
 
-    public void setCandidatoAprovado(Candidato candidatoAprovado) {
-        this.candidatoAprovado = candidatoAprovado;
-    }
 
-    public int getHaveraTreinamento() {
-        return haveraTreinamento;
-    }
-
-    public void setHaveraTreinamento(int haveraTreinamento) {
-        this.haveraTreinamento = haveraTreinamento;
-    }
-
-    public Treinamento getTreinamento() {
-        return treinamento;
-    }
-
-    public void setTreinamento(Treinamento treinamento) {
-        this.treinamento = treinamento;
-    }
-
-    public Calendar getDataInicioTreinamento() {
-        return dataInicioTreinamento;
-    }
-
-    public void setDataInicioTreinamento(Calendar dataInicioTreinamento) {
-        this.dataInicioTreinamento = dataInicioTreinamento;
-    }
-
-    public Calendar getDataFimTreinamento() {
-        return dataFimTreinamento;
-    }
-
-    public void setDataFimTreinamento(Calendar dataFimTreinamento) {
-        this.dataFimTreinamento = dataFimTreinamento;
-    }
-    
     public FormularioRequisicao getFormularioRequisicao() {
 		return formularioRequisicao;
 	}
@@ -350,7 +298,16 @@ public class Anuncio implements AbstractEntity,Serializable {
 	public void setFormularioRequisicao(FormularioRequisicao formularioRequisicao) {
 		this.formularioRequisicao = formularioRequisicao;
 	}
-	/**
+
+    public Set<AnuncioCandidatoConclusao> getConclusaoSet() {
+        return conclusaoSet;
+    }
+
+    public void setConclusaoSet(Set<AnuncioCandidatoConclusao> conclusaoSet) {
+        this.conclusaoSet = conclusaoSet;
+    }
+
+    /**
 	 * @return the cronogramaDetails
 	 */
 	public AnuncioCronograma getCronogramaDetails() {

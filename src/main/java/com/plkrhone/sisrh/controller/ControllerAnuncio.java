@@ -9,22 +9,13 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.model.*;
+import com.plkrhone.sisrh.model.anuncio.AnuncioCandidatoConclusao;
 import com.plkrhone.sisrh.repository.helper.*;
 import javafx.stage.*;
 import org.fxutils.maskedtextfield.MaskTextField;
@@ -72,13 +63,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -448,25 +437,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
     private Tab tabConclusao;
 
     @FXML
-    private JFXComboBox<Candidato> cbCandidatoConclusao;
-
-    @FXML
-    private JFXCheckBox ckTreinamentoConclusao;
-
-    @FXML
-    private JFXComboBox<Treinamento> cbNomeTreinamento;
-
-    @FXML
-    private JFXDatePicker dtInicioConclusao;
-
-    @FXML
-    private JFXDatePicker dtFimConclusao;
-
-    @FXML
     private JFXButton btnVerCandidatoConclusao;
-
-    @FXML
-    private JFXButton btnNovoTreinamentoConclusao;
 
     @FXML
     private JFXDatePicker dtAdmissao;
@@ -538,6 +509,12 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
     private JFXTextField txCargoAdc;
 
     @FXML
+    private JFXComboBox<Candidato> cbConclusaoCandidato;
+
+    @FXML
+    private JFXButton btnAprovarCandidato;
+
+    @FXML
     private JFXButton btNovo;
 
     @FXML
@@ -548,6 +525,9 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
 
     @FXML
     private JFXButton btSalvar;
+
+    @FXML
+    private TableView<AnuncioCandidatoConclusao> tbConclusaoCandidato;
 
     Anuncio anuncio;
     AnunciosImp anuncios;
@@ -568,6 +548,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         tabelaCurriculo();
         tabelaEntrevista();
         tabelaPreSelecao();
+        tabelaConclusao();
         limparTela(pnCadastro.getChildren());
         try {
             loadFactory();
@@ -601,15 +582,6 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             loader.setController(new CandidatoCadastroController(stage, candidato, null));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage.setOnHiding(event -> {
-                try {
-                    loadFactory();
-                    filtrar();
-                    //filtrar(this.paginacao);
-                } catch (Exception e) {
-                    alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros", e, true);
-                } finally {
-                    close();
-                }
             });
         } catch (IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
@@ -619,10 +591,48 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         }
     }
 
+    private void abrirCandidatoConclusao(AnuncioCandidatoConclusao candidatoConclusao) {
+        try {
+            loadFactory();
+            Stage stage = new Stage();
+            Candidato c = candidatoConclusao.getCandidato();
+            stage.setTitle(c.getId()+"-"+c.getNome()+(c.getIdade()==0?"":"("+c.getIdade()+")"));
+            FXMLLoader loader = loaderFxml(FXMLEnum.ANUNCIO_CANDIDATO_CONCLUSAO);
+            if(candidatoConclusao.getDataInicio()==null && dtAdmissao.getValue()!=null) {
+                Date date = Date.from(dtAdmissao.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                candidatoConclusao.setDataInicio(calendar);
+            }
+            AnuncioCandidatoConclusaoController controller = new AnuncioCandidatoConclusaoController(stage,candidatoConclusao);
+            loader.setController(controller);
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            stage.setOnHiding(event -> {
+                try {
+                    //loadFactory();
+                    //anuncios = new AnunciosImp(getManager());
+                    //tbConclusaoCandidato.getItems().clear();
+                    //tbConclusaoCandidato.getItems().addAll(anuncio.getConclusaoSet());
+                    tbConclusaoCandidato.refresh();
+                } catch (Exception e) {
+                    alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros", e, true);
+                } finally {
+                    //close();
+                }
+            });
+        } catch (IOException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo" + FXMLEnum.ANUNCIO_CANDIDATO_CONCLUSAO, e, true);
+        } finally {
+            close();
+        }
+    }
+
     private void abrirEntrevista(AnuncioEntrevista ae) {
         try {
             loadFactory();
             Candidato c = ae.getCandidato();
+
             anunciosEntrevistas = new AnuncioEntrevistasImp(getManager());
             anuncios = new AnunciosImp(getManager());
             anuncio.setCurriculoSet(
@@ -631,10 +641,15 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                     tbEntrevista.getItems().stream().collect(Collectors.toSet()));
             anuncio.setPreSelecaoSet(
                     tbPreSelecionado.getItems().stream().collect(Collectors.toSet()));
-            anuncio.setCandidatoAprovado(cbCandidatoConclusao.getValue());
+            anuncio.setConclusaoSet(
+                    tbConclusaoCandidato.getItems().stream().collect(Collectors.toSet()));
+
             candidatos = new CandidatosImp(getManager());
             anuncio = anuncios.save(anuncio);
             observer.notifyUpdate(candidatos);
+
+            observer.clear();
+
             // curriculos
             tbCurriculos.getItems().clear();
             tbCurriculos.getItems().addAll(anuncio.getCurriculoSet());
@@ -645,8 +660,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             tbPreSelecionado.getItems().clear();
             tbPreSelecionado.getItems().addAll(anuncio.getPreSelecaoSet());
 
-            Optional<AnuncioEntrevista> newAe =
-                    tbEntrevista.getItems().stream().filter(can -> can.getCandidato().getId() == c.getId()).findFirst();
+            Optional<AnuncioEntrevista> newAe = tbEntrevista.getItems().stream().filter(can -> can.getCandidato().getId() == c.getId()).findFirst();
             if (newAe.isPresent()) {
                 FXMLLoader loader = carregarFxmlLoader("Entrevista");
                 Stage stage = carregarStage(loader, "");
@@ -719,21 +733,6 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             desbloquear(true, pnCadastro.getChildren());
         }
     }
-
-    private Candidato aprovarCandidato() {
-        List<Candidato> choice = new ArrayList<>();
-        choice.addAll(tbPreSelecionado.getItems());
-        ChoiceDialog<Candidato> dialog = new ChoiceDialog<>(null, choice);
-        dialog.setTitle("Candidatos Pré-Selecionados");
-        dialog.setHeaderText("Candidato Aprovado");
-        dialog.setContentText("Escolha o candidato aprovado:");
-        Optional<Candidato> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            return result.get();
-        } else
-            return null;
-    }
-
     private FXMLLoader carregarFxmlLoader(String fxmlName) {
         URL url = getClass().getResource("/fxml/" + fxmlName + ".fxml");
         FXMLLoader loader = new FXMLLoader(url);
@@ -747,59 +746,6 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         stage.setScene(scene);
         stage.setTitle(title);
         return stage;
-    }
-
-    @FXML
-    private void cadastrarTreinamento(ActionEvent event) {
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("Criação de setores");
-        dialog.setHeaderText("Crie um novo setor:");
-        dialog.setContentText("Por favor entre com um novo nome:");
-        // Traditional way to get the response value.
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            if (result.get().trim().length() == 0) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("Insira um nome para o departamento");
-                alert.setContentText(null);
-                alert.showAndWait();
-            } else {
-                try {
-                    loadFactory();
-                    treinamentos = new TreinamentosImp(getManager());
-                    Treinamento treinamento = treinamentos.findByNome(result.get().trim());
-                    if (treinamento == null) {
-                        Treinamento t = new Treinamento();
-                        t.setNome(result.get().trim());
-                        treinamentos.save(t);
-
-                        // preencher combos
-                        List<Treinamento> treinamentoList = treinamentos.getAll();
-                        ObservableList<Treinamento> novaLista = FXCollections.observableArrayList();
-                        novaLista.add(null);
-                        novaLista.addAll(treinamentoList);
-                        Treinamento tTemp = cbNomeTreinamento.getValue();
-                        cbNomeTreinamento.setItems(novaLista);
-                        cbNomeTreinamento.setItems(novaLista);
-                        if (tTemp != null)
-                            cbNomeTreinamento.getSelectionModel().select(tTemp);
-                    } else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Valor duplicado");
-                        alert.setContentText("Já existe um cadastro com o texto informado");
-                        alert.showAndWait();
-                    }
-                } catch (Exception e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Valor duplicado");
-                    alert.setContentText("Ocorreu um erro ao salvar o registro\n" + e);
-                    alert.showAndWait();
-
-                } finally {
-                    close();
-                }
-            }
-        }
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -1015,114 +961,12 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         cbStatusContrato.getItems().add(null);
         cbStatusContrato.getItems().addAll(Anuncio.StatusContrato.values());
 
-        cbCandidatoConclusao.valueProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-                btnVerCandidatoConclusao.setDisable(cbCandidatoConclusao.getValue() == null);
-                btnRemoverCandidato.setDisable(cbCandidatoConclusao.getValue() == null);
-                btnAprovarCandidato.setDisable(cbCandidatoConclusao.getValue() != null);
-            }
-        });
-        btnAprovarCandidato.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Candidato c = aprovarCandidato();
-                if (c != null) {
-                    c.setOcupadoDetalhes("Contratado atraves do anúncio " + anuncio.getId());
-                    cbCandidatoConclusao.getItems().add(c);
-                    cbCandidatoConclusao.setValue(c);
-                    observer.registerCandidato(c, EnumCandidato.APROVACAO, 1);
-                }
-            }
-        });
-        btnRemoverCandidato.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (cbCandidatoConclusao.getValue() != null && !txCodigo.getText().equals("")) {
-                    Alert alert = new Alert(AlertType.WARNING);
-                    alert.setTitle("Aviso...");
-                    alert.setHeaderText("Tentativa de exclusão!");
-                    alert.getButtonTypes().clear();
-                    ButtonType btnOk = new ButtonType("Sim");
-                    ButtonType btnNo = new ButtonType("Não");
-                    alert.getButtonTypes().addAll(btnOk, btnNo);
-                    alert.setContentText("Você esta tentando retirar um candidato aprovado do anuncio\n"
-                            + "Ao fazer isso tenha em mente que esse candidato poderá permanecer disponível para os próximos anuncios!\n"
-                            + "Essa decisão deverá ser tomada com devido cuidado?"
-                            + "Se tiver certeza disso clique em SIM");
-                    Optional<ButtonType> option = alert.showAndWait();
-                    if (option.get() == btnOk) {
-                        Candidato c = cbCandidatoConclusao.getValue();
-                        observer.registerCandidato(c, EnumCandidato.APROVACAO, -1);
-                        cbCandidatoConclusao.getItems().clear();
-                        cbCandidatoConclusao.setValue(null);
-                    }
-                }
-            }
-        });
-        btnVerCandidatoConclusao.setOnAction(event -> abrirPerfilCandidato(cbCandidatoConclusao.getValue()));
-        cbCandidatoConclusao.setDisable(true);
-        btnRemoverCandidato.setDisable(true);
-        btnVerCandidatoConclusao.setDisable(true);
-
-        ckTreinamentoConclusao.selectedProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-                boolean selected = ckTreinamentoConclusao.isSelected();
-                cbNomeTreinamento.setDisable(!selected);
-                dtInicioConclusao.setDisable(!selected);
-                dtFimConclusao.setDisable(!selected);
-            }
-        });
-
-        ChangeListener pesquisas = new ChangeListener<Object>() {
-            @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-                filtrar();
-            }
-        };
+        ChangeListener pesquisas = (ChangeListener<Object>) (observable, oldValue, newValue) -> filtrar();
         cbCronogramaPesquisa.valueProperty().addListener(pesquisas);
         dtInicialPesquisa.valueProperty().addListener(pesquisas);
         dtFinalPesquisa.valueProperty().addListener(pesquisas);
         cbEmpresaPesquisa.valueProperty().addListener(pesquisas);
         cbStatusPesquisa.valueProperty().addListener(pesquisas);
-    }
-
-    @FXML
-    private void criarTreinamento(ActionEvent event) {
-        try {
-            loadFactory();
-            treinamentos = new TreinamentosImp(getManager());
-
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Cadastro de Treinamento");
-            dialog.setHeaderText("Cadastre um novo treinamento");
-            dialog.setContentText("Informe um nome:");
-            Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()) {
-                Treinamento t = treinamentos.findByNome(result.get());
-                if (t != null) {
-                    Alert alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Erro");
-                    alert.setHeaderText("Erro ao salvar o registro");
-                    alert.setContentText("Registro informado já existe");
-                    alert.showAndWait();
-                } else {
-                    Treinamento t1 = new Treinamento();
-                    t1.setNome(result.get());
-                    treinamentos.save(t1);
-                    cbNomeTreinamento.getItems().add(t1);
-                    cbNomeTreinamento.setValue(t1);
-                }
-            }
-        } catch (Exception e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Erro");
-            alert.setContentText("Erro ao salvar o registro");
-            alert.showAndWait();
-        } finally {
-            close();
-        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -1167,12 +1011,6 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         btAdicionarCurriculo.setDisable(!value);
         btnEntrevista.setDisable(!value);
         btnAdicionar.setDisable(!value);
-        btnNovoTreinamentoConclusao.setDisable(!value);
-
-        boolean selected = ckTreinamentoConclusao.isSelected();
-        cbNomeTreinamento.setDisable(!selected);
-        dtInicioConclusao.setDisable(!selected);
-        dtFimConclusao.setDisable(!selected);
     }
 
     @FXML
@@ -1327,14 +1165,15 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
 
     @FXML
     private void incluirPreAprovado(ActionEvent event) {
-        if (cbPreSelecionado.getValue() != null && anuncio != null && !tbEntrevista.getItems().isEmpty()) {
+        if (cbPreSelecionado.getValue() != null && anuncio != null) {
             Candidato candidato = cbPreSelecionado.getValue();
             tbPreSelecionado.getItems().add(candidato);
             cbPreSelecionado.getItems().remove(candidato);
             cbPreSelecionado.setValue(null);
-
-            observer.registerCandidato(candidato, EnumCandidato.PRESELECAO, 1);
-
+            if (!cbConclusaoCandidato.getItems().contains(candidato)) {
+                cbConclusaoCandidato.getItems().add(candidato);
+                observer.registerCandidato(candidato, EnumCandidato.PRESELECAO, 1);
+            }
         } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Alerta!");
@@ -1344,7 +1183,28 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         }
 
     }
-
+    @FXML
+    private void incluirAprovado(ActionEvent event){
+        if (cbConclusaoCandidato.getValue() != null && anuncio != null) {
+            Candidato candidato = cbConclusaoCandidato.getValue();
+            AnuncioCandidatoConclusao ac = new AnuncioCandidatoConclusao();
+            ac.setAnuncio(anuncio);
+            ac.setCandidato(candidato);
+            if(dtAdmissao.getValue()!=null)
+                ac.setDataInicio(GregorianCalendar.from(dtAdmissao.getValue().atStartOfDay(ZoneId.systemDefault())));
+            tbConclusaoCandidato.getItems().add(ac);
+            cbConclusaoCandidato.getItems().remove(candidato);
+            cbConclusaoCandidato.setValue(null);
+            candidato.setOcupadoDetalhes("Contratado atraves do anúncio " + anuncio.getId()+" da empresa "+anuncio.getCliente());
+            observer.registerCandidato(candidato, EnumCandidato.APROVACAO, 1);
+        } else {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Alerta!");
+            alert.setHeaderText(null);
+            alert.setContentText("Nenhum candidato foi incluído.");
+            alert.showAndWait();
+        }
+    }
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void limparTela(ObservableList<Node> nodes) {
         observer.clear();
@@ -1647,29 +1507,10 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             // pre selecao
             tbPreSelecionado.getItems().clear();
             tbPreSelecionado.getItems().addAll(anuncio.getPreSelecaoSet());
+
             // conclusao
-            cbCandidatoConclusao.getItems().clear();
-            cbCandidatoConclusao.setValue(anuncio.getCandidatoAprovado());
-            if (anuncio.getHaveraTreinamento() == 1) {
-                ckTreinamentoConclusao.setSelected(true);
-                cbNomeTreinamento.setDisable(false);
-                cbNomeTreinamento.setValue(anuncio.getTreinamento());
-                dtInicioConclusao.setDisable(false);
-                dtFimConclusao.setDisable(false);
-                if (anuncio.getDataInicioTreinamento() != null)
-                    dtInicioConclusao.setValue(anuncio.getDataInicioTreinamento().getTime().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate());
-                if (anuncio.getDataFimTreinamento() != null)
-                    dtFimConclusao.setValue(anuncio.getDataFimTreinamento().getTime().toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate());
-            } else {
-                cbNomeTreinamento.setDisable(false);
-                cbNomeTreinamento.setValue(null);
-                dtInicioConclusao.setDisable(true);
-                dtInicioConclusao.setValue(null);
-                dtFimConclusao.setDisable(true);
-                dtFimConclusao.setValue(null);
-            }
+            tbConclusaoCandidato.getItems().clear();
+            tbConclusaoCandidato.getItems().addAll(anuncio.getConclusaoSet());
             AnuncioCronograma ac = anuncio.getCronogramaDetails();
             if (ac != null) {
                 dtInicioDivulgacao.setValue(ac.getDataInicioDivulgacao() == null ? null
@@ -1713,18 +1554,24 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             }
             cbCandidatoEntrevista.getItems().clear();
             cbPreSelecionado.getItems().clear();
+            cbConclusaoCandidato.getItems().clear();
 
             tbCurriculos.getItems().forEach(cand -> {
                 Optional<AnuncioEntrevista> ae = tbEntrevista.getItems().stream()
-                        .filter(c -> c.getCandidato().getId() == cand.getId()).findAny();
+                        .filter(c -> c.getCandidato() == cand).findAny();
                 if (!ae.isPresent() && !cbCandidatoEntrevista.getItems().contains(cand))
                     cbCandidatoEntrevista.getItems().add(cand);
             });
             tbEntrevista.getItems().forEach(ae -> {
-                Optional<Candidato> can = tbPreSelecionado.getItems().stream().filter(c -> c == ae.getCandidato())
-                        .findAny();
+                Optional<Candidato> can = tbPreSelecionado.getItems().stream().filter(c -> c == ae.getCandidato()).findAny();
                 if (!can.isPresent() && !cbPreSelecionado.getItems().contains(ae.getCandidato()))
                     cbPreSelecionado.getItems().add(ae.getCandidato());
+            });
+            tbPreSelecionado.getItems().forEach(ae -> {
+                Optional<AnuncioCandidatoConclusao> can = tbConclusaoCandidato.getItems().stream().filter(c -> c.getCandidato() == ae)
+                        .findAny();
+                if (!can.isPresent() && !cbConclusaoCandidato.getItems().contains(ae))
+                    cbConclusaoCandidato.getItems().add(ae);
             });
             this.anuncio = anuncio;
         } catch (Exception e) {
@@ -1787,12 +1634,13 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                     tbPreSelecionado.getItems()
                             .forEach(c -> observer.registerCandidato(c, EnumCandidato.PRESELECAO, -1));
 
-                    if (cbCandidatoConclusao.getValue() != null) {
-                        Candidato cand = cbCandidatoConclusao.getValue();
+                    tbConclusaoCandidato.getItems().forEach(can->{
+                        Candidato cand = can.getCandidato();
                         cand.setOcupado(0);
                         cand.setOcupadoDetalhes("Liberado pois anuncio " + anuncio.getId() + " foi removido");
                         observer.registerCandidato(cand, EnumCandidato.APROVACAO, -1);
-                    }
+                    });
+
                     anuncios.remove(anuncio);
                     candidatos = new CandidatosImp(getManager());
                     observer.notifyUpdate(candidatos);
@@ -2002,12 +1850,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         anuncio.setPreSelecaoSet(tbPreSelecionado.getItems().stream().collect(Collectors.toSet()));
 
         // area de conclusao
-        anuncio.setCandidatoAprovado(cbCandidatoConclusao.getValue());
-        anuncio.setHaveraTreinamento(ckTreinamentoConclusao.isSelected() ? 1 : 0);
-        anuncio.setDataInicioTreinamento(dtInicioConclusao.getValue() == null ? null
-                : GregorianCalendar.from(dtInicioConclusao.getValue().atStartOfDay(ZoneId.systemDefault())));
-        anuncio.setDataFimTreinamento(dtFimConclusao.getValue() == null ? null
-                : GregorianCalendar.from(dtFimConclusao.getValue().atStartOfDay(ZoneId.systemDefault())));
+        anuncio.setConclusaoSet(tbConclusaoCandidato.getItems().stream().collect(Collectors.toSet()));
 
         // area de datas do cronograma
         ac.setDataInicioDivulgacao(dtInicioDivulgacao.getValue() == null ? null
@@ -2349,21 +2192,16 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                         button.setOnAction(event -> {
                             boolean aceitar = false;
                             Candidato candidato = tbCurriculos.getItems().get(getIndex());
-
-                            for (AnuncioEntrevista aE : tbEntrevista.getItems()) {
-                                if (aE.getCandidato() == candidato) {
-                                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                                    alert.setTitle("Operação impossivel");
-                                    alert.setHeaderText("Candidato não pode ser removido!");
-                                    alert.setContentText(
-                                            "O candidato encontra-se no processo de Entrevista desse anuncio, portanto não pode ser removido");
-                                    alert.showAndWait();
-                                    aceitar = false;
-                                    break;
-                                } else
-                                    aceitar = true;
+                            Optional<AnuncioEntrevista> result = tbEntrevista.getItems().stream().filter(f->f.getCandidato().getId()==candidato.getId()).findFirst();
+                            if (result.isPresent()) {
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Operação impossivel");
+                                alert.setHeaderText("Candidato não pode ser removido!");
+                                alert.setContentText(
+                                        "O candidato encontra-se no processo de Entrevista desse anuncio, portanto não pode ser removido");
+                                alert.showAndWait();
                             }
-                            if (aceitar) {
+                            else{
                                 tbCurriculos.getItems().remove(getIndex());
                                 observer.registerCandidato(candidato, EnumCandidato.CURRICULO, -1);
                             }
@@ -2378,8 +2216,6 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         tbCurriculos.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm, colunaPossuiIndicacao,
                 colunaAnuncios, colunaSelecoes, colunaVer, colunaRemover);
     }
-
-    ;
 
     @SuppressWarnings("unchecked")
     private void tabelaEntrevista() {
@@ -2609,7 +2445,8 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                                 anuncio.setEntrevistaSet(tbEntrevista.getItems().stream().collect(Collectors.toSet()));
                                 anuncio.setPreSelecaoSet(
                                         tbPreSelecionado.getItems().stream().collect(Collectors.toSet()));
-                                anuncio.setCandidatoAprovado(cbCandidatoConclusao.getValue());
+                                anuncio.setConclusaoSet(
+                                        tbConclusaoCandidato.getItems().stream().collect(Collectors.toSet()));
                                 candidatos = new CandidatosImp(getManager());
                                 anuncio = anuncios.save(anuncio);
                                 observer.notifyUpdate(candidatos);
@@ -2853,7 +2690,8 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                         button.getStyleClass().add("btJFXDefault");
                         button.setOnAction(event -> {
                             Candidato candidato = tbPreSelecionado.getItems().get(getIndex());
-                            if (cbCandidatoConclusao.getSelectionModel().getSelectedItem() == candidato) {
+                            Optional<AnuncioCandidatoConclusao> result = tbConclusaoCandidato.getItems().stream().filter(f->f.getCandidato().getId()==candidato.getId()).findFirst();
+                            if (result.isPresent()) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR);
                                 alert.setTitle("Operação impossivel");
                                 alert.setHeaderText("Candidato não pode ser removido!");
@@ -2876,6 +2714,253 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                 colunaAnuncios, colunaSelecoes, colunaVer, colunaRemover);
     }
 
+    private void tabelaConclusao() {
+        tbConclusaoCandidato.getColumns().clear();
+        TableColumn<AnuncioCandidatoConclusao, Number> colunaId = new TableColumn<>("*");
+        colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaId.setPrefWidth(40);
+
+        TableColumn<AnuncioCandidatoConclusao, Candidato> colunaNome = new TableColumn<>("Nome");
+        colunaNome.setCellValueFactory(new PropertyValueFactory<>("candidato"));
+        colunaNome.setCellFactory(
+                (TableColumn<AnuncioCandidatoConclusao, Candidato> param) -> new TableCell<AnuncioCandidatoConclusao, Candidato>() {
+                    @Override
+                    protected void updateItem(Candidato item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(item.getNome());
+                        }
+                    }
+                });
+        colunaNome.setPrefWidth(150);
+        TableColumn<AnuncioCandidatoConclusao, Candidato> colunaIdade = new TableColumn<>("Idade");
+        colunaIdade.setCellValueFactory(new PropertyValueFactory<>("candidato"));
+        colunaIdade.setCellFactory(
+                (TableColumn<AnuncioCandidatoConclusao, Candidato> param) -> new TableCell<AnuncioCandidatoConclusao, Candidato>() {
+                    @Override
+                    protected void updateItem(Candidato item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            if (item.getDataNascimento() != null) {
+                                LocalDate localDate = item.getDataNascimento().toInstant()
+                                        .atZone(ZoneId.systemDefault()).toLocalDate();
+                                Period period = Period.between(localDate, LocalDate.now());
+                                setText(period.getYears() + "");
+                            }
+                        }
+                    }
+                });
+
+        TableColumn<AnuncioCandidatoConclusao, Candidato> colunaCriadoEm = new TableColumn<>("Atualização");
+        colunaCriadoEm.setCellValueFactory(new PropertyValueFactory<>("candidato"));
+        colunaCriadoEm.setCellFactory(
+                (TableColumn<AnuncioCandidatoConclusao, Candidato> param) -> new TableCell<AnuncioCandidatoConclusao, Candidato>() {
+                    @Override
+                    protected void updateItem(Candidato item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            if (item.getUltimaModificacao() != null)
+                                setText(new SimpleDateFormat("dd/MM/yyyy").format(item.getUltimaModificacao().getTime()));
+                        }
+                    }
+                });
+        colunaCriadoEm.setPrefWidth(100);
+        TableColumn<AnuncioCandidatoConclusao, Candidato> colunaPossuiIndicacao = new TableColumn<>("Indicação");
+        colunaPossuiIndicacao.setCellValueFactory(new PropertyValueFactory<>("candidato"));
+        colunaPossuiIndicacao.setCellFactory(
+                (TableColumn<AnuncioCandidatoConclusao, Candidato> param) -> new TableCell<AnuncioCandidatoConclusao, Candidato>() {
+                    @Override
+                    protected void updateItem(Candidato item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            if (item.getIndicacao() == 1) {
+                                setText("Sim");
+                            } else
+                                setText("Não");
+                        }
+                    }
+                });
+        TableColumn<AnuncioCandidatoConclusao, Candidato> colunaAnuncios = new TableColumn<>("Anuncios");
+        colunaAnuncios.setCellValueFactory(new PropertyValueFactory<>("candidato"));
+        colunaAnuncios.setCellFactory(
+                (TableColumn<AnuncioCandidatoConclusao, Candidato> param) -> new TableCell<AnuncioCandidatoConclusao, Candidato>() {
+                    @Override
+                    protected void updateItem(Candidato item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(String.valueOf(item.getTotalRecrutamento()));
+                        }
+                    }
+                });
+        TableColumn<AnuncioCandidatoConclusao, Candidato> colunaSelecoes = new TableColumn<>("Entrevistas");
+        colunaSelecoes.setCellValueFactory(new PropertyValueFactory<>("candidato"));
+        colunaSelecoes.setCellFactory(
+                (TableColumn<AnuncioCandidatoConclusao, Candidato> param) -> new TableCell<AnuncioCandidatoConclusao, Candidato>() {
+                    @Override
+                    protected void updateItem(Candidato item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(String.valueOf(item.getTotalEntrevista()));
+                        }
+                    }
+                });
+        colunaSelecoes.setPrefWidth(100);
+
+        TableColumn<AnuncioCandidatoConclusao, Treinamento> colunaTreinamento = new TableColumn<>("Treinamento");
+        colunaTreinamento.setCellValueFactory(new PropertyValueFactory<>("treinamento"));
+        colunaTreinamento.setCellFactory((TableColumn<AnuncioCandidatoConclusao, Treinamento> param) -> {
+            final TableCell<AnuncioCandidatoConclusao, Treinamento> cell = new TableCell<AnuncioCandidatoConclusao, Treinamento>() {
+                final JFXButton button = new JFXButton();
+
+                @Override
+                protected void updateItem(Treinamento item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        button.getStyleClass().add("btJFXDefault");
+                        button.setText(item == null ? "Agendar Treinamento" : "Editar Treinamento");
+                        button.setOnAction(event -> {
+                            abrirCandidatoConclusao(tbConclusaoCandidato.getItems().get(getIndex()));
+                        });
+                        setGraphic(button);
+                        setText(null);
+                    }
+                }
+            };
+            return cell;
+        });
+        colunaTreinamento.setPrefWidth(180);
+
+        TableColumn<AnuncioCandidatoConclusao, Treinamento> colunaTreinamentoNome = new TableColumn<>("Treinamento");
+        colunaTreinamentoNome.setCellValueFactory(new PropertyValueFactory<>("treinamento"));
+        colunaTreinamentoNome.setCellFactory((TableColumn<AnuncioCandidatoConclusao, Treinamento> param) -> {
+            final TableCell<AnuncioCandidatoConclusao, Treinamento> cell = new TableCell<AnuncioCandidatoConclusao, Treinamento>() {
+                @Override
+                protected void updateItem(Treinamento item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item==null || empty) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        setText(item.toString());
+                    }
+                }
+            };
+            return cell;
+        });
+
+        TableColumn<AnuncioCandidatoConclusao, Number> colunaTreinamentoInicio = new TableColumn<>("Inicio");
+        colunaTreinamentoInicio.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaTreinamentoInicio.setCellFactory((TableColumn<AnuncioCandidatoConclusao, Number> param) -> {
+            final TableCell<AnuncioCandidatoConclusao, Number> cell = new TableCell<AnuncioCandidatoConclusao, Number>() {
+                @Override
+                protected void updateItem(Number item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        AnuncioCandidatoConclusao an = tbConclusaoCandidato.getItems().get(getIndex());
+                        setText(an.getDataInicoTreinamento()==null?"":sdf.format(an.getDataInicoTreinamento().getTime()));
+                    }
+                }
+            };
+            return cell;
+        });
+        TableColumn<AnuncioCandidatoConclusao, Number> colunaTreinamentoFim = new TableColumn<>("Inicio");
+        colunaTreinamentoFim.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaTreinamentoFim.setCellFactory((TableColumn<AnuncioCandidatoConclusao, Number> param) -> {
+            final TableCell<AnuncioCandidatoConclusao, Number> cell = new TableCell<AnuncioCandidatoConclusao, Number>() {
+                @Override
+                protected void updateItem(Number item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        AnuncioCandidatoConclusao an = tbConclusaoCandidato.getItems().get(getIndex());
+                        setText(an.getDataFimTreinamento()==null?"":sdf.format(an.getDataFimTreinamento().getTime()));
+                    }
+                }
+            };
+            return cell;
+        });
+
+        TableColumn<AnuncioCandidatoConclusao, String> colunaVer = new TableColumn<>("");
+        colunaVer.setCellValueFactory(new PropertyValueFactory<>(""));
+        colunaVer.setCellFactory((TableColumn<AnuncioCandidatoConclusao, String> param) -> {
+            final TableCell<AnuncioCandidatoConclusao, String> cell = new TableCell<AnuncioCandidatoConclusao, String>() {
+                final JFXButton button = new JFXButton("Ver Perfil");
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        button.getStyleClass().add("btJFXDefault");
+                        button.setOnAction(event -> {
+                            abrirPerfilCandidato(tbConclusaoCandidato.getItems().get(getIndex()).getCandidato());
+                        });
+                        setGraphic(button);
+                        setText(null);
+                    }
+                }
+            };
+            return cell;
+        });
+
+        TableColumn<AnuncioCandidatoConclusao, String> colunaRemover = new TableColumn<>("");
+        colunaRemover.setCellValueFactory(new PropertyValueFactory<>(""));
+        colunaRemover.setCellFactory((TableColumn<AnuncioCandidatoConclusao, String> param) -> {
+            final TableCell<AnuncioCandidatoConclusao, String> cell = new TableCell<AnuncioCandidatoConclusao, String>() {
+                final JFXButton button = new JFXButton("Remover");
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        button.getStyleClass().add("btJFXDefault");
+                        button.setOnAction(event -> {
+                            AnuncioCandidatoConclusao cn = tbConclusaoCandidato.getItems().remove(getIndex());
+                            observer.registerCandidato(cn.getCandidato(), EnumCandidato.APROVACAO, -1);
+                        });
+                        setGraphic(button);
+                        setText(null);
+                    }
+                }
+            };
+            return cell;
+        });
+
+        tbConclusaoCandidato.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm, colunaPossuiIndicacao,
+                colunaAnuncios, colunaSelecoes, colunaTreinamento, colunaTreinamentoNome,colunaTreinamentoInicio,colunaTreinamentoFim,colunaVer,
+                colunaRemover);
+    }
     @FXML
     void visualizar(ActionEvent event) {
         Runnable run = () -> {

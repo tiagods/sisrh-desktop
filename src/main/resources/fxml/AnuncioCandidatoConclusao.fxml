@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="CENTER" prefHeight="21.0" prefWidth="605.0" style="&#10;" text="Treinamento do Candidato" textAlignment="CENTER" wrapText="false">
+         <font>
+            <Font size="18.0" fx:id="x1" />
+         </font>
+         <textFill>
+            <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+         </textFill>
+         <VBox.margin>
+            <Insets bottom="20.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </Label>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <JFXComboBox fx:id="cbNomeTreinamento" prefHeight="26.0" prefWidth="320.0" promptText="Selecione um treinamento para o candidato">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin></JFXComboBox>
+            <JFXButton mnemonicParsing="false" onAction="#novoTreinamento" prefHeight="25.0" prefWidth="65.0" styleClass="btJFXDefault" text="+" />
+         </children>
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefHeight="17.0" prefWidth="186.0" text="Previsão do Treinamento:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <JFXDatePicker fx:id="dtInicioConclusao" prefHeight="25.0" prefWidth="120.0" promptText="Inicio" />
+            <JFXDatePicker fx:id="dtFimConclusao" prefHeight="25.0" prefWidth="120.0" promptText="Fim" />
+         </children>
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT" prefHeight="135.0" prefWidth="580.0">
+         <children>
+            <JFXButton mnemonicParsing="false" onAction="#salvar" prefHeight="25.0" prefWidth="65.0" styleClass="btJFXDefault" text="Salvar" />
+         </children>
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

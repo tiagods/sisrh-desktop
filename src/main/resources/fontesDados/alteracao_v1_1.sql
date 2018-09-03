@@ -19,3 +19,19 @@ create table versao_app (
 	historico timestamp,
 	primary key (id)
 );
+
+create table anu_can_conclusao(
+    id serial,
+    candidato_id integer,
+    anuncio_id integer,
+    treinamento_id integer,
+    data_inicio_treinamento date,
+    data_fim_treinamento date,
+    data_inicio date,
+    primary key(id)
+);
+alter table anuncio drop candidato_aprovado_id;
+alter table anuncio drop havera_treinamento;
+alter table anuncio drop treinamento_id;
+alter table anuncio drop data_inicio_treinamento;
+alter table anuncio drop data_fim_treinamento;

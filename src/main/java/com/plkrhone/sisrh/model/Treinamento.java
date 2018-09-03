@@ -21,6 +21,15 @@ public class Treinamento implements AbstractEntity, Serializable {
 	private Long id;
 	private String nome;
 
+	public Treinamento(Long id, String nome){
+		this.id = id;
+		this.nome =nome;
+	}
+	public Treinamento(String nome){
+		this.nome=nome;
+	}
+	public Treinamento(){}
+
 	public Long getId() {
 		return id;
 	}
@@ -71,6 +80,9 @@ public class Treinamento implements AbstractEntity, Serializable {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
-	
-	
+
+	@Override
+	public String toString() {
+		return nome;
+	}
 }

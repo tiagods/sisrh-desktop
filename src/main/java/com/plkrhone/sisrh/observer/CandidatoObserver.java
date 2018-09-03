@@ -11,41 +11,59 @@ public class CandidatoObserver implements InterfaceCandidato{
 	private static CandidatoObserver instance;
 	
 	public static CandidatoObserver getInstance() {
-		if(instance == null) instance=new CandidatoObserver();
+		if(instance == null) instance = new CandidatoObserver();
 		return instance;
 	}
 	private CandidatoObserver() {}
 	@Override
 	public void registerCandidato(Candidato c, EnumCandidato e, int change) {
 		if(!listCandidatos.contains(c)) listCandidatos.add(c);
-		switch(e) {
-			case CURRICULO:
-				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
-					candidato.setTotalRecrutamento(candidato.getTotalRecrutamento()+change);
-				});
-				break;
-			case ENTREVISTA:
-				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
+		Optional<Candidato> result = listCandidatos.stream().filter(o-> o == c).findAny();
+		if(!result.isPresent())
+			return;
+		else {
+			Candidato candidato = result.get();
+			switch (e) {
+				case CURRICULO:
+					candidato.setTotalRecrutamento(candidato.getTotalRecrutamento() + change);
+//				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
+//					candidato.setTotalRecrutamento(candidato.getTotalRecrutamento()+change);
+//				});
+					break;
+				case ENTREVISTA:
 					candidato.setTotalEntrevista(candidato.getTotalEntrevista()+change);
-				});
-				break;
-			case PRESELECAO:
-				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
+//				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
+//					candidato.setTotalEntrevista(candidato.getTotalEntrevista()+change);
+//				});
+					break;
+				case PRESELECAO:
 					candidato.setTotalPreSelecao(candidato.getTotalPreSelecao()+change);
-				});
-				break;
-			case APROVACAO:
-				listCandidatos.stream().filter(o->o.getId()== c.getId()).forEach(candidato->{
-					candidato.setTotalAprovacao(candidato.getTotalAprovacao()+change);
-					if(change==1) {
+//				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
+//					candidato.setTotalPreSelecao(candidato.getTotalPreSelecao()+change);
+//				});
+					break;
+				case APROVACAO:
+					candidato.setTotalAprovacao(candidato.getTotalAprovacao() + change);
+					if (change == 1) {
 						candidato.setOcupado(1);
 						candidato.setOcupadoDetalhes(c.getOcupadoDetalhes());
-					}
-					else if(change==-1){
+					} else if (change == -1) {
 						candidato.setOcupado(0);
 						candidato.setOcupadoDetalhes("");
 					}
-				});
+
+//					listCandidatos.stream().filter(o -> o.getId() == c.getId()).forEach(candidato -> {
+//						candidato.setTotalAprovacao(candidato.getTotalAprovacao() + change);
+//						if (change == 1) {
+//							candidato.setOcupado(1);
+//							candidato.setOcupadoDetalhes(c.getOcupadoDetalhes());
+//						} else if (change == -1) {
+//							candidato.setOcupado(0);
+//							candidato.setOcupadoDetalhes("");
+//						}
+//					});
+			}
+
 		}
 	}
 	

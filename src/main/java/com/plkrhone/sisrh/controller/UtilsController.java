@@ -44,6 +44,8 @@ import javax.persistence.EntityManager;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -51,6 +53,9 @@ import java.util.Optional;
 
 public abstract class UtilsController extends PersistenciaController {
 	private boolean habilidarFiltroCidade = true;
+	public SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	public NumberFormat nf = NumberFormat.getNumberInstance();
+	public SimpleDateFormat sdfH =new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	private JFXButton buttonNovo;
 	private JFXButton buttonEditar;

@@ -29,7 +29,8 @@ public class AnunciosImp extends AbstractRepository<Anuncio, Long> implements An
 	public Anuncio findById(Long id) {
 		Query query = getEntityManager().createQuery("from Anuncio as a "
 				+ "LEFT JOIN FETCH a.curriculoSet LEFT JOIN FETCH a.entrevistaSet "
-				+ "LEFT JOIN FETCH a.preSelecaoSet LEFT JOIN FETCH a.cronogramaDetails "
+				+ "LEFT JOIN FETCH a.preSelecaoSet LEFT JOIN FETCH a.conclusaoSet "
+				+ "LEFT JOIN FETCH a.cronogramaDetails "
 				+ "where a.id=:id");
 		query.setParameter("id", id);
 		Anuncio a = (Anuncio)query.getSingleResult();

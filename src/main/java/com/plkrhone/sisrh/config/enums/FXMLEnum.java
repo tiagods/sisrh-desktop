@@ -4,6 +4,7 @@ import java.net.URL;
 
 public enum FXMLEnum {
     ANUNCIO_CADASTRO("AnuncioCadastro.fxml"),
+    ANUNCIO_CANDIDATO_CONCLUSAO("AnuncioCandidatoConclusao.fxml"),
     ANUNCIO_PESQUISA("AnuncioPesquisa.fxml"),
     CANDIDATO_CADASTRO("CandidatoCadastro.fxml"),
     CANDIDATO_PESQUISA("CandidatoPesquisa.fxml"),
