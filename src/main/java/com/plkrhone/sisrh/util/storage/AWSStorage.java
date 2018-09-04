@@ -36,7 +36,7 @@ public class AWSStorage extends Storage{
 			}
 		});
 		builder.withRegion("us-east-1");		
-		bucketName=config.getValue("bucket");
+		bucketName=config.getValue("bucket-teste");
 		AmazonS3 s3 = builder.build();
 		return s3;
 	}

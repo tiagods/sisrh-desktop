@@ -1,4 +1,6 @@
-package com.plkrhone.sisrh.model;
+package com.plkrhone.sisrh.model.avaliacao;
+
+import com.plkrhone.sisrh.model.AbstractEntity;
 
 import java.io.Serializable;
 
@@ -9,9 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="ava_departamento")
-public class AvaliacaoDepartamento implements AbstractEntity,Serializable {
-
+@Table(name="ava_grupo")
+public class AvaliacaoGrupo implements AbstractEntity,Serializable {
     /**
 	 * 
 	 */
@@ -19,34 +20,19 @@ public class AvaliacaoDepartamento implements AbstractEntity,Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-    private String nome;
+	private String nome;
 
-    /**
+	public AvaliacaoGrupo(Long id, String nome){
+		this.id=id;
+		this.nome=nome;
+	}
+	public AvaliacaoGrupo(){}
+
+	/**
      * @return the id
      */
     public Long getId() {
         return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the nome
-     */
-    public String getNome() {
-        return nome;
-    }
-
-    /**
-     * @param nome the nome to set
-     */
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     /* (non-Javadoc)
@@ -71,7 +57,7 @@ public class AvaliacaoDepartamento implements AbstractEntity,Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AvaliacaoDepartamento other = (AvaliacaoDepartamento) obj;
+		AvaliacaoGrupo other = (AvaliacaoGrupo) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -80,10 +66,31 @@ public class AvaliacaoDepartamento implements AbstractEntity,Serializable {
 		return true;
 	}
 
-	@Override
+	/**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the nome
+     */
+    public String getNome() {
+        return nome;
+    }
+
+    /**
+     * @param nome the nome to set
+     */
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    @Override
     public String toString() {
         return this.nome;
     }
-
+	
     
 }

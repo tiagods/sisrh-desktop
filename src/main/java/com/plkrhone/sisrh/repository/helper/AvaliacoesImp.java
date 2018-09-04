@@ -3,6 +3,7 @@ package com.plkrhone.sisrh.repository.helper;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -11,7 +12,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.plkrhone.sisrh.model.Avaliacao;
-import com.plkrhone.sisrh.model.AvaliacaoGrupo;
+import com.plkrhone.sisrh.model.avaliacao.AvaliacaoGrupo;
 import com.plkrhone.sisrh.repository.AbstractRepository;
 import com.plkrhone.sisrh.repository.interfaces.AvaliacaoDAO;
 
@@ -19,6 +20,15 @@ public class AvaliacoesImp extends AbstractRepository<Avaliacao, Long> implement
 
 	public AvaliacoesImp(EntityManager manager) {
 		super(manager);
+	}
+
+	@Override
+	public Avaliacao findById(Long id) {
+		Query query =  getEntityManager().createQuery("from Avaliacao as a "
+				+ "LEFT JOIN FETCH a.condicoes "
+				+ "where a.id=:id");
+		query.setParameter("id",id);
+		return super.findById(id);
 	}
 
 	@Override
@@ -51,7 +61,7 @@ public class AvaliacoesImp extends AbstractRepository<Avaliacao, Long> implement
 			criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
 		if (tipo!=null)
 			criteria.add(Restrictions.eq("tipo", tipo));
-		if (grupo != null)
+		if (grupo != null && grupo.getId()!=-1L)
 			criteria.add(Restrictions.eq("grupo", grupo));
 		criteria.addOrder(Order.asc("nome"));
 		return (List<Avaliacao>) criteria.list();

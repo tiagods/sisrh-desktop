@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import org.fxutils.maskedtextfield.MaskTextField?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label alignment="CENTER" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Avaliação/Testes" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <font>
+                <Font size="18.0" fx:id="x1" />
+            </font>
+            <textFill>
+                <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+            </textFill>
+        </Label>
+        <Label layoutX="14.0" layoutY="75.0" text="Nome:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <JFXTextField fx:id="txNome" layoutX="105.0" layoutY="71.0" prefHeight="25.0" prefWidth="231.0" />
+        <JFXComboBox fx:id="cbTipoAvaliacao" layoutX="106.0" layoutY="196.0" prefWidth="150.0" />
+        <Label layoutX="15.0" layoutY="200.0" text="Tipo:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Label layoutX="15.0" layoutY="126.0" text="Descrição:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <JFXTextArea fx:id="txDescricao" layoutX="106.0" layoutY="110.0" prefHeight="67.0" prefWidth="231.0" promptText="Breve descrição sobre essa prova" />
+        <Label layoutX="15.0" layoutY="247.0" text="Pontuação Máxima:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Label layoutX="17.0" layoutY="530.0" prefHeight="17.0" prefWidth="80.0" text="Arquivo:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <JFXTextField fx:id="txFormulario" disable="true" layoutX="107.0" layoutY="526.0" prefHeight="25.0" prefWidth="306.0" />
+        <JFXButton layoutX="146.0" layoutY="562.0" mnemonicParsing="false" onAction="#anexarFormulario" prefHeight="25.0" prefWidth="73.0" styleClass="btJFXDefault" text="Anexar" />
+        <JFXTextField fx:id="txCodigo" disable="true" layoutX="105.0" layoutY="32.0" prefHeight="25.0" prefWidth="83.0" />
+        <JFXButton layoutX="328.0" layoutY="562.0" mnemonicParsing="false" onAction="#removerDocumento" prefHeight="25.0" prefWidth="73.0" styleClass="btJFXDefault" text="Remover" />
+        <MaskTextField fx:id="txPontuacao" layoutX="157.0" layoutY="244.0" mask="N!.NN" prefHeight="26.0" prefWidth="89.0" promptText="ex:100.00" />
+        <JFXButton layoutX="696.0" layoutY="563.0" mnemonicParsing="false" onAction="#sair" prefWidth="65.0" styleClass="btJFXDefault" text="Sair" />
+        <JFXButton layoutX="615.0" layoutY="563.0" mnemonicParsing="false" onAction="#salvar" prefWidth="65.0" styleClass="btJFXDefault" text="Salvar" />
+        <JFXTextField fx:id="txCriadoEm" disable="true" layoutX="614.0" layoutY="32.0" prefHeight="25.0" prefWidth="119.0" />
+        <JFXComboBox fx:id="cbGrupo" layoutX="108.0" layoutY="283.0" prefWidth="150.0" />
+        <Label layoutX="15.0" layoutY="287.0" prefHeight="17.0" prefWidth="92.0" text="Grupo:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <JFXButton layoutX="229.0" layoutY="562.0" mnemonicParsing="false" onAction="#visualizar" prefHeight="25.0" prefWidth="90.0" styleClass="btJFXDefault" text="Visualizar" />
+        <JFXButton layoutX="13.0" layoutY="379.0" mnemonicParsing="false" onAction="#modelo" prefHeight="26.0" prefWidth="140.0" styleClass="btJFXDefault" text="Pre-Preenchimento" visible="false" />
+        <JFXButton layoutX="266.0" layoutY="283.0" mnemonicParsing="false" onAction="#novoGrupo" prefHeight="25.0" prefWidth="41.0" styleClass="btJFXDefault" text="+" />
+        <Label layoutX="16.0" layoutY="330.0" prefHeight="17.0" prefWidth="80.0" text="Gabarito:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <JFXTextArea fx:id="txGabarito" layoutX="107.0" layoutY="328.0" prefHeight="191.0" prefWidth="784.0" promptText="Copie e cole o conteúdo aqui" />
+      <Pane fx:id="paneCondicional" layoutX="416.0" layoutY="77.0" prefHeight="236.0" prefWidth="476.0">
+         <children>
+            <TableView fx:id="tbPrincipal" layoutY="45.0" prefHeight="191.0" prefWidth="476.0" />
+            <JFXButton layoutX="7.0" layoutY="4.0" mnemonicParsing="false" onAction="#abrirCondicao" prefHeight="25.0" prefWidth="90.0" styleClass="btJFXDefault" text="Editar" />
+         </children>
+      </Pane>
+    </children>
+</AnchorPane>

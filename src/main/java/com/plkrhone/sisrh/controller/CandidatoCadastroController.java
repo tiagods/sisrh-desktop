@@ -480,20 +480,16 @@ public class CandidatoCadastroController extends UtilsController implements Init
 
     @FXML
     void removerFormulario(ActionEvent event) {
-        try{
-            storage.delete(txFormulario.getText());
-            txFormulario.setText("");
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
         if(candidato!=null) {
             try{
                 loadFactory();
+                storage.delete(txFormulario.getText());
+                txFormulario.setText("");
                 candidatos = new CandidatosImp(getManager());
                 candidato.setFormulario(txFormulario.getText());
                 candidatos.save(candidato);
             }catch (Exception e) {
-                e.printStackTrace();
+                alert(Alert.AlertType.ERROR,"Erro","Erro ao tentar remover formulario","Não foi possivel deletar arquivo",e,true);
             }finally {
                 close();
             }

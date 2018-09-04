@@ -632,7 +632,6 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                     File file  = storage.downloadFile(formulario);
                     if(file!=null)
                         Desktop.getDesktop().open(file);
-                    System.out.println(file.getAbsolutePath());
                 }catch (Exception e) {
                     alert(Alert.AlertType.ERROR,"Erro","","Erro ao baixar o formulario",e,true);
                 }

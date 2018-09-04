@@ -2,7 +2,7 @@ package com.plkrhone.sisrh.repository.interfaces;
 
 import java.util.List;
 
-import com.plkrhone.sisrh.model.AvaliacaoGrupo;
+import com.plkrhone.sisrh.model.avaliacao.AvaliacaoGrupo;
 
 public interface AvaliacaoGrupoDAO {
 	AvaliacaoGrupo save(AvaliacaoGrupo avaliacao);

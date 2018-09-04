@@ -10,7 +10,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import com.plkrhone.sisrh.model.AvaliacaoGrupo;
+import com.plkrhone.sisrh.model.avaliacao.AvaliacaoGrupo;
 import com.plkrhone.sisrh.repository.AbstractRepository;
 import com.plkrhone.sisrh.repository.interfaces.AvaliacaoGrupoDAO;
 

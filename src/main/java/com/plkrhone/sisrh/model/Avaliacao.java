@@ -1,8 +1,13 @@
 package com.plkrhone.sisrh.model;
 
+import com.plkrhone.sisrh.model.avaliacao.AvaliacaoCondicao;
+import com.plkrhone.sisrh.model.avaliacao.AvaliacaoGrupo;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -13,8 +18,7 @@ import javax.persistence.*;
 @Table(name="avaliacao")
 public class Avaliacao implements AbstractEntity,Serializable {
 	public enum AvaliacaoTipo {
-		DISSERTATIVA("Dissertativa"), OBJETIVA("Objetiva"), MISTA("Mista");
-		
+		DISSERTATIVA("Dissertativa"), OBJETIVA("Objetiva"), CONDICIONAL("Objetiva/Condicional"),MISTA("Mista");
 		private String descricao;
 		private AvaliacaoTipo(String descricao) {
 			this.descricao=descricao;
@@ -49,6 +53,10 @@ public class Avaliacao implements AbstractEntity,Serializable {
     @ManyToOne
     @JoinColumn(name="grupo_id")
     private AvaliacaoGrupo grupo;
+
+    @OneToMany(mappedBy = "avaliacao",fetch= FetchType.LAZY,
+            cascade= CascadeType.ALL,orphanRemoval=true)
+    private Set<AvaliacaoCondicao> condicoes = new HashSet<>();
     
     public Long getId() {
         return id;
@@ -130,8 +138,23 @@ public class Avaliacao implements AbstractEntity,Serializable {
         this.grupo = departamento;
     }
 
-	
-	/* (non-Javadoc)
+    public AvaliacaoGrupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(AvaliacaoGrupo grupo) {
+        this.grupo = grupo;
+    }
+
+    public Set<AvaliacaoCondicao> getCondicoes() {
+        return condicoes;
+    }
+
+    public void setCondicoes(Set<AvaliacaoCondicao> condicoes) {
+        this.condicoes = condicoes;
+    }
+
+    /* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

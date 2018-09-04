@@ -18,7 +18,6 @@ import com.plkrhone.sisrh.model.Anuncio;
 import com.plkrhone.sisrh.repository.helper.AnunciosImp;
 import com.plkrhone.sisrh.repository.helper.TarefasImp;
 import com.plkrhone.sisrh.view.AnuncioView;
-import com.plkrhone.sisrh.view.AvaliacaoView;
 import com.plkrhone.sisrh.view.EntrevistaView;
 import com.plkrhone.sisrh.view.TarefaView;
 import com.plkrhone.sisrh.view.UsuarioView;
@@ -95,8 +94,15 @@ public class ControllerMenu extends UtilsController implements Initializable {
 
 	@FXML
 	void abrirAvaliacao(ActionEvent event) {
-		AvaliacaoView avaliacao = new AvaliacaoView();
-		avaliacao.start(new Stage());
+		try {
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.AVALIACAO_PESQUISA);
+			loader.setController(new AvaliacaoPesquisaController());
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+		}catch(IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo "+FXMLEnum.AVALIACAO_PESQUISA,e,true);
+		}
 	}
 	@FXML
 	void abrirCandidato(ActionEvent event) {
@@ -125,9 +131,6 @@ public class ControllerMenu extends UtilsController implements Initializable {
 
 	@FXML
 	void abrirCargo(ActionEvent event) {
-		//VagaView vagaView = new VagaView();
-		//vagaView.start(new Stage());
-
 		try {
 			Stage stage = new Stage();
 			FXMLLoader loader = loaderFxml(FXMLEnum.CARGO_PESQUISA);

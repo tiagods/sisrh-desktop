@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import javafx.stage.*;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -48,11 +50,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-public class ControllerEntrevistaAvaliacao extends PersistenciaController implements Initializable{
+public class ControllerEntrevistaAvaliacao extends UtilsController implements Initializable{
 	@FXML
 	private AnchorPane pnCadastro;
     @FXML
@@ -119,33 +118,31 @@ public class ControllerEntrevistaAvaliacao extends PersistenciaController implem
     @FXML
     void adicionarAvaliacao(ActionEvent event) {
     	try {
-    		FXMLLoader loader = carregarFxmlLoader("Avaliacao");
-			Stage stage = carregarStage(loader,"Cadastro de Avaliacao ");
-			ControllerAvaliacao controller = loader.getController();
-			controller.novo(new ActionEvent());
-			stage.show();
-			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-				
-				@Override
-				public void handle(WindowEvent event) {
-					if(event.getEventType()==WindowEvent.WINDOW_CLOSE_REQUEST) {
-						try {
-							loadFactory();
-							avaliacoes = new AvaliacoesImp(getManager());
-							//cbAvaliacao.getItems().add(null);
-							cbAvaliacao.getItems().clear();
-							cbAvaliacao.getItems().addAll(avaliacoes.getAll());
-						}catch (Exception e) {
-							e.printStackTrace();
-						}finally {
-							close();
-						}
-					}
-				}
-			});
+			loadFactory();
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.AVALIACAO_PESQUISA);
+			AvaliacaoCadastroController controller = new AvaliacaoCadastroController(stage,null);
+			loader.setController(controller);
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+			stage.setOnHiding(event1 -> {
+                if(event1.getEventType()==WindowEvent.WINDOW_CLOSE_REQUEST) {
+                    try {
+                        loadFactory();
+                        avaliacoes = new AvaliacoesImp(getManager());
+                        cbAvaliacao.getItems().clear();
+                        cbAvaliacao.getItems().addAll(avaliacoes.getAll());
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }finally {
+                        close();
+                    }
+                }
+            });
     	}catch(IOException e) {
-    		
     	}
+    	finally {
+    		close();
+		}
     }
     @FXML
     void anexarFormulario(ActionEvent event) {
