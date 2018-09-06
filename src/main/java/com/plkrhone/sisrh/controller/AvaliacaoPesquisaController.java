@@ -60,9 +60,13 @@ public class AvaliacaoPesquisaController extends UtilsController implements Init
     Storage storage = StorageProducer.newConfig();
     private void abrirCadastro(Avaliacao t) {
         try {
+
+
             loadFactory();
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.AVALIACAO_CADASTRO);
+            avaliacoes = new AvaliacoesImp(getManager());
+            t = avaliacoes.findById(t.getId());
             AvaliacaoCadastroController controller = new AvaliacaoCadastroController(stage,t);
             loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);

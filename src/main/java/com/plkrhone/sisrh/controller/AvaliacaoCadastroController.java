@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.model.Avaliacao;
@@ -21,12 +22,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.fxutils.maskedtextfield.MaskTextField;
 
 import java.awt.*;
@@ -90,7 +94,26 @@ public class AvaliacaoCadastroController extends UtilsController implements Init
 
     @FXML
     private void abrirCondicao(ActionEvent event){
-
+        if(avaliacao!=null) {
+            try {
+                Stage stage = new Stage();
+                FXMLLoader loader = loaderFxml(FXMLEnum.AVALIACAO_CADASTRO_CONDICAO);
+                AvaliacaoCadastroCondicaoController controller = new AvaliacaoCadastroCondicaoController(stage,avaliacao,
+                        tbPrincipal.getItems().stream().collect(Collectors.toSet()));
+                loader.setController(controller);
+                initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+                stage.setOnHiding(event1 -> {
+                    tbPrincipal.getItems().clear();
+                    tbPrincipal.getItems().addAll(controller.getCondicaoSet());
+                    tbPrincipal.refresh();
+                });
+            } catch (IOException e) {
+                alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                        "Falha ao localizar o arquivo" + FXMLEnum.AVALIACAO_CADASTRO_CONDICAO, e, true);
+            } finally {
+                close();
+            }
+        }
     }
     @FXML
     void anexarFormulario(ActionEvent event) {
@@ -316,8 +339,8 @@ public class AvaliacaoCadastroController extends UtilsController implements Init
         }
     }
     void tabela() {
-        TableColumn<AvaliacaoCondicao, Number> colunaDescricao = new TableColumn<>("");
-        colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("id"));
+        TableColumn<AvaliacaoCondicao, Number> colunaDescricao = new TableColumn<>("Resumo");
+        colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("de"));
         colunaDescricao.setCellFactory((TableColumn<AvaliacaoCondicao, Number> param) -> {
             final TableCell<AvaliacaoCondicao, Number> cell = new TableCell<AvaliacaoCondicao, Number>() {
                 final JFXTextArea textArea = new JFXTextArea();
@@ -330,8 +353,8 @@ public class AvaliacaoCadastroController extends UtilsController implements Init
                         setGraphic(null);
                         setText(null);
                     } else {
-                        AvaliacaoCondicao av = tbPrincipal.getItems().get(getIndex());
-                        textArea.setText(av.toString());
+                        AvaliacaoCondicao ac = tbPrincipal.getItems().get(getIndex());
+                        textArea.setText(ac.toString());
                         setGraphic(textArea);
                         setText(null);
                     }
@@ -339,6 +362,7 @@ public class AvaliacaoCadastroController extends UtilsController implements Init
             };
             return cell;
         });
+        colunaDescricao.setPrefWidth(450);
         tbPrincipal.setFixedCellSize(50);
         tbPrincipal.getColumns().addAll(colunaDescricao);
     }

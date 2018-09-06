@@ -36,7 +36,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -74,8 +73,10 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 
     @FXML
     private JFXTextArea txGabarito;
+	@FXML
+    private JFXTextArea txDescricao;
 
-    @FXML
+	@FXML
     private JFXComboBox<Avaliacao> cbAvaliacao;
     
     @FXML
@@ -271,6 +272,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
     	txPontuacaoMaxima.setText(String.valueOf(aeAva.getPontuacaoMaxima()));
     	txFormulario.setText(aeAva.getFormulario());
     	txGabarito.setText(aeAva.getGabarito());
+    	txDescricao.setText(aeAva.getDescricao());
     	this.aeAva=aeAva;
     }
     @FXML
@@ -337,6 +339,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 	    	ava.setPontuacao(new BigDecimal(txPontuacao.getText()));
 			ava.setPontuacaoMaxima(new BigDecimal(txPontuacaoMaxima.getText()));
 			ava.setGabarito(txGabarito.getText());
+			ava.setDescricao(txDescricao.getText());
 			ava.setAvaliacaoTipo(cbTipoAvaliacao.getValue());
 			
 			if (!txFormulario.getText().equals("") && !txFormulario.getText().startsWith(PathStorageEnum.AVALIACAO_APLICADA.getDescricao()+"/")) {
@@ -466,6 +469,29 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 				}
 			}
 		});
+		TableColumn<AnuncioEntrevistaAvaliacao, String> colunaDescricao = new TableColumn<>("Descricao");
+		colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
+		colunaDescricao.setCellFactory((TableColumn<AnuncioEntrevistaAvaliacao, String> param) -> {
+			final TableCell<AnuncioEntrevistaAvaliacao, String> cell = new TableCell<AnuncioEntrevistaAvaliacao, String>() {
+				final JFXTextArea textArea = new JFXTextArea();
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+					textArea.setEditable(false);
+					textArea.setWrapText(true);
+					if (empty) {
+						setGraphic(null);
+						setText(null);
+					} else {
+						textArea.setText(item);
+						setGraphic(textArea);
+						setText(null);
+					}
+				}
+			};
+			return cell;
+		});
+
 		TableColumn<AnuncioEntrevistaAvaliacao, String> colunaEditar = new TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>(""));
 		colunaEditar.setCellFactory((TableColumn<AnuncioEntrevistaAvaliacao, String> param) -> {
@@ -490,7 +516,8 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 			};
 			return cell;
 		});
-		tbPrincipal.getColumns().addAll(colunaId,colunaCriadoEm,colunaNome,colunaTipo,colunaPontuacao,colunaPontuacaoMaxima, colunaEditar);
+		tbPrincipal.getColumns()
+				.addAll(colunaId,colunaCriadoEm,colunaNome,colunaTipo,colunaPontuacao,colunaPontuacaoMaxima,colunaDescricao, colunaEditar);
     }
    public Set<AnuncioEntrevistaAvaliacao> getItems(){
 	   return aeAvaliacao;

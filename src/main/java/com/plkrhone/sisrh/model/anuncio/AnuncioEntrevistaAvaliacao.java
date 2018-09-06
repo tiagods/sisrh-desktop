@@ -35,7 +35,12 @@ public class AnuncioEntrevistaAvaliacao implements AbstractEntity, Serializable{
 	private BigDecimal pontuacao;
 	@Column(name="pontuacao_maxima")
 	private BigDecimal pontuacaoMaxima;
+	@Column(columnDefinition = "text")
     private String gabarito;
+
+	@Column(columnDefinition = "text")
+	private String descricao;
+
 	@Enumerated(value=EnumType.STRING)
 	@Column(name="avaliacao_tipo")
     private Avaliacao.AvaliacaoTipo avaliacaoTipo;
@@ -139,6 +144,15 @@ public class AnuncioEntrevistaAvaliacao implements AbstractEntity, Serializable{
 	public void setGabarito(String gabarito) {
 		this.gabarito = gabarito;
 	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
 	/**
 	 * @return the avaliacaoTipo
 	 */

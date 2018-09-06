@@ -69,17 +69,29 @@ public class AvaliacaoCondicao implements AbstractEntity,Serializable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AvaliacaoCondicao that = (AvaliacaoCondicao) o;
-        return Objects.equals(id, that.id);
+        return Double.compare(that.de, de) == 0 &&
+                Double.compare(that.ate, ate) == 0 &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(descricao, that.descricao) &&
+                Objects.equals(avaliacao, that.avaliacao);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id);
+        return Objects.hash(id, de, ate, descricao, avaliacao);
     }
 
     @Override
     public String toString() {
-        return "DE: "+this.de+" ATE:"+ate ;
+        String[] strings = descricao.split(" ");
+        String texto = "DE: "+this.de+" ATE:"+ate +" -> ";
+        int size = texto.length();
+        int maxSize = 120;
+        for(int i = 0 ; i<size ; i++){
+            texto+=strings[i] + " ";
+            if(i==maxSize) break;
+        }
+        texto+="...";
+        return texto;
     }
 }

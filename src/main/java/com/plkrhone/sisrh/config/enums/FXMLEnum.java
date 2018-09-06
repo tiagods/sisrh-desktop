@@ -7,6 +7,7 @@ public enum FXMLEnum {
     ANUNCIO_CANDIDATO_CONCLUSAO("AnuncioCandidatoConclusao.fxml"),
     ANUNCIO_PESQUISA("AnuncioPesquisa.fxml"),
     AVALIACAO_CADASTRO("AvaliacaoCadastro.fxml"),
+    AVALIACAO_CADASTRO_CONDICAO("AvaliacaoCadastroCondicao.fxml"),
     AVALIACAO_PESQUISA("AvaliacaoPesquisa.fxml"),
     CANDIDATO_CADASTRO("CandidatoCadastro.fxml"),
     CANDIDATO_PESQUISA("CandidatoPesquisa.fxml"),

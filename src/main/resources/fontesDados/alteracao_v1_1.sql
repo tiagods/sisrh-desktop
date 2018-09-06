@@ -30,6 +30,18 @@ create table anu_can_conclusao(
     data_inicio date,
     primary key(id)
 );
+
+create table ava_condicao(
+    id serial,
+    de decimal,
+    ate decimal,
+    descricao text,
+    avaliacao_id integer,
+    primary key(id)
+);
+
+alter table anu_ent_avaliacao add descricao text;
+
 alter table anuncio drop candidato_aprovado_id;
 alter table anuncio drop havera_treinamento;
 alter table anuncio drop treinamento_id;

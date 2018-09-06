@@ -5,10 +5,14 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.model.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -130,7 +134,6 @@ public class ClientePesquisaController extends UtilsController implements Initia
         }
         long tempoFinal = System.currentTimeMillis();
         System.out.println((tempoFinal - tempoInicial) + " ms");
-
     }
 
     private void combos() {
@@ -240,7 +243,14 @@ public class ClientePesquisaController extends UtilsController implements Initia
 
     @FXML
     public void pesquisar(KeyEvent event) {
-        filtrar();
+        try {
+            loadFactory();
+            filtrar();
+        } catch (Exception e) {
+            alert(AlertType.ERROR,"Erro","","Erro ao listar os registros", e, true);
+        } finally {
+            close();
+        }
     }
 
 

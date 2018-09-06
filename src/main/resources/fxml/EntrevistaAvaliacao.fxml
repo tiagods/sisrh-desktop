@@ -10,10 +10,10 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="700.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerEntrevistaAvaliacao">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerEntrevistaAvaliacao">
    <children>
       <TableView fx:id="tbPrincipal" layoutX="1.0" layoutY="164.0" prefHeight="200.0" prefWidth="700.0" stylesheets="@css/estilo.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <AnchorPane fx:id="pnCadastro" layoutX="-1.0" layoutY="40.0" prefHeight="278.0" prefWidth="700.0">
+      <AnchorPane fx:id="pnCadastro" layoutX="-1.0" layoutY="40.0" prefHeight="360.0" prefWidth="900.0">
          <children>
             <JFXTextField fx:id="txLocation" disable="true" layoutX="11.0" layoutY="10.0" prefHeight="15.0" prefWidth="27.0">
                <font>
@@ -31,8 +31,8 @@
                </font>
             </Label>
             <JFXComboBox fx:id="cbTipoAvaliacao" layoutX="86.0" layoutY="78.0" prefHeight="26.0" prefWidth="183.0" />
-            <MaskTextField fx:id="txPontuacao" layoutX="377.0" layoutY="78.0" mask="N!.NN" prefHeight="26.0" prefWidth="108.0" promptText="ex:100.00" />
-            <Label layoutX="281.0" layoutY="83.0" prefHeight="16.0" prefWidth="80.0" text="Pontuação:">
+            <MaskTextField fx:id="txPontuacao" layoutX="107.0" layoutY="114.0" mask="N!.NN" prefHeight="26.0" prefWidth="108.0" promptText="ex:100.00" />
+            <Label layoutX="11.0" layoutY="119.0" prefHeight="16.0" prefWidth="80.0" text="Pontuação:">
                <font>
                   <Font size="12.0" />
                </font>
@@ -44,34 +44,40 @@
                </font>
             </Label>
             <JFXButton layoutX="348.0" layoutY="45.0" onAction="#adicionarAvaliacao" styleClass="btJFXDefault" text="+" />
-            <Label layoutX="10.0" layoutY="120.0" prefHeight="17.0" prefWidth="311.0" text="Avaliação do Candidato:">
+            <Label layoutX="9.0" layoutY="274.0" prefHeight="17.0" prefWidth="311.0" text="Avaliação do Candidato:">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <JFXTextField fx:id="txFormulario" disable="true" layoutX="10.0" layoutY="137.0" prefHeight="26.0" prefWidth="311.0" promptText="Anexe a avaliação realizada pelo Candidato" />
-            <JFXButton fx:id="btAnexar" layoutX="11.0" layoutY="171.0" mnemonicParsing="false" onAction="#anexarFormulario" prefHeight="25.0" prefWidth="73.0" styleClass="btJFXDefault" text="Anexar" />
-            <JFXButton fx:id="btnRemover" layoutX="246.0" layoutY="171.0" mnemonicParsing="false" onAction="#removerDocumento" prefHeight="25.0" prefWidth="73.0" styleClass="btJFXDefault" text="Remover" />
-            <JFXButton fx:id="btVisualizar" layoutX="120.0" layoutY="171.0" mnemonicParsing="false" onAction="#visualizar" prefHeight="25.0" prefWidth="90.0" styleClass="btJFXDefault" text="Visualizar" />
-            <Label layoutX="378.0" layoutY="117.0" prefHeight="17.0" prefWidth="139.0" text="Gabarito:">
+            <JFXTextField fx:id="txFormulario" disable="true" layoutX="9.0" layoutY="291.0" prefHeight="26.0" prefWidth="311.0" promptText="Anexe a avaliação realizada pelo Candidato" />
+            <JFXButton fx:id="btAnexar" layoutX="10.0" layoutY="325.0" mnemonicParsing="false" onAction="#anexarFormulario" prefHeight="25.0" prefWidth="73.0" styleClass="btJFXDefault" text="Anexar" />
+            <JFXButton fx:id="btnRemover" layoutX="245.0" layoutY="325.0" mnemonicParsing="false" onAction="#removerDocumento" prefHeight="25.0" prefWidth="73.0" styleClass="btJFXDefault" text="Remover" />
+            <JFXButton fx:id="btVisualizar" layoutX="119.0" layoutY="325.0" mnemonicParsing="false" onAction="#visualizar" prefHeight="25.0" prefWidth="90.0" styleClass="btJFXDefault" text="Visualizar" />
+            <Label layoutX="379.0" layoutY="18.0" prefHeight="17.0" prefWidth="139.0" text="Gabarito:">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <JFXTextArea fx:id="txGabarito" layoutX="379.0" layoutY="145.0" prefHeight="83.0" prefWidth="300.0" promptText="Gabarito da Avaliação" />
-            <JFXButton layoutX="567.0" layoutY="244.0" onAction="#salvar" prefHeight="23.0" prefWidth="73.0" styleClass="btJFXDefault" text="Salvar" />
-            <JFXButton layoutX="411.0" layoutY="244.0" onAction="#novo" prefHeight="23.0" prefWidth="73.0" styleClass="btJFXDefault" text="Novo" />
-            <Label fx:id="txPontuacaoMaxima" layoutX="517.0" layoutY="83.0" prefHeight="15.0" prefWidth="62.0">
+            <JFXTextArea fx:id="txGabarito" layoutX="380.0" layoutY="46.0" prefHeight="83.0" prefWidth="515.0" promptText="Gabarito da Avaliação" />
+            <JFXButton layoutX="817.0" layoutY="326.0" onAction="#salvar" prefHeight="23.0" prefWidth="73.0" styleClass="btJFXDefault" text="Salvar" />
+            <JFXButton layoutX="661.0" layoutY="326.0" onAction="#novo" prefHeight="23.0" prefWidth="73.0" styleClass="btJFXDefault" text="Novo" />
+            <Label fx:id="txPontuacaoMaxima" layoutX="247.0" layoutY="119.0" prefHeight="15.0" prefWidth="62.0">
                <font>
                   <Font size="12.0" />
                </font>
             </Label>
-            <Label layoutX="492.0" layoutY="82.0" prefHeight="16.0" prefWidth="27.0" text="de">
+            <Label layoutX="222.0" layoutY="118.0" prefHeight="16.0" prefWidth="27.0" text="de">
                <font>
                   <Font size="12.0" />
                </font>
             </Label>
-            <JFXButton layoutX="490.0" layoutY="244.0" onAction="#remover" prefHeight="23.0" prefWidth="73.0" styleClass="btJFXDefault" text="Excluir" />
+            <JFXButton layoutX="740.0" layoutY="326.0" onAction="#remover" prefHeight="23.0" prefWidth="73.0" styleClass="btJFXDefault" text="Excluir" />
+            <Label layoutX="379.0" layoutY="138.0" prefHeight="17.0" prefWidth="139.0" text="Observaçao:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <JFXTextArea fx:id="txDescricao" layoutX="380.0" layoutY="166.0" prefHeight="83.0" prefWidth="515.0" />
          </children>
       </AnchorPane>
    </children>
