@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
+import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.model.*;
 import com.plkrhone.sisrh.model.anuncio.AnuncioCandidatoConclusao;
@@ -2006,6 +2007,33 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                         }
                     }
                 });
+
+        TableColumn<Anuncio, FormularioRequisicao> colunaFormulario = new TableColumn<>("");
+        colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("formularioRequisicao"));
+        colunaFormulario.setCellFactory((TableColumn<Anuncio, FormularioRequisicao> param) -> new TableCell<Anuncio, FormularioRequisicao>() {
+            JFXButton button = new JFXButton();//
+            @Override
+            protected void updateItem(FormularioRequisicao item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText("");
+                    setStyle("");
+                    setGraphic(null);
+                } else {
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_CLIP);
+                    } catch (IOException e) {
+                    }
+                    if(item.getFormulario()== null || item.getFormulario().equals(""))
+                        button.setVisible(false);
+                    button.setOnAction(event ->
+                        visualizarFormulario(item.getFormulario(),storage)
+                    );
+                    setGraphic(button);
+                }
+            }
+        });
         TableColumn<Anuncio, String> colunaEditar = new TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>(""));
         colunaEditar.setCellFactory((TableColumn<Anuncio, String> param) -> {
@@ -2047,7 +2075,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             return cell;
         });
         tbAnuncio.getColumns().addAll(colunaId, colunaNome, colunaVaga, colunaCliente, colunaClienteContabil,
-                colunaCronograma, colunaStatus, colunaEditar);
+                colunaCronograma, colunaStatus, colunaFormulario,colunaEditar);
     }
 
     @SuppressWarnings("unchecked")
@@ -2151,6 +2179,32 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             }
         });
         colunaSelecoes.setPrefWidth(100);
+
+        TableColumn<Candidato, String> colunaFormulario = new TableColumn<>("");
+        colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("formulario"));
+        colunaFormulario.setCellFactory((TableColumn<Candidato, String> param) -> new TableCell<Candidato, String>() {
+            JFXButton button = new JFXButton();//
+            @Override
+            protected void updateItem(String item, boolean empty) {
+
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText("");
+                    setStyle("");
+                } else {
+                    Candidato c = tbCurriculos.getItems().get(getIndex());
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_CLIP);
+                    } catch (IOException e) {
+                    }
+                    if(c.getFormulario().equals(""))
+                        button.setVisible(false);
+                    button.setOnAction(event -> visualizarFormulario(c.getFormulario(),storage));
+                    setGraphic(button);
+                }
+            }
+        });
         TableColumn<Candidato, String> colunaVer = new TableColumn<>("");
         colunaVer.setCellValueFactory(new PropertyValueFactory<>(""));
         colunaVer.setCellFactory((TableColumn<Candidato, String> param) -> {
@@ -2214,7 +2268,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             return cell;
         });
         tbCurriculos.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm, colunaPossuiIndicacao,
-                colunaAnuncios, colunaSelecoes, colunaVer, colunaRemover);
+                colunaAnuncios, colunaSelecoes, colunaFormulario,colunaVer, colunaRemover);
     }
 
     @SuppressWarnings("unchecked")
@@ -2395,6 +2449,30 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         });
         colunaEntrevista.setPrefWidth(150);
 
+        TableColumn<AnuncioEntrevista, Candidato> colunaFormulario = new TableColumn<>("");
+        colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("candidato"));
+        colunaFormulario.setCellFactory((TableColumn<AnuncioEntrevista, Candidato> param) -> new TableCell<AnuncioEntrevista, Candidato>() {
+            JFXButton button = new JFXButton();//
+            @Override
+            protected void updateItem(Candidato item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item==null || empty) {
+                    setText("");
+                    setStyle("");
+                } else {
+                    Candidato c = tbEntrevista.getItems().get(getIndex()).getCandidato();
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_CLIP);
+                    } catch (IOException e) {
+                    }
+                    if(c.getFormulario().equals(""))
+                        button.setVisible(false);
+                    button.setOnAction(event -> visualizarFormulario(c.getFormulario(),storage));
+                    setGraphic(button);
+                }
+            }
+        });
         TableColumn<AnuncioEntrevista, String> colunaVer = new TableColumn<>("");
         colunaVer.setCellValueFactory(new PropertyValueFactory<>(""));
         colunaVer.setCellFactory((TableColumn<AnuncioEntrevista, String> param) -> {
@@ -2409,9 +2487,9 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                         setText(null);
                     } else {
                         button.getStyleClass().add("btJFXDefault");
-                        button.setOnAction(event -> {
-                            abrirPerfilCandidato(tbEntrevista.getItems().get(getIndex()).getCandidato());
-                        });
+                        button.setOnAction(event ->
+                            abrirPerfilCandidato(tbEntrevista.getItems().get(getIndex()).getCandidato())
+                        );
                         setGraphic(button);
                         setText(null);
                     }
@@ -2544,9 +2622,9 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             return cell;
         });
 
-        tbEntrevista.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm, colunaPossuiIndicacao,
-                colunaAnuncios, colunaSelecoes, colunaStatusEntrevista, colunaEntrevista, colunaAvaliacao, colunaVer,
-                colunaRemover);
+        tbEntrevista.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm,
+                colunaPossuiIndicacao,colunaAnuncios, colunaSelecoes, colunaStatusEntrevista,
+                colunaEntrevista, colunaAvaliacao, colunaFormulario,colunaVer,colunaRemover);
     }
 
     @SuppressWarnings("unchecked")
@@ -2650,6 +2728,29 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             }
         });
         colunaSelecoes.setPrefWidth(100);
+        TableColumn<Candidato, String> colunaFormulario = new TableColumn<>("");
+        colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("formulario"));
+        colunaFormulario.setCellFactory((TableColumn<Candidato, String> param) -> new TableCell<Candidato, String>() {
+            JFXButton button = new JFXButton();//
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText("");
+                    setStyle("");
+                } else {
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_CLIP);
+                    } catch (IOException e) {
+                    }
+                    if(item.equals(""))
+                        button.setVisible(false);
+                    button.setOnAction(event -> visualizarFormulario(item,storage));
+                    setGraphic(button);
+                }
+            }
+        });
         TableColumn<Candidato, String> colunaVer = new TableColumn<>("");
         colunaVer.setCellValueFactory(new PropertyValueFactory<>(""));
         colunaVer.setCellFactory((TableColumn<Candidato, String> param) -> {
@@ -2710,8 +2811,8 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             };
             return cell;
         });
-        tbPreSelecionado.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm, colunaPossuiIndicacao,
-                colunaAnuncios, colunaSelecoes, colunaVer, colunaRemover);
+        tbPreSelecionado.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm,
+                colunaPossuiIndicacao,colunaAnuncios, colunaSelecoes, colunaFormulario,colunaVer, colunaRemover);
     }
 
     private void tabelaConclusao() {
@@ -2905,7 +3006,29 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             };
             return cell;
         });
-
+        TableColumn<AnuncioCandidatoConclusao, Candidato> colunaFormulario = new TableColumn<>("");
+        colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("candidato"));
+        colunaFormulario.setCellFactory((TableColumn<AnuncioCandidatoConclusao, Candidato> param) -> new TableCell<AnuncioCandidatoConclusao, Candidato>() {
+            JFXButton button = new JFXButton();//
+            @Override
+            protected void updateItem(Candidato item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText("");
+                    setStyle("");
+                } else {
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_CLIP);
+                    } catch (IOException e) {
+                    }
+                    if(item.getFormulario().equals(""))
+                        button.setVisible(false);
+                    button.setOnAction(event -> visualizarFormulario(item.getFormulario(),storage));
+                    setGraphic(button);
+                }
+            }
+        });
         TableColumn<AnuncioCandidatoConclusao, String> colunaVer = new TableColumn<>("");
         colunaVer.setCellValueFactory(new PropertyValueFactory<>(""));
         colunaVer.setCellFactory((TableColumn<AnuncioCandidatoConclusao, String> param) -> {
@@ -2920,9 +3043,9 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                         setText(null);
                     } else {
                         button.getStyleClass().add("btJFXDefault");
-                        button.setOnAction(event -> {
-                            abrirPerfilCandidato(tbConclusaoCandidato.getItems().get(getIndex()).getCandidato());
-                        });
+                        button.setOnAction(event ->
+                            abrirPerfilCandidato(tbConclusaoCandidato.getItems().get(getIndex()).getCandidato())
+                        );
                         setGraphic(button);
                         setText(null);
                     }
@@ -2957,24 +3080,13 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             return cell;
         });
 
-        tbConclusaoCandidato.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm, colunaPossuiIndicacao,
-                colunaAnuncios, colunaSelecoes, colunaTreinamento, colunaTreinamentoNome,colunaTreinamentoInicio,colunaTreinamentoFim,colunaVer,
-                colunaRemover);
+        tbConclusaoCandidato.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm,
+                colunaPossuiIndicacao,colunaAnuncios, colunaSelecoes, colunaTreinamento,colunaTreinamentoNome,
+                colunaTreinamentoInicio,colunaTreinamentoFim,colunaFormulario,colunaVer,colunaRemover);
     }
     @FXML
     void visualizar(ActionEvent event) {
-        Runnable run = () -> {
-            if (!txDocumento.getText().equals("")) {
-                try {
-                    File file = storage.downloadFile(txDocumento.getText());
-                    if (file != null)
-                        Desktop.getDesktop().open(file);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        new Thread(run).start();
+        visualizarFormulario(txDocumento.getText(),storage);
     }
 
     @FXML

@@ -42,6 +42,22 @@ create table ava_condicao(
 
 alter table anu_ent_avaliacao add descricao text;
 
+alter table candidato add column cargo_nivel1_id integer;
+alter table candidato add column cargo_nivel2_id integer;
+alter table candidato add column cargo_nivel3_id integer;
+alter table candidato add column cargo_obs1 varchar;
+alter table candidato add column cargo_obs2 varchar;
+alter table candidato add column cargo_obs3 varchar;
+create table can_curso (
+	candidato_id integer,
+	curso_id integer,
+CONSTRAINT can_curso_pkey PRIMARY KEY (candidato_id, curso_id),
+  CONSTRAINT fk_can_curso_candidato FOREIGN KEY (candidato_id)
+      REFERENCES candidato (id) ,
+  CONSTRAINT fk_can_curso_curso FOREIGN KEY (curso_id)
+      REFERENCES curso_superior (id)
+);
+
 alter table anuncio drop candidato_aprovado_id;
 alter table anuncio drop havera_treinamento;
 alter table anuncio drop treinamento_id;

@@ -83,7 +83,8 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 	private String CHAVE_PERFIL="P";
 	private String CHAVE_FORMULARIO="F";
 
-	private OfficeEditor officeJob = OfficeEditorProducer.newConfig(FileOfficeEnum.entrevista.getDescricao());
+	private OfficeEditor officeJob = OfficeEditorProducer
+			.newConfig(FileOfficeEnum.entrevista.getDescricao());
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {

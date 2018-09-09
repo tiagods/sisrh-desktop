@@ -12,9 +12,9 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label alignment="CENTER" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Avaliação/Testes" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <Label alignment="CENTER" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Cadastro de Modelo - Avaliação/Testes" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
             <font>
                 <Font size="18.0" fx:id="x1" />
             </font>
@@ -50,7 +50,7 @@
                 <Font name="System Bold" size="12.0" />
             </font>
         </Label>
-        <JFXTextField fx:id="txFormulario" disable="true" layoutX="107.0" layoutY="526.0" prefHeight="25.0" prefWidth="306.0" />
+        <JFXTextField fx:id="txFormulario" disable="true" layoutX="107.0" layoutY="526.0" prefHeight="26.0" prefWidth="370.0" promptText="Insira um modelo de formulario em branco" />
         <JFXButton layoutX="146.0" layoutY="562.0" mnemonicParsing="false" onAction="#anexarFormulario" prefHeight="25.0" prefWidth="73.0" styleClass="btJFXDefault" text="Anexar" />
         <JFXTextField fx:id="txCodigo" disable="true" layoutX="105.0" layoutY="32.0" prefHeight="25.0" prefWidth="83.0" />
         <JFXButton layoutX="328.0" layoutY="562.0" mnemonicParsing="false" onAction="#removerDocumento" prefHeight="25.0" prefWidth="73.0" styleClass="btJFXDefault" text="Remover" />

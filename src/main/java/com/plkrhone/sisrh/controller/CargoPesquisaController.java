@@ -188,16 +188,16 @@ public class CargoPesquisaController extends UtilsController implements Initiali
             return cell;
         });
         colunaDescricao.setPrefWidth(400);
-        TableColumn<Cargo, String> colunaEditar = new TableColumn<>("");
-        colunaEditar.setCellValueFactory(new PropertyValueFactory<>(""));
-        colunaEditar.setCellFactory((TableColumn<Cargo, String> param) -> {
-            final TableCell<Cargo, String> cell = new TableCell<Cargo, String>() {
+        TableColumn<Cargo, Number> colunaEditar = new TableColumn<>("");
+        colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaEditar.setCellFactory((TableColumn<Cargo, Number> param) -> {
+            final TableCell<Cargo, Number> cell = new TableCell<Cargo, Number>() {
                 final JFXButton button = new JFXButton();
 
                 @Override
-                protected void updateItem(String item, boolean empty) {
+                protected void updateItem(Number item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty) {
+                    if (item==null) {
                         setGraphic(null);
                         setText(null);
                     } else {
@@ -212,18 +212,19 @@ public class CargoPesquisaController extends UtilsController implements Initiali
 
                         Cargo cargo = tbPrincipal.getItems().get(getIndex());
                         if (cargo != null && cargo.getId() <= 2855) {
-                            alert(Alert.AlertType.ERROR, "Cadastro Padronizado", "Registro não pode ser modificado",
-                                    "Esse registro foi cadastrado de forma automatica e seguindo padrões, portanto não deve ser modificado!");
-                            button.setDisable(true);
+                            //alert(Alert.AlertType.ERROR, "Cadastro Padronizado", "Registro não pode ser modificado",
+                            //        "Esse registro foi cadastrado de forma automatica e seguindo padrões, portanto não deve ser modificado!");
+                        //    button.setDisable(true);
+                            setGraphic(null);
                         }
-
-                        setGraphic(button);
+                        else setGraphic(button);
                         setText(null);
                     }
                 }
             };
             return cell;
         });
+        colunaEditar.setPrefWidth(70);
 
         TableColumn<Cargo, Number> colunaExcluir = new TableColumn<>("");
         colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -251,17 +252,17 @@ public class CargoPesquisaController extends UtilsController implements Initiali
                     });
                     Cargo cargo = tbPrincipal.getItems().get(getIndex());
                     if (cargo != null && cargo.getId() <= 2855) {
-                        alert(Alert.AlertType.ERROR, "Cadastro Padronizado", "Registro não pode ser modificado",
-                                "Esse registro foi cadastrado de forma automatica e seguindo padrões, portanto não deve ser modificado!");
-                        button.setDisable(true);
+                        //alert(Alert.AlertType.ERROR, "Cadastro Padronizado", "Registro não pode ser modificado",
+                        //        "Esse registro foi cadastrado de forma automatica e seguindo padrões, portanto não deve ser modificado!");
+                        setGraphic(null);
                     }
-
-                    setGraphic(button);
+                    else setGraphic(button);
 
                 }
             }
         });
-        tbPrincipal.setFixedCellSize(70);
+        colunaExcluir.setPrefWidth(70);
+        tbPrincipal.setFixedCellSize(100);
         tbPrincipal.getColumns().addAll(colunaId,colunaNome, colunaDescricao, colunaEditar, colunaExcluir);
     }
 }

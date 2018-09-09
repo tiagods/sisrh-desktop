@@ -160,11 +160,11 @@
       <VBox prefHeight="459.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" BorderPane.alignment="CENTER">
          <children>
          	<JFXButton mnemonicParsing="false" onAction="#abrirAnuncio" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="ANUNCIO" />
-            <JFXButton mnemonicParsing="false" onAction="#abrirAvaliacao" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="AVALIAÇÃO" />
             <JFXButton mnemonicParsing="false" onAction="#abrirCandidato" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="CANDIDATO" />
          	<JFXButton mnemonicParsing="false" onAction="#abrirCargo" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="CARGO" />
          	<JFXButton mnemonicParsing="false" onAction="#abrirCliente" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="CLIENTE" />
     	   	<JFXButton disable="true" mnemonicParsing="false" onAction="#abrirEntrevista" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="ENTREVISTA" visible="false" />
+            <JFXButton mnemonicParsing="false" onAction="#abrirAvaliacao" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="MODELOS(TESTES)" />
             <JFXButton mnemonicParsing="false" onAction="#abrirTarefa" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="TAREFA" />
             <JFXButton mnemonicParsing="false" onAction="#abrirUsuario" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="USUARIO" />
          </children>

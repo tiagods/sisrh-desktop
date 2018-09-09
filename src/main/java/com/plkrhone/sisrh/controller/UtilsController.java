@@ -8,12 +8,15 @@ import com.plkrhone.sisrh.model.Estado;
 import com.plkrhone.sisrh.repository.helper.CidadesImpl;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
 import com.plkrhone.sisrh.util.EnderecoUtil;
+import com.plkrhone.sisrh.util.storage.Storage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -43,6 +46,7 @@ import javafx.scene.layout.Pane;
 import javax.persistence.EntityManager;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -56,12 +60,6 @@ public abstract class UtilsController extends PersistenciaController {
 	public SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	public NumberFormat nf = NumberFormat.getNumberInstance();
 	public SimpleDateFormat sdfH =new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
-	private JFXButton buttonNovo;
-	private JFXButton buttonEditar;
-	private JFXButton buttonSalvar;
-	private JFXButton buttonExcluir;
-	private JFXButton buttonCancelar;
 
 	public Alert alert(Alert.AlertType alertType, String title, String header, String contentText) {
 		Alert alert = new Alert(alertType);
@@ -136,6 +134,7 @@ public abstract class UtilsController extends PersistenciaController {
 	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException {
 		ImageView imageview = createImage(30,30,icon);
 		btn.setGraphic(imageview);
+		btn.setTooltip(new Tooltip(icon.getDetalhes()));
 	}
 
 	public Optional<String> cadastroRapido(){
@@ -167,6 +166,27 @@ public abstract class UtilsController extends PersistenciaController {
 		final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
 		return loader;
 	}
+
+	public void visualizarFormulario(String formulario, Storage storage){
+		Runnable run = () -> {
+			if(!formulario.trim().equals("")){
+				try {
+					File file  = storage.downloadFile(formulario);
+					if(file!=null)
+						Desktop.getDesktop().open(file);
+				}catch (Exception e) {
+					alert(Alert.AlertType.ERROR,"Erro","","Erro ao baixar o formulario",e,true);
+				}
+			}
+		};
+		new Thread(run).start();
+	}
+
+	private JFXButton buttonNovo;
+	private JFXButton buttonEditar;
+	private JFXButton buttonSalvar;
+	private JFXButton buttonExcluir;
+	private JFXButton buttonCancelar;
 
 	public UtilsController(){}
 

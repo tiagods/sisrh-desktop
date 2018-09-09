@@ -209,7 +209,7 @@ public class AvaliacaoPesquisaController extends UtilsController implements Init
             };
             return cell;
         });
-        colunaDetalhes.setPrefWidth(120);
+        colunaDetalhes.setPrefWidth(200);
         TableColumn<Avaliacao, String> colunaTipo = new TableColumn<>("Tipo");
         colunaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         TableColumn<Avaliacao, BigDecimal> colunaNota = new TableColumn<>("Pontuação");
@@ -226,7 +226,7 @@ public class AvaliacaoPesquisaController extends UtilsController implements Init
                 }
             }
         });
-        TableColumn<Avaliacao, String> colunaFormulario = new TableColumn<>("Formulario");
+        TableColumn<Avaliacao, String> colunaFormulario = new TableColumn<>("");
         colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("formulario"));
         colunaFormulario.setCellFactory((TableColumn<Avaliacao, String> param) -> new TableCell<Avaliacao, String>() {
             JFXButton button = new JFXButton();//
@@ -246,7 +246,7 @@ public class AvaliacaoPesquisaController extends UtilsController implements Init
                     }
                     if(c.getFormulario().equals("")) button.setVisible(false);
                     button.setOnAction(event -> {
-                        visualizarFormulario(c.getFormulario());
+                        visualizarFormulario(c.getFormulario(),storage);
                     });
                     setGraphic(button);
                 }
@@ -309,21 +309,7 @@ public class AvaliacaoPesquisaController extends UtilsController implements Init
             }
         });
         tbPrincipal.setFixedCellSize(50);
-        tbPrincipal.getColumns().addAll(colunaId, colunaNome, colunaDetalhes, colunaTipo, colunaNota, colunaFormulario,
+        tbPrincipal.getColumns().addAll(colunaNome, colunaDetalhes, colunaTipo, colunaNota, colunaFormulario,
                 colunaEditar,colunaExcluir);
-    }
-    void visualizarFormulario(String formulario){
-        Runnable run = () -> {
-            if(!formulario.trim().equals("")){
-                try {
-                    File file  = storage.downloadFile(formulario);
-                    if(file!=null)
-                        Desktop.getDesktop().open(file);
-                }catch (Exception e) {
-                    alert(Alert.AlertType.ERROR,"Erro","","Erro ao baixar o formulario",e,true);
-                }
-            }
-        };
-        new Thread(run).start();
     }
 }

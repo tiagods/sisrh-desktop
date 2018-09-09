@@ -109,7 +109,7 @@ public class Anuncio implements AbstractEntity,Serializable {
     @Column(name="data_admissao")
     private Calendar dataAdmissao;
     
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     //area do formulario
     @JoinColumn(name="formulario_requisicao_id")
     private FormularioRequisicao formularioRequisicao;

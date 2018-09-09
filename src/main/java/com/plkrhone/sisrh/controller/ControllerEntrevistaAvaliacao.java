@@ -90,11 +90,11 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
     
     private AnuncioEntrevista anuncioEntrevista;
     private Set<AnuncioEntrevistaAvaliacao> aeAvaliacao;
-    AvaliacoesImp avaliacoes;
-    AnuncioEntrevistasAvaliacaoImp aeAvaliacoes;
-    AnuncioEntrevistaAvaliacao aeAva;
-    Stage stage;
-    Storage storage = StorageProducer.newConfig();
+    private AvaliacoesImp avaliacoes;
+    private AnuncioEntrevistasAvaliacaoImp aeAvaliacoes;
+    private AnuncioEntrevistaAvaliacao aeAva;
+    private Stage stage;
+    private Storage storage = StorageProducer.newConfig();
     
     @Override
 	public void initialize(URL location, ResourceBundle resources) {

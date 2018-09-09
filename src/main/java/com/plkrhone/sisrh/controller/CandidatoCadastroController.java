@@ -2,6 +2,7 @@ package com.plkrhone.sisrh.controller;
 
 import com.jfoenix.controls.*;
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
+import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.config.init.PaisesConfig;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.model.*;
@@ -16,10 +17,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -29,7 +28,6 @@ import javafx.stage.StageStyle;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -39,70 +37,72 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CandidatoCadastroController extends UtilsController implements Initializable{
-    @FXML
-    private JFXTextField txCodigo;
 
     @FXML
-    private JFXTextField txDataCriacao;
+    private JFXComboBox<Cargo> cbObjetivo1;
 
     @FXML
-    private JFXTextField txNome;
+    private JFXComboBox<Cargo> cbObjetivo2;
 
     @FXML
-    private JFXRadioButton rbSexoF;
-
-    @FXML
-    private JFXRadioButton rbSexoM;
-
-    @FXML
-    private MaskTextField txIdade;
-
-    @FXML
-    private JFXDatePicker dtNascimento;
-
-    @FXML
-    private JFXComboBox<Candidato.EstadoCivil> cbEstadoCivil;
-
-    @FXML
-    private JFXCheckBox ckFumante;
-
-    @FXML
-    private JFXCheckBox ckFilhos;
-
-    @FXML
-    private MaskTextField txQtdFilhos;
+    private JFXComboBox<Cargo> cbObjetivo3;
 
     @FXML
     private JFXComboBox<Candidato.Escolaridade> cbEscolaridade;
 
     @FXML
-    private MaskedTextField txTelefone;
+    private JFXComboBox<Curso.Nivel> cbTipoCursos;
 
     @FXML
-    private MaskedTextField txCelular;
+    private JFXComboBox<Curso> cbCurso;
 
     @FXML
-    private JFXTextField txEmail;
+    private Label txIdFormacao;
 
     @FXML
-    private MaskedTextField txCep;
+    private Label txIdFormacaoTable;
 
     @FXML
-    private ComboBox<Cargo> cbObjetivo1;
+    private TableView<Curso> tbCursos;
 
     @FXML
-    private ComboBox<Cargo> cbObjetivo2;
+    private JFXTextField txCarreiraEmpresa1;
 
     @FXML
-    private ComboBox<Cargo> cbObjetivo3;
+    private JFXComboBox<Cargo> cbCarreiraCargo1;
 
     @FXML
-    private JFXCheckBox ckNaoDisponivel;
+    private JFXComboBox<CargoNivel> cbCarreiraNivel1;
 
     @FXML
-    private JFXTextArea txNaoDisponivelDetalhes;
+    private JFXTextField txCarreiraAdc1;
+
+    @FXML
+    private JFXTextField txCarreiraEmpresa2;
+
+    @FXML
+    private JFXComboBox<Cargo> cbCarreiraCargo2;
+
+    @FXML
+    private JFXComboBox<CargoNivel> cbCarreiraNivel2;
+
+    @FXML
+    private JFXTextField txCarreiraAdc2;
+
+    @FXML
+    private JFXTextField txCarreiraEmpresa3;
+
+    @FXML
+    private JFXComboBox<Cargo> cbCarreiraCargo3;
+
+    @FXML
+    private JFXComboBox<CargoNivel> cbCarreiraNivel3;
+
+    @FXML
+    private JFXTextField txCarreiraAdc3;
 
     @FXML
     private JFXCheckBox ckPossuiIndicacao;
@@ -117,49 +117,49 @@ public class CandidatoCadastroController extends UtilsController implements Init
     private JFXTextArea txDetalhesIndicacao;
 
     @FXML
-    private JFXTextField txCarreiraEmpresa1;
+    private JFXTextField txCodigo;
 
     @FXML
-    private JFXTextArea txCarreiraDescricao1;
+    private JFXTextField txDataCriacao;
 
     @FXML
-    private ComboBox<Cargo> cbCarreiraObjetivo1;
+    private JFXTextField txNome;
 
     @FXML
-    private JFXTextField txCarreiraEmpresa2;
+    private MaskTextField txIdade;
 
     @FXML
-    private JFXTextArea txCarreiraDescricao2;
+    private JFXDatePicker dtNascimento;
 
     @FXML
-    private ComboBox<Cargo> cbCarreiraObjetivo2;
+    private JFXRadioButton rbSexoF;
 
     @FXML
-    private JFXTextField txCarreiraEmpresa3;
+    private JFXRadioButton rbSexoM;
 
     @FXML
-    private JFXTextArea txCarreiraDescricao3;
+    private JFXCheckBox ckFumante;
 
     @FXML
-    private ComboBox<Cargo> cbCarreiraObjetivo3;
+    private JFXCheckBox ckFilhos;
 
     @FXML
-    private JFXTextField txFormulario;
+    private MaskTextField txQtdFilhos;
+
+    @FXML
+    private JFXComboBox<Candidato.EstadoCivil> cbEstadoCivil;
 
     @FXML
     private JFXComboBox<String> cbNacionalidade;
 
     @FXML
-    private JFXComboBox<Curso> cbCursoSuperior;
+    private MaskedTextField txTelefone;
 
     @FXML
-    private JFXTextField txLogradouro;
+    private MaskedTextField txCelular;
 
     @FXML
-    private JFXTextField txComplemento;
-
-    @FXML
-    private JFXTextField txBairro;
+    private JFXTextField txEmail;
 
     @FXML
     private JFXComboBox<Estado> cbEstado;
@@ -168,13 +168,17 @@ public class CandidatoCadastroController extends UtilsController implements Init
     private JFXComboBox<Cidade> cbCidade;
 
     @FXML
-    private JFXTextField txNumero;
+    private JFXCheckBox ckNaoDisponivel;
 
     @FXML
-    private JFXButton btNovoCargo1,btNovoCargo2,btNovoCargo3,btNovoCargo4,btNovoCargo5,btNovoCargo6;
+    private JFXTextArea txNaoDisponivelDetalhes;
+
+    @FXML
+    private JFXTextField txFormulario;
 
     private Anuncio anuncio;
     private AnunciosImp anuncios;
+    private CargoNiveisImpl niveis;
     private Candidato candidato;
     private CandidatosImp candidatos;
     private CargosImpl cargos;
@@ -245,26 +249,21 @@ public class CandidatoCadastroController extends UtilsController implements Init
         };
         Platform.runLater(run);
     }
-    @FXML
-    void buscarCep(ActionEvent event) {
-        bucarCep(txCep, txLogradouro, txNumero, txComplemento, txBairro, cbCidade, cbEstado);
-    }
     void combos() {
         combosCargos();
+        combosNiveis();
 
-        EventHandler<ActionEvent> handler = event -> novoCargo();
-        btNovoCargo1.setOnAction(handler);
-        btNovoCargo2.setOnAction(handler);
-        btNovoCargo3.setOnAction(handler);
-        btNovoCargo4.setOnAction(handler);
-        btNovoCargo5.setOnAction(handler);
-        btNovoCargo6.setOnAction(handler);
+        comboRegiao(cbCidade,cbEstado,getManager());
 
         cursos = new CursosImpl(getManager());
 
-        cbCursoSuperior.getItems().add(new Curso(-1L,""));
-        cbCursoSuperior.getItems().addAll(cursos.getAll());
-        new ComboBoxAutoCompleteUtil<>(cbCursoSuperior);
+        cbCurso.getItems().add(new Curso(-1L,""));
+        cbCurso.getItems().addAll(cursos.getAll());
+
+        cbTipoCursos.getItems().addAll(Curso.Nivel.values());
+        cbTipoCursos.getSelectionModel().selectFirst();
+
+        new ComboBoxAutoCompleteUtil<>(cbCurso);
 
         pnCadastroIndicacao.setVisible(false);
         txQtdFilhos.setDisable(true);
@@ -295,12 +294,7 @@ public class CandidatoCadastroController extends UtilsController implements Init
             try {
                 Integer.parseInt(txQtdFilhos.getText());
             } catch (Exception e) {
-
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Valor incorreto");
-                alert.setHeaderText("Digite um numero válido!");
-                alert.setContentText("O valor informado esta incorreto, por favor digite um numero valido!");
-                alert.showAndWait();
+                alert(Alert.AlertType.ERROR,"Valor incorreto","Informe um numero valido","O valor informado esta incorreto, por favor digite um numero valido!");
                 txQtdFilhos.setText("");
             }
         });
@@ -328,15 +322,15 @@ public class CandidatoCadastroController extends UtilsController implements Init
         new ComboBoxAutoCompleteUtil<>(cbNacionalidade);
         comboRegiao(cbCidade,cbEstado,getManager());
     }
-    void combosCargos(){
-        ComboBox[] comboBoxes =
-                new ComboBox[]{cbObjetivo1,cbObjetivo2,cbObjetivo3,
-                        cbCarreiraObjetivo1,cbCarreiraObjetivo2,cbCarreiraObjetivo3};
+    private void combosCargos(){
+        JFXComboBox[] comboBoxes =
+                new JFXComboBox[]{cbObjetivo1,cbObjetivo2,cbObjetivo3,
+                        cbCarreiraCargo1,cbCarreiraCargo2,cbCarreiraCargo3};
         cargos = new CargosImpl(getManager());
         List<Cargo> cargoList = new ArrayList<>();
         cargoList.add(new Cargo(-1L,""));
         cargoList.addAll(cargos.getAll());
-        for(ComboBox box : comboBoxes){
+        for(JFXComboBox box : comboBoxes){
             Cargo ca = (Cargo) box.getValue();
             box.getItems().setAll(cargoList);
             new ComboBoxAutoCompleteUtil<>(box);
@@ -345,10 +339,28 @@ public class CandidatoCadastroController extends UtilsController implements Init
             }
         }
     }
+    private void combosNiveis(){
+        JFXComboBox[] comboBoxes =
+                new JFXComboBox[]{cbCarreiraNivel1,cbCarreiraNivel2,cbCarreiraNivel3};
+        niveis = new CargoNiveisImpl(getManager());
+        List<CargoNivel> cargoList = new ArrayList<>();
+        cargoList.add(new CargoNivel(-1L,""));
+        cargoList.addAll(niveis.getAll());
+        for(JFXComboBox box : comboBoxes){
+            CargoNivel ca = (CargoNivel) box.getValue();
+            box.getItems().setAll(cargoList);
+            new ComboBoxAutoCompleteUtil<>(box);
+            if(ca!=null){
+                box.getSelectionModel().select(ca);
+            }
+        }
+
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         long tempoInicial = System.currentTimeMillis();
         txIdade.setPrefColumnCount(3);
+        tabelaCursos();
         try {
             loadFactory();
             candidatos = new CandidatosImp(getManager());
@@ -377,7 +389,25 @@ public class CandidatoCadastroController extends UtilsController implements Init
         System.out.println((tempoFinal - tempoInicial) + " ms");
 
     }
-    public void novoCargo(){
+    @FXML
+    void incluirFormacao(ActionEvent event) {
+        if(cbCurso.getValue()!=null){
+            Curso curso = cbCurso.getValue();
+            int index = -1;
+            if(!txIdFormacaoTable.getText().equals("")) {
+                index = Integer.parseInt(txIdFormacaoTable.getText());
+            }
+            Optional<Curso> result = tbCursos.getItems().stream().filter(c->c.getId()==curso.getId()).findAny();
+            if(!result.isPresent()) {
+                if (index != -1)
+                    tbCursos.getItems().set(index, curso);
+                else
+                    tbCursos.getItems().add(curso);
+            }
+        }
+    }
+    @FXML
+    public void novoCargo(ActionEvent event){
         try {
             loadFactory();
             Stage stage = new Stage();
@@ -403,6 +433,14 @@ public class CandidatoCadastroController extends UtilsController implements Init
         } finally {
             close();
         }
+
+    }
+    @FXML
+    void novoCurso(ActionEvent event){
+
+    }
+    @FXML
+    void novoNivel(ActionEvent event) {
 
     }
     public void preencherFormulario(Candidato candidato) {
@@ -431,18 +469,15 @@ public class CandidatoCadastroController extends UtilsController implements Init
             txQtdFilhos.setDisable(true);
         txQtdFilhos.setText(String.valueOf(candidato.getQtdeFilhos()));
         cbEscolaridade.setValue(candidato.getEscolaridade());
-        cbCursoSuperior.setValue(candidato.getCursoSuperior());
+
+        tbCursos.getItems().addAll(candidato.getCursos());
+
         cbNacionalidade.setValue(candidato.getNacionalidade());
         PfPj pfpj = candidato.getPessoaFisica();
         if (pfpj != null) {
             txTelefone.setText(pfpj.getTelefone());
             txCelular.setText(pfpj.getCelular());
             txEmail.setText(pfpj.getEmail());
-            txCep.setPlainText(pfpj.getCep());
-            txLogradouro.setText(pfpj.getLogradouro());
-            txNumero.setText(pfpj.getNumero());
-            txComplemento.setText(pfpj.getComplemento());;
-            txBairro.setText(pfpj.getBairro());
             cbEstado.setValue(pfpj.getEstado());
             cbCidade.setValue(pfpj.getCidade());
         }
@@ -454,13 +489,17 @@ public class CandidatoCadastroController extends UtilsController implements Init
         txCarreiraEmpresa2.setText(candidato.getEmpresa2());
         txCarreiraEmpresa3.setText(candidato.getEmpresa3());
 
-        cbCarreiraObjetivo1.setValue(candidato.getCargo1());
-        cbCarreiraObjetivo2.setValue(candidato.getCargo2());
-        cbCarreiraObjetivo3.setValue(candidato.getCargo3());
+        cbCarreiraCargo1.setValue(candidato.getCargo1());
+        cbCarreiraCargo2.setValue(candidato.getCargo2());
+        cbCarreiraCargo3.setValue(candidato.getCargo3());
 
-        txCarreiraDescricao1.setText(candidato.getDescricaoCargo1());
-        txCarreiraDescricao2.setText(candidato.getDescricaoCargo2());
-        txCarreiraDescricao3.setText(candidato.getDescricaoCargo3());
+        cbCarreiraNivel1.setValue(candidato.getCargoNivel1());
+        cbCarreiraNivel2.setValue(candidato.getCargoNivel2());
+        cbCarreiraNivel3.setValue(candidato.getCargoNivel3());
+
+        txCarreiraAdc1.setText(candidato.getCargoObs1());
+        txCarreiraAdc2.setText(candidato.getCargoObs2());
+        txCarreiraAdc3.setText(candidato.getCargoObs3());
 
         txFormulario.setText(candidato.getFormulario());
         if (candidato.getIndicacao() == 1) {
@@ -562,17 +601,16 @@ public class CandidatoCadastroController extends UtilsController implements Init
                 }
             }
             candidato.setEscolaridade(cbEscolaridade.getValue());
-            candidato.setCursoSuperior(cbCursoSuperior.getValue());
+
+            Set<Curso> cursos = new HashSet<>();
+            cursos.addAll(tbCursos.getItems().stream().collect(Collectors.toSet()));
+            candidato.setCursos(cursos);
+
             candidato.setNacionalidade(cbNacionalidade.getValue());
             PfPj pfpj = new PfPj();
             pfpj.setEmail(txEmail.getText());
             pfpj.setTelefone(txTelefone.getPlainText());
             pfpj.setCelular(txCelular.getPlainText());
-            pfpj.setCep(txCep.getPlainText());
-            pfpj.setLogradouro(txLogradouro.getText());
-            pfpj.setNumero(txNumero.getText());
-            pfpj.setComplemento(txComplemento.getText());
-            pfpj.setBairro(txBairro.getText());
             pfpj.setEstado(cbEstado.getValue());
             pfpj.setCidade(cbCidade.getValue());
             candidato.setPessoaFisica(pfpj);
@@ -590,13 +628,21 @@ public class CandidatoCadastroController extends UtilsController implements Init
             candidato.setEmpresa2(txCarreiraEmpresa2.getText());
             candidato.setEmpresa3(txCarreiraEmpresa3.getText());
 
-            candidato.setCargo1(cbCarreiraObjetivo1.getValue()!=null?(cbCarreiraObjetivo1.getValue().getId()==-1L?null:cbCarreiraObjetivo1.getValue()):null);
-            candidato.setCargo2(cbCarreiraObjetivo2.getValue()!=null?(cbCarreiraObjetivo2.getValue().getId()==-1L?null:cbCarreiraObjetivo2.getValue()):null);
-            candidato.setCargo3(cbCarreiraObjetivo3.getValue()!=null?(cbCarreiraObjetivo3.getValue().getId()==-1L?null:cbCarreiraObjetivo3.getValue()):null);
+            candidato.setCargo1(cbCarreiraCargo1.getValue()!=null?(cbCarreiraCargo1.getValue().getId()==-1L?null:cbCarreiraCargo1.getValue()):null);
+            candidato.setCargo2(cbCarreiraCargo2.getValue()!=null?(cbCarreiraCargo2.getValue().getId()==-1L?null:cbCarreiraCargo2.getValue()):null);
+            candidato.setCargo3(cbCarreiraCargo3.getValue()!=null?(cbCarreiraCargo3.getValue().getId()==-1L?null:cbCarreiraCargo3.getValue()):null);
 
-            candidato.setDescricaoCargo1(txCarreiraDescricao1.getText());
-            candidato.setDescricaoCargo2(txCarreiraDescricao2.getText());
-            candidato.setDescricaoCargo3(txCarreiraDescricao3.getText());
+            candidato.setCargoNivel1(cbCarreiraNivel1.getValue()!=null?(cbCarreiraNivel1.getValue().getId()==-1L?null:cbCarreiraNivel1.getValue()):null);
+            candidato.setCargoNivel2(cbCarreiraNivel2.getValue()!=null?(cbCarreiraNivel2.getValue().getId()==-1L?null:cbCarreiraNivel2.getValue()):null);
+            candidato.setCargoNivel3(cbCarreiraNivel3.getValue()!=null?(cbCarreiraNivel3.getValue().getId()==-1L?null:cbCarreiraNivel3.getValue()):null);
+
+            txCarreiraAdc1.setText(candidato.getCargoObs1());
+            txCarreiraAdc2.setText(candidato.getCargoObs2());
+            txCarreiraAdc3.setText(candidato.getCargoObs3());
+
+            candidato.setCargoObs1(txCarreiraAdc1.getText());
+            candidato.setCargoObs2(txCarreiraAdc2.getText());
+            candidato.setCargoObs3(txCarreiraAdc3.getText());
 
             candidato.setUltimaModificacao(Calendar.getInstance());
             candidato.setFormulario(txFormulario.getText());
@@ -625,26 +671,56 @@ public class CandidatoCadastroController extends UtilsController implements Init
             close();
         }
     }
-
-    @FXML
-    void visualizarFormulario(ActionEvent event) {
-        visualizarFormulario(txFormulario.getText());
-    }
-    void visualizarFormulario(String formulario){
-        Runnable run = () -> {
-            if(!formulario.trim().equals("")){
-                try {
-                    File file  = storage.downloadFile(formulario);
-                    if(file!=null)
-                        Desktop.getDesktop().open(file);
-                    System.out.println(file.getAbsolutePath());
-                }catch (Exception e) {
-                    alert(Alert.AlertType.ERROR,"Erro","","Erro ao baixar o formulario",e,true);
+    void tabelaCursos(){
+        TableColumn<Curso, String> colunaNome = new TableColumn<>("Nome");
+        colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+        colunaNome.setCellFactory(param -> new TableCell<Curso, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setStyle("");
+                    setText("");
+                } else {
+                    setText(item.toString());
                 }
             }
-        };
-        new Thread(run).start();
+        });
+        colunaNome.setPrefWidth(220);
+        TableColumn<Curso, Number> colunaExcluir = new TableColumn<>("");
+        colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaExcluir.setCellFactory(param -> new TableCell<Curso, Number>() {
+            JFXButton button = new JFXButton();// excluir
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                } else {
+
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_REMOVE);
+                    } catch (IOException e) {
+                    }
+                    button.setOnAction(event -> {
+                            tbCursos.getItems().remove(getIndex());
+                    });
+                    setGraphic(button);
+
+                }
+            }
+        });
+        tbCursos.getColumns().addAll(colunaNome,colunaExcluir);
+
     }
+    @FXML
+    void visualizarFormulario(ActionEvent event) {
+        visualizarFormulario(txFormulario.getText(),storage);
+    }
+
     public boolean isHouveAtualizacaoCombo() {
         return this.houveAtualizacaoCombo;
     }

@@ -98,9 +98,12 @@ public class CandidatoPesquisaController extends UtilsController implements Init
     private void abrirCadastro(Candidato t) {
         try {
             loadFactory();
+            candidatos = new CandidatosImp(getManager());
             Stage stage = new Stage();
             if(this.anuncio!=null) stage.setTitle("Anuncio: " + anuncio.getNome() + "-Cliente: " + anuncio.getCliente().getNome());
             FXMLLoader loader = loaderFxml(FXMLEnum.CANDIDATO_CADASTRO);
+            if(t!=null)
+                t = candidatos.findById(t.getId());
             CandidatoCadastroController controller = new CandidatoCadastroController(stage,t,this.anuncio);
             loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);

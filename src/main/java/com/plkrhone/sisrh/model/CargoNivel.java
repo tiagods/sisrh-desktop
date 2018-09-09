@@ -11,7 +11,14 @@ public class CargoNivel implements AbstractEntity,Serializable{
     private Long id;
     private String nome;
 
-    public Number getId() {
+    public CargoNivel(){}
+
+    public CargoNivel(long id, String nome) {
+        this.id=id;
+        this.nome=nome;
+    }
+
+    public Long getId() {
         return id;
     }
 

@@ -17,6 +17,7 @@ import javax.persistence.*;
  */
 @Entity
 public class Candidato implements AbstractEntity,Serializable {
+
 	public enum Escolaridade {
 		FUNDAMENTAL_INCOMPLETO("Fundamental Incompleto",1),
 		FUNDAMENTAL_ANDAMENTO("Fundamental Em Andamento",2),
@@ -121,6 +122,7 @@ public class Candidato implements AbstractEntity,Serializable {
     @ManyToOne
     @JoinColumn(name="objetivo3_id")
     private Cargo objetivo3;
+
     private int indicacao;
     @Column(name="empresa_indicacao")
     private String empresaIndicacao;
@@ -139,21 +141,46 @@ public class Candidato implements AbstractEntity,Serializable {
 	@ManyToOne
 	@JoinColumn(name="cargo3_id")
 	private Cargo cargo3;
+
+	@ManyToOne
+	@JoinColumn(name="cargo_nivel1_id")
+	private CargoNivel cargoNivel1;
+
+	@ManyToOne
+	@JoinColumn(name="cargo_nivel2_id")
+	private CargoNivel cargoNivel2;
+
+	@ManyToOne
+	@JoinColumn(name="cargo_nivel3_id")
+	private CargoNivel cargoNivel3;
+
+	@Column(name = "cargo_obs1")
+	private String cargoObs1;
+
+	@Column(name = "cargo_obs2")
+	private String cargoObs2;
+
+	@Column(name = "cargo_obs3")
+	private String cargoObs3;
+	/*
 	@Column(name="descricao_cargo1")
 	private String descricaoCargo1;
 	@Column(name="descricao_cargo2")
 	private String descricaoCargo2;
 	@Column(name="descricao_cargo3")
 	private String descricaoCargo3;
+	*/
 
-	@Transient
-	//@OneToMany(fetch = FetchType.LAZY,mappedBy = "candidato",cascade= CascadeType.ALL,orphanRemoval=true)
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="can_curso", joinColumns=
+			{@JoinColumn(name="candidato_id")}, inverseJoinColumns=
+			{@JoinColumn(name="curso_id")})
 	private Set<Curso> cursos = new HashSet<>();
-
+	/*
 	@ManyToOne
 	@JoinColumn(name="curso_superior_id")
 	private Curso cursoSuperior;
-
+*/
     private String formulario;
 
     @Column(name="total_recrutamento")
@@ -455,36 +482,60 @@ public class Candidato implements AbstractEntity,Serializable {
 		this.cargo3 = cargo3;
 	}
 
-	public String getDescricaoCargo1() {
-		return descricaoCargo1;
+	public CargoNivel getCargoNivel1() {
+		return cargoNivel1;
 	}
 
-	public void setDescricaoCargo1(String descricaoCargo1) {
-		this.descricaoCargo1 = descricaoCargo1;
+	public void setCargoNivel1(CargoNivel cargoNivel1) {
+		this.cargoNivel1 = cargoNivel1;
 	}
 
-	public String getDescricaoCargo2() {
-		return descricaoCargo2;
+	public CargoNivel getCargoNivel2() {
+		return cargoNivel2;
 	}
 
-	public void setDescricaoCargo2(String descricaoCargo2) {
-		this.descricaoCargo2 = descricaoCargo2;
+	public void setCargoNivel2(CargoNivel cargoNivel2) {
+		this.cargoNivel2 = cargoNivel2;
 	}
 
-	public String getDescricaoCargo3() {
-		return descricaoCargo3;
+	public CargoNivel getCargoNivel3() {
+		return cargoNivel3;
 	}
 
-	public void setDescricaoCargo3(String descricaoCargo3) {
-		this.descricaoCargo3 = descricaoCargo3;
+	public void setCargoNivel3(CargoNivel cargoNivel3) {
+		this.cargoNivel3 = cargoNivel3;
 	}
 
-	public Curso getCursoSuperior() {
-		return cursoSuperior;
+	public String getCargoObs1() {
+		return cargoObs1;
 	}
 
-	public void setCursoSuperior(Curso cursoSuperior) {
-		this.cursoSuperior = cursoSuperior;
+	public void setCargoObs1(String cargoObs1) {
+		this.cargoObs1 = cargoObs1;
+	}
+
+	public String getCargoObs2() {
+		return cargoObs2;
+	}
+
+	public void setCargoObs2(String cargoObs2) {
+		this.cargoObs2 = cargoObs2;
+	}
+
+	public String getCargoObs3() {
+		return cargoObs3;
+	}
+
+	public void setCargoObs3(String cargoObs3) {
+		this.cargoObs3 = cargoObs3;
+	}
+
+	public Set<Curso> getCursos() {
+		return cursos;
+	}
+
+	public void setCursos(Set<Curso> cursos) {
+		this.cursos = cursos;
 	}
 
 	/* (non-Javadoc)
