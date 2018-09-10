@@ -13,6 +13,7 @@ public enum FXMLEnum {
     CANDIDATO_PESQUISA("CandidatoPesquisa.fxml"),
     CARGO_CADASTRO("CargoCadastro.fxml"),
     CARGO_PESQUISA("CargoPesquisa.fxml"),
+    CURSO_CADASTRO("CursoCadastro.fxml"),
     CLIENTE_CADASTRO("ClienteCadastro.fxml"),
     CLIENTE_PESQUISA("ClientePesquisa.fxml"),
     LOGIN("Login.fxml"),

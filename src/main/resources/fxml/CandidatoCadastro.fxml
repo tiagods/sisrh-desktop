@@ -80,12 +80,12 @@
                                               <Font name="System Bold" size="12.0" />
                                           </font>
                                       </Label>
-                                      <JFXComboBox fx:id="cbEscolaridade" prefHeight="25.0" prefWidth="169.0" />
+                                      <JFXComboBox fx:id="cbEscolaridade" prefHeight="26.0" prefWidth="252.0" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="40.0" prefWidth="488.0">
                                  <children>
-                                    <JFXComboBox fx:id="cbTipoCursos" prefHeight="26.0" prefWidth="123.0" />
+                                    <JFXComboBox fx:id="cbTipoCursos" prefHeight="26.0" prefWidth="173.0" />
                                       <Label prefHeight="17.0" prefWidth="52.0" text="Curso:">
                                           <font>
                                               <Font name="System Bold" size="12.0" />

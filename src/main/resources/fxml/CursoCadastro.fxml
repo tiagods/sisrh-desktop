@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="427.0" prefWidth="600.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <JFXTextField fx:id="txNome" layoutX="47.0" layoutY="99.0" prefHeight="26.0" prefWidth="513.0" promptText="Entre com o nome" />
+        <JFXButton layoutX="413.0" layoutY="154.0" mnemonicParsing="false" onAction="#salvar" prefWidth="65.0" styleClass="btJFXDefault" text="Salvar" />
+        <JFXButton layoutX="494.0" layoutY="154.0" mnemonicParsing="false" onAction="#sair" prefWidth="65.0" styleClass="btJFXDefault" text="Sair" />
+      <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" minWidth="60.0" prefHeight="27.0" prefWidth="594.0" style="&#10;" text="Cadastro de Cursos" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <font>
+            <Font size="18.0" fx:id="x1" />
+         </font>
+         <textFill>
+            <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+         </textFill>
+      </Label>
+      <JFXComboBox fx:id="cbNivel" layoutX="47.0" layoutY="145.0" prefHeight="26.0" prefWidth="203.0" promptText="Nivel" />
+      <TableView fx:id="tbPrincipal" layoutX="49.0" layoutY="231.0" prefHeight="183.0" prefWidth="513.0" />
+      <Label layoutX="47.0" layoutY="206.0" text="Autopesquisa:" />
+    </children>
+</AnchorPane>

@@ -12,6 +12,8 @@ import com.plkrhone.sisrh.util.storage.PathStorageEnum;
 import com.plkrhone.sisrh.util.storage.Storage;
 import com.plkrhone.sisrh.util.storage.StorageProducer;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -257,13 +259,27 @@ public class CandidatoCadastroController extends UtilsController implements Init
 
         cursos = new CursosImpl(getManager());
 
-        cbCurso.getItems().add(new Curso(-1L,""));
-        cbCurso.getItems().addAll(cursos.getAll());
-
         cbTipoCursos.getItems().addAll(Curso.Nivel.values());
-        cbTipoCursos.getSelectionModel().selectFirst();
+        cbTipoCursos.setValue(Curso.Nivel.GRADUACAO);
 
+        cbCurso.getItems().addAll(cursos.findByNivel(cbTipoCursos.getValue()));
+        cbCurso.getSelectionModel().selectFirst();
         new ComboBoxAutoCompleteUtil<>(cbCurso);
+
+        cbTipoCursos.valueProperty().addListener((observable, oldValue, newValue) -> {
+            try{
+                loadFactory();
+                cbCurso.getItems().clear();
+                cursos = new CursosImpl(getManager());
+                cbCurso.getItems().addAll(cursos.findByNivel(newValue));
+                cbCurso.getSelectionModel().selectFirst();
+                new ComboBoxAutoCompleteUtil<>(cbCurso);
+            }catch (Exception e){
+                alert(Alert.AlertType.ERROR,"Erro","","Falha ao listar os cursos",e,true);
+            }finally {
+                close();
+            }
+        });
 
         pnCadastroIndicacao.setVisible(false);
         txQtdFilhos.setDisable(true);
@@ -437,11 +453,63 @@ public class CandidatoCadastroController extends UtilsController implements Init
     }
     @FXML
     void novoCurso(ActionEvent event){
-
+        try {
+            loadFactory();
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.CURSO_CADASTRO);
+            CursoCadastroController controller = new CursoCadastroController(stage, cbTipoCursos.getValue());
+            loader.setController(controller);
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            stage.setOnHiding(e -> {
+                if(controller.isHouveAtualizacao()) {
+                    try {
+                        loadFactory();
+                        combosCargos();
+                    } catch (Exception ex) {
+                        alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros", ex, true);
+                    } finally {
+                        close();
+                    }
+                }
+            });
+        } catch (IOException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo" + FXMLEnum.CARGO_CADASTRO, e, true);
+        } finally {
+            close();
+        }
     }
     @FXML
     void novoNivel(ActionEvent event) {
-
+        Optional<String> result = cadastroRapido();
+        if (result.isPresent()) {
+            if (result.get().trim().length() == 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Insira um nome");
+                alert.setContentText(null);
+                alert.showAndWait();
+            } else {
+                try {
+                    loadFactory();
+                    niveis = new CargoNiveisImpl(getManager());
+                    CargoNivel s = niveis.findByNome(result.get().trim());
+                    if (s == null) {
+                        CargoNivel n = new CargoNivel();
+                        n.setNome(result.get().trim());
+                        n = niveis.save(n);
+                        combosNiveis();
+                    } else {
+                        alert(Alert.AlertType.ERROR,"Valor duplicado","",
+                                "Já existe um cadastro com o texto informado!");
+                    }
+                } catch (Exception e) {
+                    alert(Alert.AlertType.ERROR,"Erro","",
+                            "Falha ao salvar o registro!", e, true);
+                } finally {
+                    close();
+                }
+            }
+        }
     }
     public void preencherFormulario(Candidato candidato) {
         txCodigo.setText(candidato.getId() + "");
@@ -672,7 +740,7 @@ public class CandidatoCadastroController extends UtilsController implements Init
         }
     }
     void tabelaCursos(){
-        TableColumn<Curso, String> colunaNome = new TableColumn<>("Nome");
+        TableColumn<Curso, String> colunaNome = new TableColumn<>("");
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         colunaNome.setCellFactory(param -> new TableCell<Curso, String>() {
             @Override
@@ -698,8 +766,8 @@ public class CandidatoCadastroController extends UtilsController implements Init
                     setStyle("");
                     setText("");
                     setGraphic(null);
-                } else {
-
+                }
+                else {
                     button.getStyleClass().add("btDefault");
                     try {
                         buttonTable(button, IconsEnum.BUTTON_REMOVE);

@@ -35,7 +35,7 @@ import java.util.List;
 
 public class CandidatoPesquisaController extends UtilsController implements Initializable{
     @FXML
-    private ComboBox<Cargo> cbObjetivoPesquisa;
+    private JFXComboBox<Cargo> cbObjetivoPesquisa;
 
     @FXML
     private JFXComboBox<String> cbIndicacaoPesquisa;
@@ -62,7 +62,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
     private JFXComboBox<Candidato.Escolaridade> cbFormacaoMaxPesquisa;
 
     @FXML
-    private ComboBox<Cargo> cbExperienciaPesquisa;
+    private JFXComboBox<Cargo> cbExperienciaPesquisa;
 
     @FXML
     private MaskTextField txIdadeInicioPesquisa;
