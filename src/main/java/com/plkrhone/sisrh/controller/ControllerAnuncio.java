@@ -2449,14 +2449,14 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         });
         colunaEntrevista.setPrefWidth(150);
 
-        TableColumn<AnuncioEntrevista, Candidato> colunaFormulario = new TableColumn<>("");
+        TableColumn<AnuncioEntrevista, String> colunaFormulario = new TableColumn<>("");
         colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("candidato"));
-        colunaFormulario.setCellFactory((TableColumn<AnuncioEntrevista, Candidato> param) -> new TableCell<AnuncioEntrevista, Candidato>() {
+        colunaFormulario.setCellFactory((TableColumn<AnuncioEntrevista, String> param) -> new TableCell<AnuncioEntrevista, String>() {
             JFXButton button = new JFXButton();//
             @Override
-            protected void updateItem(Candidato item, boolean empty) {
+            protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                if (item==null || empty) {
+                if (empty) {
                     setText("");
                     setStyle("");
                 } else {
@@ -2735,7 +2735,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                if (item == null || empty) {
+                if (empty) {
                     setText("");
                     setStyle("");
                 } else {

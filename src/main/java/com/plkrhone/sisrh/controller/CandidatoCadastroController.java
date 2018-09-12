@@ -383,6 +383,7 @@ public class CandidatoCadastroController extends UtilsController implements Init
             combos();
             //btAdicionarNoAnuncio.setDisable(true);
             if(candidato!=null) {
+                candidato = candidatos.findById(candidato.getId());
                 preencherFormulario(candidato);
 //                if(anuncio!=null){
 //                    Long id = candidato.getId();

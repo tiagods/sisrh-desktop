@@ -9,6 +9,7 @@ import javax.persistence.*;
 import com.plkrhone.sisrh.model.AbstractEntity;
 import com.plkrhone.sisrh.model.Avaliacao;
 import com.plkrhone.sisrh.model.Usuario;
+import com.plkrhone.sisrh.model.avaliacao.AvaliacaoCondicao;
 
 @Entity
 @Table(name="anu_ent_avaliacao")
@@ -44,6 +45,11 @@ public class AnuncioEntrevistaAvaliacao implements AbstractEntity, Serializable{
 	@Enumerated(value=EnumType.STRING)
 	@Column(name="avaliacao_tipo")
     private Avaliacao.AvaliacaoTipo avaliacaoTipo;
+
+	@ManyToOne
+	@JoinColumn(name = "condicao_id")
+	private AvaliacaoCondicao condicao;
+
 	private String formulario;
 	/**
 	 * @return the id
@@ -165,7 +171,16 @@ public class AnuncioEntrevistaAvaliacao implements AbstractEntity, Serializable{
 	public void setAvaliacaoTipo(Avaliacao.AvaliacaoTipo avaliacaoTipo) {
 		this.avaliacaoTipo = avaliacaoTipo;
 	}
-	
+
+
+	public AvaliacaoCondicao getCondicao() {
+		return condicao;
+	}
+
+	public void setCondicao(AvaliacaoCondicao condicao) {
+		this.condicao = condicao;
+	}
+
 	/**
 	 * @return the formulario
 	 */

@@ -57,6 +57,7 @@ CONSTRAINT can_curso_pkey PRIMARY KEY (candidato_id, curso_id),
   CONSTRAINT fk_can_curso_curso FOREIGN KEY (curso_id)
       REFERENCES curso_superior (id)
 );
+alter table anu_ent_avaliacao add column condicao_id integer;
 
 alter table anuncio drop candidato_aprovado_id;
 alter table anuncio drop havera_treinamento;

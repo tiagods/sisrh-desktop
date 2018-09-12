@@ -6,13 +6,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.model.avaliacao.AvaliacaoCondicao;
 import javafx.stage.*;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
@@ -104,6 +102,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 			tabela();
 			aeAvaliacoes = new AnuncioEntrevistasAvaliacaoImp(getManager());
 			tbPrincipal.getItems().addAll(aeAvaliacoes.findByAnuncioEntrevista(anuncioEntrevista));
+			cbTipoAvaliacao.setDisable(true);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -215,25 +214,20 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 		cbTipoAvaliacao.getItems().addAll(Avaliacao.AvaliacaoTipo.values());
 		new ComboBoxAutoCompleteUtil<>(cbAvaliacao);
 		
-		cbAvaliacao.valueProperty().addListener(new ChangeListener<Avaliacao>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Avaliacao> observable, Avaliacao oldValue,
-					Avaliacao newValue) {
-				if(newValue!=null) {
-					cbTipoAvaliacao.setValue(newValue.getTipo());
-					txPontuacao.setText("0.00");
-					if(newValue.getTipo()==Avaliacao.AvaliacaoTipo.DISSERTATIVA) {
-						txPontuacaoMaxima.setText("0.00");
-					}
-					else {
-						txPontuacaoMaxima.setText(String.valueOf(newValue.getPontuacao().doubleValue()));
-					}
-					txGabarito.setText(newValue.getGabarito());
-				}
-			}
-			
-		});
+		cbAvaliacao.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=null) {
+                cbTipoAvaliacao.setValue(newValue.getTipo());
+                txPontuacao.setText("0");
+                if(newValue.getTipo()==Avaliacao.AvaliacaoTipo.DISSERTATIVA) {
+					txPontuacaoMaxima.setText("0.00");
+                }
+                else {
+                    txPontuacaoMaxima.setText(String.valueOf(newValue.getPontuacao().doubleValue()));
+                }
+                txDescricao.setDisable(newValue.getTipo()==Avaliacao.AvaliacaoTipo.CONDICIONAL);
+                txGabarito.setText(newValue.getGabarito());
+            }
+        });
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void limparTela(ObservableList<Node> nodes) {
@@ -321,19 +315,29 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
     @FXML
     void salvar(ActionEvent event) {
     	try {
-	    	Alert alert = new Alert(Alert.AlertType.ERROR);
+			if(txPontuacao.getText().trim().equals("")) txPontuacao.setText("0.00");
+
+			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Erro");
 			if(cbAvaliacao.getValue()==null) {
 	    		alert.setContentText("Selecione uma avaliação antes de salvar");
 	    		alert.showAndWait();
 	    		return;
 	    	}
-	    	if(txPontuacao.getText().trim().equals("")) {
+			if(txPontuacao.getText().trim().equals("")) {
 	    		alert.setContentText("O campo pontuação é obrigatório mesmo se a avaliação for "+Avaliacao.AvaliacaoTipo.DISSERTATIVA);
 	    		alert.showAndWait();
 	    		return;
 	    	}
-	    	AnuncioEntrevistaAvaliacao ava = new AnuncioEntrevistaAvaliacao();
+			else{
+				try {
+					Double.parseDouble(txPontuacao.getText());
+				}catch (NumberFormatException nf){
+					alert(Alert.AlertType.ERROR,"Erro","","Pontuação informada esta incorreta");
+					return;
+				}
+			}
+			AnuncioEntrevistaAvaliacao ava = new AnuncioEntrevistaAvaliacao();
 			ava.setAvaliacao(cbAvaliacao.getValue());
 			ava.setAnuncioEntrevista(anuncioEntrevista);
 	    	ava.setPontuacao(new BigDecimal(txPontuacao.getText()));
@@ -341,7 +345,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 			ava.setGabarito(txGabarito.getText());
 			ava.setDescricao(txDescricao.getText());
 			ava.setAvaliacaoTipo(cbTipoAvaliacao.getValue());
-			
+
 			if (!txFormulario.getText().equals("") && !txFormulario.getText().startsWith(PathStorageEnum.AVALIACAO_APLICADA.getDescricao()+"/")) {
 				try {
 					storage.transferTo(txFormulario.getText(), PathStorageEnum.AVALIACAO_APLICADA.getDescricao()+"/"+txFormulario.getText());
@@ -363,6 +367,16 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 	    		tbPrincipal.getItems().set(Integer.parseInt(txLocation.getText()), ava);
 	    	}
 			loadFactory();
+			if(cbTipoAvaliacao.getValue()== Avaliacao.AvaliacaoTipo.CONDICIONAL){
+				avaliacoes = new AvaliacoesImp(getManager());
+				Avaliacao a = cbAvaliacao.getValue();
+				a = avaliacoes.findById(a.getId());
+
+				double pont = ava.getPontuacao().doubleValue();
+				Optional<AvaliacaoCondicao> result = a.getCondicoes().stream().filter(c->c.getDe()>= pont && c.getAte()>=pont).findAny();
+				if(result.isPresent()) ava.setCondicao(result.get());
+			}else
+				ava.setCondicao(null);
 			aeAvaliacoes = new AnuncioEntrevistasAvaliacaoImp(getManager());
 			aeAvaliacoes.save(ava);
 			tbPrincipal.getItems().clear();
@@ -424,6 +438,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 				}
 			}
 		});
+		colunaNome.setPrefWidth(150);
 		TableColumn<AnuncioEntrevistaAvaliacao, Avaliacao.AvaliacaoTipo> colunaTipo = new TableColumn<>("Tipo");
 		colunaTipo.setCellValueFactory(new PropertyValueFactory<>("avaliacaoTipo"));
 		colunaTipo.setCellFactory((TableColumn<AnuncioEntrevistaAvaliacao, Avaliacao.AvaliacaoTipo> param) -> 
@@ -439,7 +454,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 				}
 			}
 		});
-		TableColumn<AnuncioEntrevistaAvaliacao, Number> colunaPontuacao= new TableColumn<>("Pontuacao");
+		TableColumn<AnuncioEntrevistaAvaliacao, Number> colunaPontuacao= new TableColumn<>("Pts");
 		colunaPontuacao.setCellValueFactory(new PropertyValueFactory<>("pontuacao"));
 		colunaPontuacao.setCellFactory((TableColumn<AnuncioEntrevistaAvaliacao, Number> param) -> new TableCell<AnuncioEntrevistaAvaliacao, Number>() {
 			@Override
@@ -454,7 +469,8 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 				}
 			}
 		});
-		TableColumn<AnuncioEntrevistaAvaliacao, Number> colunaPontuacaoMaxima = new TableColumn<>("Pontuacao Maxima");
+		colunaPontuacao.setPrefWidth(40);
+		TableColumn<AnuncioEntrevistaAvaliacao, Number> colunaPontuacaoMaxima = new TableColumn<>("Pts Max");
 		colunaPontuacaoMaxima.setCellValueFactory(new PropertyValueFactory<>("pontuacaoMaxima"));
 		colunaPontuacaoMaxima.setCellFactory((TableColumn<AnuncioEntrevistaAvaliacao, Number> param) -> new TableCell<AnuncioEntrevistaAvaliacao, Number>() {
 			@Override
@@ -469,6 +485,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 				}
 			}
 		});
+		colunaPontuacaoMaxima.setPrefWidth(40);
 		TableColumn<AnuncioEntrevistaAvaliacao, String> colunaDescricao = new TableColumn<>("Descricao");
 		colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
 		colunaDescricao.setCellFactory((TableColumn<AnuncioEntrevistaAvaliacao, String> param) -> {
@@ -483,7 +500,11 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 						setGraphic(null);
 						setText(null);
 					} else {
-						textArea.setText(item);
+						AnuncioEntrevistaAvaliacao ava = tbPrincipal.getItems().get(getIndex());
+						String param = item;
+						if(ava.getAvaliacaoTipo().equals(Avaliacao.AvaliacaoTipo.CONDICIONAL))
+							param = ava.getCondicao()!=null?ava.getCondicao().getDescricao():"";
+						textArea.setText(param);
 						setGraphic(textArea);
 						setText(null);
 					}
@@ -516,8 +537,9 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 			};
 			return cell;
 		});
+		tbPrincipal.setFixedCellSize(70);
 		tbPrincipal.getColumns()
-				.addAll(colunaId,colunaCriadoEm,colunaNome,colunaTipo,colunaPontuacao,colunaPontuacaoMaxima,colunaDescricao, colunaEditar);
+				.addAll(colunaCriadoEm,colunaNome,colunaTipo,colunaPontuacao,colunaPontuacaoMaxima,colunaDescricao, colunaEditar);
     }
    public Set<AnuncioEntrevistaAvaliacao> getItems(){
 	   return aeAvaliacao;
