@@ -636,8 +636,8 @@ public class CandidatoCadastroController extends UtilsController implements Init
                     alert.setTitle("Erro Registro");
                     alert.setHeaderText("Valor duplicado!");
                     alert.setContentText("E-mail informado ja existe!"+can.getId()+"-"+can.getNome());
-                    alert.showAndWait();
-                    return;
+                    //alert.showAndWait();
+                    //return;
                 }
             }
             candidato.setNome(txNome.getText());

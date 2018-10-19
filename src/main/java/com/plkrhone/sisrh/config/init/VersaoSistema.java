@@ -2,8 +2,8 @@ package com.plkrhone.sisrh.config.init;
 
 public class VersaoSistema {
     private final String nome="SISRH";
-    private final String versao="1.0.5";
-    private final String data="10/09/2018";
+    private final String versao="1.0.6";
+    private final String data="19/10/2018";
     private final String versaoBanco="1.0.2";
     private final String detalhes="Versao 1.0";
     /**
