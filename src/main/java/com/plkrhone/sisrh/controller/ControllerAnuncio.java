@@ -2191,6 +2191,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                 if (item == null || empty) {
                     setText("");
                     setStyle("");
+                    setGraphic(null);
                 } else {
                     Candidato c = tbCurriculos.getItems().get(getIndex());
                     button.getStyleClass().add("btDefault");
@@ -2449,16 +2450,17 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
         });
         colunaEntrevista.setPrefWidth(150);
 
-        TableColumn<AnuncioEntrevista, String> colunaFormulario = new TableColumn<>("");
+        TableColumn<AnuncioEntrevista, Candidato> colunaFormulario = new TableColumn<>("");
         colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("candidato"));
-        colunaFormulario.setCellFactory((TableColumn<AnuncioEntrevista, String> param) -> new TableCell<AnuncioEntrevista, String>() {
+        colunaFormulario.setCellFactory((TableColumn<AnuncioEntrevista, Candidato> param) -> new TableCell<AnuncioEntrevista, Candidato>() {
             JFXButton button = new JFXButton();//
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(Candidato item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (item==null || empty) {
                     setText("");
                     setStyle("");
+                    setGraphic(null);
                 } else {
                     Candidato c = tbEntrevista.getItems().get(getIndex()).getCandidato();
                     button.getStyleClass().add("btDefault");
@@ -2738,6 +2740,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                 if (empty) {
                     setText("");
                     setStyle("");
+                    setGraphic(null);
                 } else {
                     button.getStyleClass().add("btDefault");
                     try {
@@ -3016,6 +3019,7 @@ public class ControllerAnuncio extends UtilsController implements Initializable 
                 if (empty) {
                     setText("");
                     setStyle("");
+                    setGraphic(null);
                 } else {
                     button.getStyleClass().add("btDefault");
                     try {
