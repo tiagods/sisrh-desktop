@@ -125,7 +125,4 @@ public class AnunciosImp extends AbstractRepository<Anuncio, Long> implements An
 		criteria.addOrder(Order.desc("dataAbertura"));
 		return criteria.list();
 	}
-	
-	
-
 }

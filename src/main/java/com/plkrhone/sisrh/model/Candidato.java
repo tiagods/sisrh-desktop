@@ -1,5 +1,8 @@
 package com.plkrhone.sisrh.model;
 
+import com.plkrhone.sisrh.model.anuncio.AnuncioCandidatoConclusao;
+import com.plkrhone.sisrh.model.anuncio.AnuncioEntrevista;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -195,7 +198,28 @@ public class Candidato implements AbstractEntity,Serializable {
     private int ocupado=0;
     @Column(name="ocupado_detalhes")
     private String ocupadoDetalhes;
-    
+
+    //recrutamento
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="anu_curriculo", joinColumns=
+			{@JoinColumn(name="candidato_id")}, inverseJoinColumns=
+			{@JoinColumn(name="anuncio_id")})
+	private Set<Anuncio> curriculoSet = new HashSet<>();
+
+	//entrevistas
+	@OneToMany(mappedBy = "candidato", fetch= FetchType.LAZY,cascade= CascadeType.ALL,orphanRemoval=true)
+	private Set<AnuncioEntrevista> entrevistaSet = new HashSet<>();
+
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="anu_pre_selecao", joinColumns=
+			{@JoinColumn(name="candidato_id")}, inverseJoinColumns=
+			{@JoinColumn(name="anuncio_id")})
+	private Set<Candidato> preSelecaoSet = new HashSet<>();
+
+	//area de conclusao
+	@OneToMany(mappedBy = "candidato",fetch= FetchType.LAZY,cascade= CascadeType.ALL,orphanRemoval=true)
+	private Set<AnuncioCandidatoConclusao> conclusaoSet = new HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -536,6 +560,22 @@ public class Candidato implements AbstractEntity,Serializable {
 
 	public void setCursos(Set<Curso> cursos) {
 		this.cursos = cursos;
+	}
+
+	public Set<Anuncio> getCurriculoSet() {
+		return curriculoSet;
+	}
+
+	public Set<AnuncioEntrevista> getEntrevistaSet() {
+		return entrevistaSet;
+	}
+
+	public Set<Candidato> getPreSelecaoSet() {
+		return preSelecaoSet;
+	}
+
+	public Set<AnuncioCandidatoConclusao> getConclusaoSet() {
+		return conclusaoSet;
 	}
 
 	/* (non-Javadoc)

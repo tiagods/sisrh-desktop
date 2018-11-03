@@ -211,8 +211,8 @@ public class ControllerTarefa extends UtilsController implements Initializable {
 			AnuncioEntrevista ae = cbAnuncioEntrevista.getValue();
 			FXMLLoader loader = carregarFxmlLoader("Entrevista");
 			Stage stage = carregarStage(loader, "");
-			ControllerEntrevista controller = loader.getController();
-			controller.iniciar(ae,stage);
+			ControllerEntrevista controller = new ControllerEntrevista(ae,stage);
+			loader.setController(controller);
 			stage.show();
 			stage.setOnCloseRequest(event1 -> {
 				if (event1.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {

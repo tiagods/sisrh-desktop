@@ -85,29 +85,36 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 
 	private OfficeEditor officeJob = OfficeEditorProducer
 			.newConfig(FileOfficeEnum.entrevista.getDescricao());
+
+	public ControllerEntrevista(AnuncioEntrevista anuncioEntrevista, Stage stage) {
+		this.anuncioEntrevista=anuncioEntrevista;
+		this.stage=stage;
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
 			loadFactory();
+			entrevistas = new AnuncioEntrevistaAnaliseImp(getManager());
 			perfisImpl = new AnuncioEntrevistaPerfisTextosImpl(getManager());
 			formsImpl = new AnuncioEntrevistaFormulariosImpl(getManager());
 
 			List<AnuncioEntrevistaPerfilTexto> perfis = perfisImpl.findByInativo(false);
-			perfis.forEach(c->{
-				criarCheckBoxNoPerfil(c);
-			});
+			perfis.forEach(c-> criarCheckBoxNoPerfil(c));
 			List<AnuncioEntrevistaFormularioTexto> textos = formsImpl.findByInativo(false);
-			textos.forEach(c->{//montar formulario
-				criarTextAreaForm(c,textos.size());
-			});;
-
+			textos.forEach(c->//montar formulario
+				criarTextAreaForm(c,textos.size())
+			);
+			if(anuncioEntrevista.getEntrevista()!=null) {
+				entrevista = entrevistas.findById(anuncioEntrevista.getEntrevista().getId());
+				preencherFormulario(entrevista);
+			}
 		}catch(Exception e) {
-
+			e.printStackTrace();
 		}finally {
 			close();
 		}
 	}
-
 	private void criarCheckBoxNoPerfil(AnuncioEntrevistaPerfilTexto c) {
 		JFXCheckBox checkBox = new JFXCheckBox();
 		checkBox.setId(CHAVE_PERFIL+c.getId().longValue());
@@ -147,48 +154,19 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 		if(c.getSequencia()>1) {
 			JFXButton button = new JFXButton("<");
 			button.getStyleClass().add("btJFXDefault");
-			button.setOnAction(new EventHandler<ActionEvent>() {
-
-				@Override
-				public void handle(ActionEvent event) {
-					formRequisicaoRetroceder(event);
-				}
-			});
+			button.setOnAction(event -> formRequisicaoRetroceder(event));
 			bar.getButtons().add(button);
 		}
 		if(c.getSequencia()<size) {
 			JFXButton button = new JFXButton(">");
 			button.getStyleClass().add("btJFXDefault");
-			button.setOnAction(new EventHandler<ActionEvent>() {
-
-				@Override
-				public void handle(ActionEvent event) {
-					formRequisicaoAvancar(event);
-				}
-			});
+			button.setOnAction(event -> formRequisicaoAvancar(event));
 			bar.getButtons().add(button);
 		}
 		vbox.getChildren().addAll(label,textArea,label2,textAreaValue,bar);
 		tab.setContent(vbox);
 		tabPane.getTabs().add(tab);
 
-	}
-	public void iniciar(AnuncioEntrevista  ae,Stage stage) {
-		this.anuncioEntrevista=ae;
-		this.stage=stage;
-		if(ae.getEntrevista()!=null) {
-			try {
-				loadFactory();
-				entrevistas = new AnuncioEntrevistaAnaliseImp(getManager());
-				entrevista = entrevistas.findById(ae.getEntrevista().getId());
-				preencherFormulario(entrevista);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}finally{
-				close();
-			}
-
-		}
 	}
 	@FXML
 	void excluir(ActionEvent event) {
@@ -211,17 +189,14 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 	@FXML
 	private void formRequisicaoAvancar(ActionEvent event) {
 		Tab t = proximaTabVagas(true);
-		if (t != null)
-			tabPane.getSelectionModel().select(t);
+		if (t != null) tabPane.getSelectionModel().select(t);
 	}
 
 	@FXML
 	private void formRequisicaoRetroceder(ActionEvent event) {
 		Tab t = proximaTabVagas(false);
-		if (t != null)
-			tabPane.getSelectionModel().select(t);
+		if (t != null) tabPane.getSelectionModel().select(t);
 	}
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	void limparTela(ObservableList<Node> nodes) {
 		nodes.stream().forEach((n) -> {
@@ -255,35 +230,33 @@ public class ControllerEntrevista extends PersistenciaController implements Init
 	void preencherFormulario(AnuncioEntrevistaAnalise entrevista) {
 		entrevista.getFormularios().forEach(o->{
 			Object[] object = mapFormulario.get(CHAVE_FORMULARIO+o.getFormulario().getId().longValue());
+
 			if(object == null) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Um formulario foi desativado");
 				alert.setContentText("Um formulario foi desativado, será mostrado na impressão");
 				alert.showAndWait();
 			}
-			if(object[1] instanceof JFXTextArea) {
+			if(object!=null && object[1] instanceof JFXTextArea) {
 				((JFXTextArea)object[1]).setText(o.getDescricao());
 			}
 		});
 		entrevista.getPerfis().forEach(o->{
 			Object[] object = mapPerfil.get(CHAVE_PERFIL+o.getId().longValue());
-			if(object[1] instanceof JFXCheckBox) ((JFXCheckBox)object[1]).setSelected(true);
+			if(object!= null && object[1] instanceof JFXCheckBox) ((JFXCheckBox)object[1]).setSelected(true);
 		});
 	}
 
 	private Tab proximaTabVagas(boolean avancar) {
 		int t = tabPane.getSelectionModel().getSelectedIndex();
-		if (avancar) {
-			return tabPane.getTabs().get(++t);
-		} else {
-			return tabPane.getTabs().get(--t);
-		}
+		if (avancar) return tabPane.getTabs().get(++t);
+		else return tabPane.getTabs().get(--t);
+
 	}
 	@FXML
 	void salvar(ActionEvent event) {
 		try {
 			loadFactory();
-
 			if(this.entrevista==null) {
 				entrevista = new AnuncioEntrevistaAnalise();
 				entrevista.setCriadoEm(Calendar.getInstance());

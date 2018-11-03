@@ -24,24 +24,6 @@ public class CandidatoObserver implements InterfaceCandidato{
 		else {
 			Candidato candidato = result.get();
 			switch (e) {
-				case CURRICULO:
-					candidato.setTotalRecrutamento(candidato.getTotalRecrutamento() + change);
-//				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
-//					candidato.setTotalRecrutamento(candidato.getTotalRecrutamento()+change);
-//				});
-					break;
-				case ENTREVISTA:
-					candidato.setTotalEntrevista(candidato.getTotalEntrevista()+change);
-//				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
-//					candidato.setTotalEntrevista(candidato.getTotalEntrevista()+change);
-//				});
-					break;
-				case PRESELECAO:
-					candidato.setTotalPreSelecao(candidato.getTotalPreSelecao()+change);
-//				listCandidatos.stream().filter(o-> o.getId() == c.getId()).forEach(candidato->{
-//					candidato.setTotalPreSelecao(candidato.getTotalPreSelecao()+change);
-//				});
-					break;
 				case APROVACAO:
 					candidato.setTotalAprovacao(candidato.getTotalAprovacao() + change);
 					if (change == 1) {
@@ -51,17 +33,10 @@ public class CandidatoObserver implements InterfaceCandidato{
 						candidato.setOcupado(0);
 						candidato.setOcupadoDetalhes("");
 					}
+					break;
+					default:
+						break;
 
-//					listCandidatos.stream().filter(o -> o.getId() == c.getId()).forEach(candidato -> {
-//						candidato.setTotalAprovacao(candidato.getTotalAprovacao() + change);
-//						if (change == 1) {
-//							candidato.setOcupado(1);
-//							candidato.setOcupadoDetalhes(c.getOcupadoDetalhes());
-//						} else if (change == -1) {
-//							candidato.setOcupado(0);
-//							candidato.setOcupadoDetalhes("");
-//						}
-//					});
 			}
 
 		}
@@ -79,14 +54,12 @@ public class CandidatoObserver implements InterfaceCandidato{
 			Candidato candidato = candidatos.findById(c.getId());
 			candidato.setOcupado(c.getOcupado());
 			candidato.setOcupadoDetalhes(c.getOcupadoDetalhes());
-			candidato.setTotalRecrutamento(c.getTotalRecrutamento());
-			candidato.setTotalEntrevista(c.getTotalEntrevista());
-			candidato.setTotalPreSelecao(c.getTotalPreSelecao());
-			candidato.setTotalAprovacao(c.getTotalAprovacao());
+
+			candidato.setTotalRecrutamento(candidato.getCurriculoSet().size());
+			candidato.setTotalEntrevista(candidato.getEntrevistaSet().size());
+			candidato.setTotalPreSelecao(candidato.getPreSelecaoSet().size());
+			candidato.setTotalAprovacao(candidato.getConclusaoSet().size());
 			novaList.add(candidato);
-			System.out.println("Candidato: "+c.getId()+"\tCurriculos: "+c.getTotalRecrutamento()+
-					"\tEntrevistas: "+c.getTotalEntrevista()+
-					"\tPreSelecao: "+c.getTotalPreSelecao()+"\tAprovações: "+c.getTotalAprovacao());
 		});
 		candidatos.save(novaList);
 		listCandidatos.clear();

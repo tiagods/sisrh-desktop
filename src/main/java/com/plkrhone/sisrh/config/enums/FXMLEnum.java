@@ -16,6 +16,8 @@ public enum FXMLEnum {
     CURSO_CADASTRO("CursoCadastro.fxml"),
     CLIENTE_CADASTRO("ClienteCadastro.fxml"),
     CLIENTE_PESQUISA("ClientePesquisa.fxml"),
+    ENTREVISTA("Entrevista.fxml"),
+    ENTREVISTA_AVALIACAO("EntrevistaAvaliacao.fxml"),
     LOGIN("Login.fxml"),
     PROGRESS_SAMPLE("Progress.fxml");
     private String localizacao;

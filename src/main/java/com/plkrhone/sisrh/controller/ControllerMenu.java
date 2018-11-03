@@ -80,16 +80,19 @@ public class ControllerMenu extends UtilsController implements Initializable {
 
 	@FXML
 	void abrirAnuncio(ActionEvent event) {
-		AnuncioView anuncio = new AnuncioView();
-		anuncio.start(new Stage());
-		// try {
-		// URL url = getClass().getClassLoader().getResource("Anuncio.fxml");
-		// Parent root = FXMLLoader.load(url);
-		// pnCenter.getChildren().clear();
-		// pnCenter.getChildren().add(root);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+//		AnuncioView anuncio = new AnuncioView();
+//		anuncio.start(new Stage());
+
+		try {
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.ANUNCIO_PESQUISA);
+			loader.setController(new AnuncioPesquisaController(stage));
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+		}catch(IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo "+FXMLEnum.CLIENTE_PESQUISA,e,true);
+		}
+
 	}
 
 	@FXML

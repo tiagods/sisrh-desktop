@@ -1,4 +1,4 @@
-package com.plkrhone.sisrh.modeldao;
+package com.plkrhone.sisrh.util;
 
 import com.plkrhone.sisrh.config.init.VersaoSistema;
 import com.plkrhone.sisrh.factory.ConnectionFactory;
