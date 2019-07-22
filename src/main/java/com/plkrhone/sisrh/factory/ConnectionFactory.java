@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.plkrhone.sisrh.config.SecundaryDatabaseConfig;
+import com.plkrhone.sisrh.config.init.DataBaseConfig;
 
 public class ConnectionFactory {
 	
@@ -12,9 +13,12 @@ public class ConnectionFactory {
 	
 	public Connection getConnection(){
 		try{
-			SecundaryDatabaseConfig s = SecundaryDatabaseConfig.getInstance();
-			Class.forName(s.getValue("classForName"));
-			return DriverManager.getConnection(s.getValue("url"), s.getValue("user"), s.getValue("password"));
+			DataBaseConfig s = DataBaseConfig.getInstance();
+			Class.forName(s.getValue("javax.persistence.jdbc.driver"));
+			return DriverManager.getConnection(
+					s.getValue("javax.persistence.jdbc.url"),
+					s.getValue("javax.persistence.jdbc.user"),
+					s.getValue("javax.persistence.jdbc.password"));
 		}catch(ClassNotFoundException e){
 			e.printStackTrace();
 			return null;

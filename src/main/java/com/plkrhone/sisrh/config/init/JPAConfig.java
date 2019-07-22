@@ -3,6 +3,7 @@ package com.plkrhone.sisrh.config.init;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Map;
 
 public class JPAConfig {
 	private static final String PERSISTENCE_UNIT_NAME = "sisrh";
@@ -13,7 +14,8 @@ public class JPAConfig {
 	private JPAConfig() {
 	}
 	static {
-		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+		Map<String,String> anotacao = DataBaseConfig.getInstance().getMap();
+		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME,anotacao);
 	}
 	public static JPAConfig getInstance() {
 		if(instance==null)

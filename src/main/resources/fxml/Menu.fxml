@@ -13,7 +13,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="560.0" prefWidth="1032.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerMenu">
+<BorderPane prefHeight="560.0" prefWidth="1032.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerMenu">
    <center>
       <AnchorPane prefHeight="477.0" prefWidth="731.0" BorderPane.alignment="CENTER">
          <children>
@@ -163,7 +163,7 @@
             <JFXButton mnemonicParsing="false" onAction="#abrirCandidato" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="CANDIDATO" />
          	<JFXButton mnemonicParsing="false" onAction="#abrirCargo" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="CARGO" />
          	<JFXButton mnemonicParsing="false" onAction="#abrirCliente" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="CLIENTE" />
-    	   	<JFXButton disable="true" mnemonicParsing="false" onAction="#abrirEntrevista" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="ENTREVISTA" visible="false" />
+    	   	<JFXButton mnemonicParsing="false" onAction="#abrirManual" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="MANUAL" />
             <JFXButton mnemonicParsing="false" onAction="#abrirAvaliacao" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="MODELOS(TESTES)" />
             <JFXButton mnemonicParsing="false" onAction="#abrirTarefa" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="TAREFA" />
             <JFXButton mnemonicParsing="false" onAction="#abrirUsuario" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: rgb(63,63,63);" styleClass="btJFXDefault" text="USUARIO" />

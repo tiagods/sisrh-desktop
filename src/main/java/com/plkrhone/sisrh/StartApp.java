@@ -29,7 +29,7 @@ public class StartApp extends Application {
 	private static Logger log = LoggerFactory.getLogger(StartApp.class);
 	Atualizador atualizador = new Atualizador();
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage)  {
 		if (atualizador.atualizacaoPendente()) {
 			log.debug("Sistema desatualizado");
 			atualizador.iniciarAtualizacao();

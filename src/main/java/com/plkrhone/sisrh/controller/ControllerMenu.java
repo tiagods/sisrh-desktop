@@ -1,7 +1,10 @@
 package com.plkrhone.sisrh.controller;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
@@ -119,8 +122,12 @@ public class ControllerMenu extends UtilsController implements Initializable {
 					"Falha ao localizar o arquivo "+FXMLEnum.CANDIDATO_PESQUISA,e,true);
 		}
 	}
-
 	@FXML
+	void abrirManual(ActionEvent event){
+		abrirArquivo(System.getProperty("user.dir"),"manual.docx");
+	}
+
+	//@FXML
 	void abrirEntrevista(ActionEvent event) {
 		EntrevistaView entrevistaView = new EntrevistaView();
 		entrevistaView.start(new Stage());

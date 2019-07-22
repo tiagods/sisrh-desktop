@@ -48,6 +48,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -60,6 +62,22 @@ public abstract class UtilsController extends PersistenciaController {
 	public SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	public NumberFormat nf = NumberFormat.getNumberInstance();
 	public SimpleDateFormat sdfH =new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+	public void abrirArquivo(String local, String nome){
+		Path path = Paths.get(local,nome);
+		Runnable run = () -> {
+			try {
+				Desktop.getDesktop().open(path.toFile());
+			} catch (IOException e) {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Erro");
+				alert.setHeaderText("Não foi possivel abrir o arquivo");
+				alert.setContentText("Falha ao abrir o arquivo\n"+e);
+				alert.showAndWait();
+			}
+		};
+		new Thread(run).start();
+	}
 
 	public Alert alert(Alert.AlertType alertType, String title, String header, String contentText) {
 		Alert alert = new Alert(alertType);
