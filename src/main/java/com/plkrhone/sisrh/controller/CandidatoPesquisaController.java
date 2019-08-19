@@ -7,11 +7,14 @@ import com.plkrhone.sisrh.model.*;
 import com.plkrhone.sisrh.repository.helper.*;
 import com.plkrhone.sisrh.repository.helper.filter.CandidatoAnuncioFilter;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
+import com.plkrhone.sisrh.util.ExcelGenericoUtil;
 import com.plkrhone.sisrh.util.storage.Storage;
 import com.plkrhone.sisrh.util.storage.StorageProducer;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -110,6 +113,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
             stage.setOnHiding(event -> {
                 try {
                     loadFactory();
+                    candidatos = new CandidatosImp(getManager());
                     if(controller.isHouveAtualizacaoCombo()) {
                         cargos = new CargosImpl(getManager());
                         Cargo value1 = cbObjetivoPesquisa.getValue();
@@ -127,8 +131,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                         new ComboBoxAutoCompleteUtil<>(cbObjetivoPesquisa);
                         new ComboBoxAutoCompleteUtil<>(cbExperienciaPesquisa);
                     }
-                    filtrar();
-                    //filtrar(this.paginacao);
+
                 } catch (Exception e) {
                     alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                             "Falha ao localizar o arquivo" + FXMLEnum.CANDIDATO_CADASTRO, e, true);
@@ -137,6 +140,8 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                 } finally {
                     close();
                 }
+                filtrar();
+                //filtrar(this.paginacao);
             });
         } catch (IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
@@ -187,18 +192,29 @@ public class CandidatoPesquisaController extends UtilsController implements Init
         cbBuscarPorPesquisa.getSelectionModel().selectFirst();
 
         ckIndisponivelPesquisa.setSelected(true);
-        ckIndisponivelPesquisa.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        ckIndisponivelPesquisa.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                loadFactory();
+                candidatos = new CandidatosImp(getManager());
                 filtrar();
+            } catch (Exception e) {
+                alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registro", e, true);
+            } finally {
+                close();
             }
         });
-        ChangeListener<Object> pesquisaCombo = new ChangeListener<Object>() {
-            @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+        ChangeListener<Object> pesquisaCombo = (observable, oldValue, newValue) -> {
+            try {
+                loadFactory();
+                candidatos = new CandidatosImp(getManager());
                 filtrar();
+            } catch (Exception e) {
+                alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registro", e, true);
+            } finally {
+                close();
             }
         };
+
         cbObjetivoPesquisa.valueProperty().addListener(pesquisaCombo);
         cbExperienciaPesquisa.valueProperty().addListener(pesquisaCombo);
         cbSexoPesquisa.valueProperty().addListener(pesquisaCombo);
@@ -235,7 +251,127 @@ public class CandidatoPesquisaController extends UtilsController implements Init
         }
         return false;
     }
-    private void filtrar() {
+
+    @FXML
+    void exportar(ActionEvent event){
+            try {
+                FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+                Alert progress = new Alert(Alert.AlertType.INFORMATION);
+                progress.setHeaderText("");
+                DialogPane dialogPane = new DialogPane();
+                dialogPane.setContent(loader.load());
+                progress.setDialogPane(dialogPane);
+                Stage sta = (Stage) dialogPane.getScene().getWindow();
+
+                Task<Void> run = new Task<Void>() {
+                    {
+                        setOnFailed(a ->sta.close());
+                        setOnSucceeded(a ->sta.close());
+                        setOnCancelled(a ->sta.close());
+                    }
+                    @Override
+                    protected Void call() {
+
+                        File export = salvarTemp("xls");
+                        Platform.runLater(() -> sta.show());
+                        ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+                        Integer[] colunasLenght = new Integer[] { 10, 18, 18, 14, 10, 30, 10, 10, 10, 10,20, 15, 15 };
+                        String[] cabecalho = new String[] { "Tarefa", "Mês", "Prazo", "Andamento", "Status", "Detalhes", "Tipo",
+                                "Registro", "Nome", "Ultimo Negocio","Status Negocio / Ultimo Negocio", "Atendente", "Criado_Por" };
+                        listaImpressao.add(new ArrayList<>());
+                        for (String c : cabecalho) {
+                            listaImpressao.get(0).add(c);
+                        }
+                        try {
+
+                            loadFactory();
+                            candidatos = new CandidatosImp(getManager());
+                            List<Candidato> candidatoList = filtrar();
+
+                            if (candidatoList != null && ) {
+                                for (int i = 1; i <= finalList.size(); i++) {
+                                    listaImpressao.add(new ArrayList<String>());
+                                    NegocioTarefa c = finalList.get(i-1);
+                                    listaImpressao.get(i).add(c.getId());
+                                    listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getDataEvento().getTime()));
+                                    listaImpressao.get(i).add(sdfH.format(c.getDataEvento().getTime()));
+                                    listaImpressao.get(i).add(c.getTipoTarefa().getDescricao());
+                                    listaImpressao.get(i).add(c.getFinalizado()==0?"Pendente":"Finalizado");
+
+                                    listaImpressao.get(i).add(c.getDescricao());
+                                    String classe = "Contato";
+                                    long id = 0;
+                                    String nome="";
+                                    String ultimoNegocio = "";
+                                    String statusUltimoNegocio= "";
+
+                                    if(c instanceof NegocioTarefaProposta) {
+                                        classe = "Proposta";
+                                        id = ((NegocioTarefaProposta)c).getProposta().getId();
+                                        nome = ((NegocioTarefaProposta)c).getProposta().getNome();
+                                        statusUltimoNegocio = ((NegocioTarefaProposta)c).getProposta().getTipoStatus().toString();
+                                    }
+                                    else if(c instanceof NegocioTarefaContato) {
+                                        classe = "Contato";
+                                        id = ((NegocioTarefaContato)c).getContato().getId();
+                                        nome = ((NegocioTarefaContato)c).getContato().getNome();
+                                        NegocioProposta p = ((NegocioTarefaContato)c).getContato().getUltimoNegocio();
+                                        if(p!=null) {
+                                            statusUltimoNegocio = p.getTipoStatus().getDescricao();
+                                            ultimoNegocio = ""+p.getId();
+                                        }
+                                    }
+                                    listaImpressao.get(i).add(classe);
+                                    listaImpressao.get(i).add(id);
+                                    listaImpressao.get(i).add(nome);
+                                    listaImpressao.get(i).add(ultimoNegocio);
+                                    listaImpressao.get(i).add(statusUltimoNegocio);
+                                    listaImpressao.get(i).add(c.getAtendente().getNome());
+                                    listaImpressao.get(i).add(c.getCriadoPor()!=null?c.getCriadoPor().getNome():"");
+                                }
+                            }
+                            ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
+                            planilha.gerarExcel();
+                            Platform.runLater(() ->alert(Alert.AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));
+                            Desktop.getDesktop().open(export);
+                        } catch (Exception e1) {
+                            Platform.runLater(() ->alert(Alert.AlertType.ERROR,"Erro","","Erro ao criar a planilha",e1,true));
+                        } finally {
+                            close();
+                        }
+                        return null;
+                    }
+
+                };
+                if (tbPrincipal.getItems().size() >= 1) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Exportação");
+                    alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
+                    ButtonType ok = new ButtonType("Exportar e Abrir");
+                    ButtonType cancelar = new ButtonType("Cancelar");
+                    alert.getButtonTypes().clear();
+                    alert.getButtonTypes().addAll(ok, cancelar);
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ok) {
+                        Thread thread = new Thread(run);
+                        thread.start();
+                        sta.setOnCloseRequest(ae -> {
+                            try {
+                                thread.interrupt();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                } else {
+                    alert(Alert.AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato",null,false);
+                }
+            }catch (IOException e){
+                alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
+            }
+    }
+
+    private List<Candidato> filtrar() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erro");
         int idadeMin = 0;
@@ -250,7 +386,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
         } catch (Exception e) {
             alert.setContentText("Idade informada esta incorreta");
             alert.showAndWait();
-            return;
+            return null;
         }
         if (dtPerfilInicioPesquisa.getValue() != null) {
             if (dtPerfilFimPesquisa.getValue() == null) {
@@ -258,7 +394,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
             } else if (dtPerfilFimPesquisa.getValue().isBefore(dtPerfilInicioPesquisa.getValue())) {
                 alert.setContentText("Data final do curriculo não pode ser maior que a data de inicio");
                 alert.showAndWait();
-                return;
+                return null;
             }
         }
         if (cbFormacaoMinPesquisa.getValue() != null && cbFormacaoMaxPesquisa.getValue() != null) {
@@ -268,28 +404,18 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                         "Verifique a escolaridade informada, " + cbFormacaoMinPesquisa.getValue().getDescricao()
                                 + " não pode ser superior a " + cbFormacaoMaxPesquisa.getValue().getDescricao());
                 alert.showAndWait();
-                return;
+                return null;
             }
         }
-        try {
-            loadFactory();
-            candidatos = new CandidatosImp(getManager());
-            List<Candidato> lista = candidatos.filtrar(cbObjetivoPesquisa.getSelectionModel().getSelectedItem(), cbExperienciaPesquisa.getValue(),
-                    cbSexoPesquisa.getSelectionModel().getSelectedItem(), idadeMin, idadeMax, cbIndicacaoPesquisa.getValue(),
-                    cbFormacaoMinPesquisa.getValue(), cbFormacaoMaxPesquisa.getValue(),
-                    dtPerfilInicioPesquisa.getValue(), dtPerfilFimPesquisa.getValue(), cbBuscarPorPesquisa.getValue(),
-                    txValorPesquisa.getText().trim(),ckIndisponivelPesquisa.isSelected());
-            tbPrincipal.getItems().clear();
-            tbPrincipal.getItems().addAll(FXCollections.observableList(lista));
-            tbPrincipal.refresh();
-        } catch (Exception e) {
-            alert.setTitle("Erro");
-            alert.setHeaderText(null);
-            alert.setContentText("Erro ao filtrar candidatos\n" + e);
-            alert.show();
-        } finally {
-            close();
-        }
+        List<Candidato> lista = candidatos.filtrar(cbObjetivoPesquisa.getSelectionModel().getSelectedItem(), cbExperienciaPesquisa.getValue(),
+                cbSexoPesquisa.getSelectionModel().getSelectedItem(), idadeMin, idadeMax, cbIndicacaoPesquisa.getValue(),
+                cbFormacaoMinPesquisa.getValue(), cbFormacaoMaxPesquisa.getValue(),
+                dtPerfilInicioPesquisa.getValue(), dtPerfilFimPesquisa.getValue(), cbBuscarPorPesquisa.getValue(),
+                txValorPesquisa.getText().trim(),ckIndisponivelPesquisa.isSelected());
+        tbPrincipal.getItems().clear();
+        tbPrincipal.getItems().addAll(lista);
+        tbPrincipal.refresh();
+        return lista;
     }
 
     @Override
@@ -305,7 +431,6 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                 cbFormacaoMinPesquisa.setValue(filter.getEscolaridade());
                 cbObjetivoPesquisa.setValue(filter.getCargo());
                 cbExperienciaPesquisa.setValue(filter.getCargo());
-                //cbfilter.getVaga();
             }
             filtrar();
         } catch (Exception e) {
@@ -315,7 +440,6 @@ public class CandidatoPesquisaController extends UtilsController implements Init
             alert.setContentText("Erro ao listar candidatos\n" + e);
             alert.show();
             e.printStackTrace();
-
         } finally {
             close();
         }
@@ -331,8 +455,8 @@ public class CandidatoPesquisaController extends UtilsController implements Init
     void pesquisar(KeyEvent event) {
         try {
             loadFactory();
+            candidatos = new CandidatosImp(getManager());
             filtrar();
-            //filtrar(this.paginacao);
         } catch (Exception e) {
             alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros", e, true);
         } finally {

@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label alignment="CENTER" layoutX="13.0" layoutY="14.0" prefHeight="25.0" prefWidth="976.0" text="Listagem de Candidatos" textFill="#9f9f9f" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
             <font>
@@ -94,5 +94,6 @@
             </font>
         </JFXCheckBox>
         <TableView fx:id="tbPrincipal" layoutY="53.0" prefHeight="307.0" prefWidth="679.0" AnchorPane.bottomAnchor="-8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <JFXButton layoutX="976.0" layoutY="76.0" mnemonicParsing="false" onAction="#exportar" prefHeight="25.0" prefWidth="110.0" styleClass="btJFXDefault" text="Exportar" />
     </children>
 </AnchorPane>

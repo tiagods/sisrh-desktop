@@ -54,6 +54,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -183,6 +184,11 @@ public abstract class UtilsController extends PersistenciaController {
 	public FXMLLoader loaderFxml(FXMLEnum e) throws IOException{
 		final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
 		return loader;
+	}
+	protected File salvarTemp(String extensao){
+		SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
+		File file = new File(System.getProperty("java.io.tmpdir")+"/file-"+sdf.format(new Date())+"."+extensao);
+		return file;
 	}
 
 	public void visualizarFormulario(String formulario, Storage storage){

@@ -30,8 +30,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.*;
 
@@ -442,9 +445,10 @@ public class AnuncioCadastroController extends UtilsController implements Initia
 
 
     public AnuncioCadastroController(Stage stage, Anuncio anuncio) {
-        this.anuncio=anuncio;
-        this.stage=stage;
+        this.anuncio = anuncio;
+        this.stage = stage;
     }
+
     private void abrirPerfilCandidato(Candidato candidato) {
         try {
             loadFactory();
@@ -467,18 +471,19 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             loadFactory();
             Stage stage = new Stage();
             Candidato c = candidatoConclusao.getCandidato();
-            stage.setTitle(c.getId()+"-"+c.getNome()+(c.getIdade()==0?"":"("+c.getIdade()+")"));
+            stage.setTitle(c.getId() + "-" + c.getNome() + (c.getIdade() == 0 ? "" : "(" + c.getIdade() + ")"));
             FXMLLoader loader = loaderFxml(FXMLEnum.ANUNCIO_CANDIDATO_CONCLUSAO);
-            if(candidatoConclusao.getDataInicio()==null && dtAdmissao.getValue()!=null) {
+            if (candidatoConclusao.getDataInicio() == null && dtAdmissao.getValue() != null) {
                 Date date = Date.from(dtAdmissao.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
                 candidatoConclusao.setDataInicio(calendar);
             }
-            AnuncioCandidatoConclusaoController controller = new AnuncioCandidatoConclusaoController(stage,candidatoConclusao);
+            AnuncioCandidatoConclusaoController controller = new AnuncioCandidatoConclusaoController(stage, candidatoConclusao);
             loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {});
+            stage.setOnHiding(event -> {
+            });
         } catch (IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo" + FXMLEnum.ANUNCIO_CANDIDATO_CONCLUSAO, e, true);
@@ -526,18 +531,18 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             loader.setController(controller);
             initPanel(loader, stage1, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage1.setOnHiding(event1 -> {
-                    try {
-                        loadFactory();
-                        anuncios = new AnunciosImp(getManager());
-                        anuncio = anuncios.findById(anuncio.getId());
-                        tbEntrevista.getItems().clear();
-                        tbEntrevista.getItems().addAll(anuncio.getEntrevistaSet());
-                        tbEntrevista.refresh();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        close();
-                    }
+                try {
+                    loadFactory();
+                    anuncios = new AnunciosImp(getManager());
+                    anuncio = anuncios.findById(anuncio.getId());
+                    tbEntrevista.getItems().clear();
+                    tbEntrevista.getItems().addAll(anuncio.getEntrevistaSet());
+                    tbEntrevista.refresh();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    close();
+                }
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -545,10 +550,12 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             close();
         }
     }
+
     @FXML
     private void alterar(ActionEvent event) {
         if (!txCodigo.getText().equals("")) observer.clear();
     }
+
     @FXML
     void anexarFormulario(ActionEvent event) {
         Set<FileChooser.ExtensionFilter> filters = new HashSet<>();
@@ -560,8 +567,8 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                 storage.uploadFile(file, novoNome);
                 txDocumento.setText(novoNome);
             } catch (Exception e) {
-                alert(Alert.AlertType.ERROR,"Erro","Não foi possivel enviar o arquivo para o servidor",
-                        "Um erro desconhecido não permitiu o envio do arquivo para uma pasta do servidor:\n" + e,e,true);
+                alert(Alert.AlertType.ERROR, "Erro", "Não foi possivel enviar o arquivo para o servidor",
+                        "Um erro desconhecido não permitiu o envio do arquivo para uma pasta do servidor:\n" + e, e, true);
             }
         }
     }
@@ -752,6 +759,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         txVaga4Comissao.setText("0,00");
         txVaga41VRValor.setText("0,00");
     }
+
     @FXML
     void fecharAnuncio(ActionEvent event) {
 
@@ -776,15 +784,15 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             AnuncioCandidatoConclusao ac = new AnuncioCandidatoConclusao();
             ac.setAnuncio(anuncio);
             ac.setCandidato(candidato);
-            if(dtAdmissao.getValue()!=null)
+            if (dtAdmissao.getValue() != null)
                 ac.setDataInicio(GregorianCalendar.from(dtAdmissao.getValue().atStartOfDay(ZoneId.systemDefault())));
             tbConclusaoCandidato.getItems().add(ac);
             cbConclusaoCandidato.getItems().remove(candidato);
             cbConclusaoCandidato.setValue(null);
-            candidato.setOcupadoDetalhes("Contratado atraves do anúncio " + anuncio.getId()+" da empresa "+anuncio.getCliente());
+            candidato.setOcupadoDetalhes("Contratado atraves do anúncio " + anuncio.getId() + " da empresa " + anuncio.getCliente());
             observer.registerCandidato(candidato, EnumCandidato.APROVACAO, 1);
         } else {
-            alert(Alert.AlertType.ERROR,"Erro","","Nenhum candidato foi incluido");
+            alert(Alert.AlertType.ERROR, "Erro", "", "Nenhum candidato foi incluido");
         }
     }
 
@@ -798,7 +806,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                 Stage stage = new Stage();
                 stage.setTitle("Anuncio: " + anuncio.getNome() + "-Cliente: " + anuncio.getCliente().getNome());
                 FXMLLoader loader = loaderFxml(FXMLEnum.CANDIDATO_PESQUISA);
-                loader.setController(new CandidatoPesquisaController(stage, anuncio,filter));
+                loader.setController(new CandidatoPesquisaController(stage, anuncio, filter));
                 initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
                 stage.setOnHiding(e -> {
                     try {
@@ -807,7 +815,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         anuncio = anuncios.findById(anuncio.getId());
                         preencherFormulario(anuncio);
                     } catch (Exception ex) {
-                        alert(Alert.AlertType.ERROR,"Erro","","Falha ao carregar formulario!",ex,true);
+                        alert(Alert.AlertType.ERROR, "Erro", "", "Falha ao carregar formulario!", ex, true);
                     } finally {
                         close();
                     }
@@ -819,7 +827,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                 close();
             }
         } else {
-            alert(Alert.AlertType.WARNING,"Alerta!","","Salve antes de avançar!");
+            alert(Alert.AlertType.WARNING, "Alerta!", "", "Salve antes de avançar!");
         }
     }
 
@@ -840,7 +848,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                 observer.registerCandidato(candidato, EnumCandidato.ENTREVISTA, 1);
             }
         } else {
-            alert(Alert.AlertType.ERROR,"Erro","","Nenhum candidato foi incluido");
+            alert(Alert.AlertType.ERROR, "Erro", "", "Nenhum candidato foi incluido");
         }
     }
 
@@ -868,9 +876,9 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         try {
             loadFactory();
             combos();
-            if(anuncio!=null) preencherFormulario(anuncio);
+            if (anuncio != null) preencherFormulario(anuncio);
         } catch (Exception e) {
-            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao listar anuncios:\n"+e.getMessage(),e,true);
+            alert(Alert.AlertType.ERROR, "Erro", null, "Erro ao listar anuncios:\n" + e.getMessage(), e, true);
         } finally {
             close();
         }
@@ -895,7 +903,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                     Cargo ca = cbVaga1Cargo.getValue();
                     cbVaga1Cargo.getItems().setAll(cargoList);
                     new ComboBoxAutoCompleteUtil<>(cbVaga1Cargo);
-                    if(ca!=null) cbVaga1Cargo.getSelectionModel().select(ca);
+                    if (ca != null) cbVaga1Cargo.getSelectionModel().select(ca);
                     else cbVaga1Cargo.getSelectionModel().select(cargo);
                 } catch (Exception ex) {
                     alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao listar os registros", ex, true);
@@ -937,14 +945,14 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         cbVaga1CargoNivel.getItems().add(null);
                         cbVaga1CargoNivel.getItems().addAll(cargoNiveis.getAll());
                         new ComboBoxAutoCompleteUtil(cbVaga1CargoNivel);
-                        if(old!=null) cbVaga1CargoNivel.setValue(old);
+                        if (old != null) cbVaga1CargoNivel.setValue(old);
                         else cbVaga1CargoNivel.setValue(n);
                     } else {
-                        alert(Alert.AlertType.ERROR,"Valor duplicado","",
+                        alert(Alert.AlertType.ERROR, "Valor duplicado", "",
                                 "Já existe um cadastro com o texto informado!");
                     }
                 } catch (Exception e) {
-                    alert(Alert.AlertType.ERROR,"Erro","",
+                    alert(Alert.AlertType.ERROR, "Erro", "",
                             "Falha ao salvar o registro!", e, true);
                 } finally {
                     close();
@@ -952,6 +960,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             }
         }
     }
+
     void preencherFormulario(Anuncio anuncio) {
         try {
             this.anuncio = anuncio;
@@ -971,9 +980,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             txDocumento.setText("");
             FormularioRequisicao form = anuncio.getFormularioRequisicao();
             if (form != null) {
-                if (form.getFormulario() != null)
-                    txDocumento.setText(form.getFormulario());
-                // 1
+                txDocumento.setText(form.getFormulario()==null?"":form.getFormulario());
                 cbVaga1Cargo.setValue(form.getCargo());
                 cbVaga1CargoNivel.setValue(form.getNivel());
                 txCargoAdc.setText(form.getCargoAds());
@@ -1160,11 +1167,13 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             e.printStackTrace();
         }
     }
+
     private Tab proximaTabVagas(boolean avancar) {
         int t = tpVaga.getSelectionModel().getSelectedIndex();
         if (avancar) return tpVaga.getTabs().get(++t);
         else return tpVaga.getTabs().get(--t);
     }
+
     private Anuncio.Cronograma receberCronograma() {
         if (dtFimRetorno.getValue() != null)
             return Anuncio.Cronograma.RETORNO_DO_PROCESSO_SELETIVO;
@@ -1183,6 +1192,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         else
             return Anuncio.Cronograma.FORMULARIO;
     }
+
     @FXML
     private void remover(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -1205,7 +1215,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                     tbPreSelecionado.getItems()
                             .forEach(c -> observer.registerCandidato(c, EnumCandidato.PRESELECAO, -1));
 
-                    tbConclusaoCandidato.getItems().forEach(can->{
+                    tbConclusaoCandidato.getItems().forEach(can -> {
                         Candidato cand = can.getCandidato();
                         cand.setOcupado(0);
                         cand.setOcupadoDetalhes("Liberado pois anuncio " + anuncio.getId() + " foi removido");
@@ -1235,6 +1245,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             alert.showAndWait();
         }
     }
+
     @FXML
     void removerDocumento(ActionEvent event) {
         if (!txDocumento.getText().equals("")) {
@@ -1254,10 +1265,12 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             }
         }
     }
+
     @FXML
-    private void sair(ActionEvent event){
+    private void sair(ActionEvent event) {
         stage.close();
     }
+
     @FXML
     private void salvar(ActionEvent event) {
         FormularioRequisicao fr = null;
@@ -1584,6 +1597,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("formulario"));
         colunaFormulario.setCellFactory((TableColumn<Candidato, String> param) -> new TableCell<Candidato, String>() {
             JFXButton button = new JFXButton();//
+
             @Override
             protected void updateItem(String item, boolean empty) {
 
@@ -1599,9 +1613,9 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         buttonTable(button, IconsEnum.BUTTON_CLIP);
                     } catch (IOException e) {
                     }
-                    if(c.getFormulario().equals(""))
+                    if (c.getFormulario().equals(""))
                         button.setVisible(false);
-                    button.setOnAction(event -> visualizarFormulario(c.getFormulario(),storage));
+                    button.setOnAction(event -> visualizarFormulario(c.getFormulario(), storage));
                     setGraphic(button);
                 }
             }
@@ -1647,7 +1661,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         button.setOnAction(event -> {
                             boolean aceitar = false;
                             Candidato candidato = tbCurriculos.getItems().get(getIndex());
-                            Optional<AnuncioEntrevista> result = tbEntrevista.getItems().stream().filter(f->f.getCandidato().getId()==candidato.getId()).findFirst();
+                            Optional<AnuncioEntrevista> result = tbEntrevista.getItems().stream().filter(f -> f.getCandidato().getId() == candidato.getId()).findFirst();
                             if (result.isPresent()) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR);
                                 alert.setTitle("Operação impossivel");
@@ -1655,8 +1669,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                                 alert.setContentText(
                                         "O candidato encontra-se no processo de Entrevista desse anuncio, portanto não pode ser removido");
                                 alert.showAndWait();
-                            }
-                            else{
+                            } else {
                                 tbCurriculos.getItems().remove(getIndex());
                                 observer.registerCandidato(candidato, EnumCandidato.CURRICULO, -1);
                             }
@@ -1669,7 +1682,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             return cell;
         });
         tbCurriculos.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm, colunaPossuiIndicacao,
-                colunaAnuncios, colunaSelecoes, colunaFormulario,colunaVer, colunaRemover);
+                colunaAnuncios, colunaSelecoes, colunaFormulario, colunaVer, colunaRemover);
     }
 
     @SuppressWarnings("unchecked")
@@ -1831,8 +1844,9 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                                 alert.getButtonTypes().setAll(buttonAgora, buttonCancel);
 
                                 Optional<ButtonType> result = alert.showAndWait();
-                                if (result.get() == buttonAgora) abrirEntrevista(tbEntrevista.getItems().get(getIndex()),getIndex());
-                            } else abrirEntrevista(tbEntrevista.getItems().get(getIndex()),getIndex());
+                                if (result.get() == buttonAgora)
+                                    abrirEntrevista(tbEntrevista.getItems().get(getIndex()), getIndex());
+                            } else abrirEntrevista(tbEntrevista.getItems().get(getIndex()), getIndex());
 
                         });
                         setGraphic(button);
@@ -1848,10 +1862,11 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("candidato"));
         colunaFormulario.setCellFactory((TableColumn<AnuncioEntrevista, Candidato> param) -> new TableCell<AnuncioEntrevista, Candidato>() {
             JFXButton button = new JFXButton();//
+
             @Override
             protected void updateItem(Candidato item, boolean empty) {
                 super.updateItem(item, empty);
-                if (item==null || empty) {
+                if (item == null || empty) {
                     setText("");
                     setStyle("");
                     setGraphic(null);
@@ -1862,9 +1877,9 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         buttonTable(button, IconsEnum.BUTTON_CLIP);
                     } catch (IOException e) {
                     }
-                    if(c.getFormulario().equals(""))
+                    if (c.getFormulario().equals(""))
                         button.setVisible(false);
-                    button.setOnAction(event -> visualizarFormulario(c.getFormulario(),storage));
+                    button.setOnAction(event -> visualizarFormulario(c.getFormulario(), storage));
                     setGraphic(button);
                 }
             }
@@ -1932,34 +1947,37 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                                 tbPreSelecionado.getItems().clear();
                                 tbPreSelecionado.getItems().addAll(anuncio.getPreSelecaoSet());
 
-                                final AnuncioEntrevista aefinal = tbEntrevista.getItems().get(getIndex());
+                                ae = anunciosEntrevistas.findById(ae.getId());
 
-                                Optional<AnuncioEntrevista> newAe = tbEntrevista.getItems().stream()
-                                        .filter(can -> can.getCandidato().getId() == c.getId()).findFirst();
-                                if (newAe.isPresent()) {
-                                    FXMLLoader loader = loaderFxml(FXMLEnum.ENTREVISTA_AVALIACAO);
-                                    Stage stage1 = new Stage();
-                                    stage1.setTitle("Avaliações do Candidato: " + aefinal.getCandidato().getNome());
-                                    ControllerEntrevistaAvaliacao controller = loader.getController();
-                                    initPanel(loader, stage1, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-                                    controller.iniciar(aefinal.getAvaliacao(), aefinal);
-                                    stage1.setOnCloseRequest(event1 -> {
-                                        if (event1.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
-                                            try {
-                                                loadFactory();
-                                                anuncios = new AnunciosImp(getManager());
-                                                anuncio = anuncios.findById(anuncio.getId());
-                                                tbEntrevista.getItems().clear();
-                                                tbEntrevista.getItems().addAll(anuncio.getEntrevistaSet());
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            } finally {
-                                                close();
-                                            }
+                                FXMLLoader loader = loaderFxml(FXMLEnum.ENTREVISTA_AVALIACAO);
+                                Stage stage1 = new Stage();
+                                stage1.setTitle("Avaliações do Candidato: " + ae.getCandidato().getNome());
+                                final Parent root = loader.load();
+                                ControllerEntrevistaAvaliacao controller = loader.getController();
+                                final Scene scene = new Scene(root);
+                                stage1.initModality(Modality.APPLICATION_MODAL);
+                                stage1.initStyle(StageStyle.DECORATED);
+                                stage1.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
+                                stage1.setScene(scene);
+                                stage1.show();
+                                controller.iniciar(ae.getAvaliacao(), ae);
+                                stage1.setOnCloseRequest(event1 -> {
+                                    if (event1.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
+                                        try {
+                                            loadFactory();
+                                            anuncios = new AnunciosImp(getManager());
+                                            anuncio = anuncios.findById(anuncio.getId());
+                                            tbEntrevista.getItems().clear();
+                                            tbEntrevista.getItems().addAll(anuncio.getEntrevistaSet());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            close();
                                         }
+                                    }
 
-                                    });
-                                }
+                                });
+
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -2014,8 +2032,8 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         });
 
         tbEntrevista.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm,
-                colunaPossuiIndicacao,colunaAnuncios, colunaSelecoes, colunaStatusEntrevista,
-                colunaEntrevista, colunaAvaliacao, colunaFormulario,colunaVer,colunaRemover);
+                colunaPossuiIndicacao, colunaAnuncios, colunaSelecoes, colunaStatusEntrevista,
+                colunaEntrevista, colunaAvaliacao, colunaFormulario, colunaVer, colunaRemover);
     }
 
     @SuppressWarnings("unchecked")
@@ -2123,6 +2141,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("formulario"));
         colunaFormulario.setCellFactory((TableColumn<Candidato, String> param) -> new TableCell<Candidato, String>() {
             JFXButton button = new JFXButton();//
+
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -2136,9 +2155,9 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         buttonTable(button, IconsEnum.BUTTON_CLIP);
                     } catch (IOException e) {
                     }
-                    if(item.equals(""))
+                    if (item.equals(""))
                         button.setVisible(false);
-                    button.setOnAction(event -> visualizarFormulario(item,storage));
+                    button.setOnAction(event -> visualizarFormulario(item, storage));
                     setGraphic(button);
                 }
             }
@@ -2183,7 +2202,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         button.getStyleClass().add("btJFXDefault");
                         button.setOnAction(event -> {
                             Candidato candidato = tbPreSelecionado.getItems().get(getIndex());
-                            Optional<AnuncioCandidatoConclusao> result = tbConclusaoCandidato.getItems().stream().filter(f->f.getCandidato().getId()==candidato.getId()).findFirst();
+                            Optional<AnuncioCandidatoConclusao> result = tbConclusaoCandidato.getItems().stream().filter(f -> f.getCandidato().getId() == candidato.getId()).findFirst();
                             if (result.isPresent()) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR);
                                 alert.setTitle("Operação impossivel");
@@ -2204,7 +2223,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
             return cell;
         });
         tbPreSelecionado.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm,
-                colunaPossuiIndicacao,colunaAnuncios, colunaSelecoes, colunaFormulario,colunaVer, colunaRemover);
+                colunaPossuiIndicacao, colunaAnuncios, colunaSelecoes, colunaFormulario, colunaVer, colunaRemover);
     }
 
     private void tabelaConclusao() {
@@ -2349,7 +2368,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                 @Override
                 protected void updateItem(Treinamento item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (item==null || empty) {
+                    if (item == null || empty) {
                         setGraphic(null);
                         setText(null);
                     } else {
@@ -2372,7 +2391,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         setText(null);
                     } else {
                         AnuncioCandidatoConclusao an = tbConclusaoCandidato.getItems().get(getIndex());
-                        setText(an.getDataInicoTreinamento()==null?"":sdf.format(an.getDataInicoTreinamento().getTime()));
+                        setText(an.getDataInicoTreinamento() == null ? "" : sdf.format(an.getDataInicoTreinamento().getTime()));
                     }
                 }
             };
@@ -2390,7 +2409,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         setText(null);
                     } else {
                         AnuncioCandidatoConclusao an = tbConclusaoCandidato.getItems().get(getIndex());
-                        setText(an.getDataFimTreinamento()==null?"":sdf.format(an.getDataFimTreinamento().getTime()));
+                        setText(an.getDataFimTreinamento() == null ? "" : sdf.format(an.getDataFimTreinamento().getTime()));
                     }
                 }
             };
@@ -2400,6 +2419,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         colunaFormulario.setCellValueFactory(new PropertyValueFactory<>("candidato"));
         colunaFormulario.setCellFactory((TableColumn<AnuncioCandidatoConclusao, Candidato> param) -> new TableCell<AnuncioCandidatoConclusao, Candidato>() {
             JFXButton button = new JFXButton();//
+
             @Override
             protected void updateItem(Candidato item, boolean empty) {
                 super.updateItem(item, empty);
@@ -2413,9 +2433,9 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                         buttonTable(button, IconsEnum.BUTTON_CLIP);
                     } catch (IOException e) {
                     }
-                    if(item.getFormulario().equals(""))
+                    if (item.getFormulario().equals(""))
                         button.setVisible(false);
-                    button.setOnAction(event -> visualizarFormulario(item.getFormulario(),storage));
+                    button.setOnAction(event -> visualizarFormulario(item.getFormulario(), storage));
                     setGraphic(button);
                 }
             }
@@ -2472,12 +2492,13 @@ public class AnuncioCadastroController extends UtilsController implements Initia
         });
 
         tbConclusaoCandidato.getColumns().addAll(colunaId, colunaNome, colunaIdade, colunaCriadoEm,
-                colunaPossuiIndicacao,colunaAnuncios, colunaSelecoes, colunaTreinamento,colunaTreinamentoNome,
-                colunaTreinamentoInicio,colunaTreinamentoFim,colunaFormulario,colunaVer,colunaRemover);
+                colunaPossuiIndicacao, colunaAnuncios, colunaSelecoes, colunaTreinamento, colunaTreinamentoNome,
+                colunaTreinamentoInicio, colunaTreinamentoFim, colunaFormulario, colunaVer, colunaRemover);
     }
+
     @FXML
     void visualizar(ActionEvent event) {
-        visualizarFormulario(txDocumento.getText(),storage);
+        visualizarFormulario(txDocumento.getText(), storage);
     }
 
     @FXML
@@ -2495,7 +2516,7 @@ public class AnuncioCadastroController extends UtilsController implements Initia
                 FormularioRequisicao fr = anuncio.getFormularioRequisicao();
                 if (fr != null) {
                     vaga = fr.getCargo() != null ? fr.getCargo().getNome() : "";
-                    vaga+= fr.getNivel()==null?" "+fr.getCargoAds():""+fr.getNivel()+" "+fr.getCargoAds();
+                    vaga += fr.getNivel() == null ? " " + fr.getCargoAds() : "" + fr.getNivel() + " " + fr.getCargoAds();
                 }
                 crono.put("{anuncio.cargo}", vaga);
                 crono.put("{anuncio.cliente.contato}",

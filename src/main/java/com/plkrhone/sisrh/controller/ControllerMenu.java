@@ -1,10 +1,7 @@
 package com.plkrhone.sisrh.controller;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
@@ -20,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import com.plkrhone.sisrh.model.Anuncio;
 import com.plkrhone.sisrh.repository.helper.AnunciosImp;
 import com.plkrhone.sisrh.repository.helper.TarefasImp;
-import com.plkrhone.sisrh.view.AnuncioView;
 import com.plkrhone.sisrh.view.EntrevistaView;
 import com.plkrhone.sisrh.view.TarefaView;
 import com.plkrhone.sisrh.view.UsuarioView;
@@ -50,16 +46,11 @@ public class ControllerMenu extends UtilsController implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		long tempoInicial = System.currentTimeMillis();
-        long tempoFinal = System.currentTimeMillis();
-        if(log.isDebugEnabled()) {
-        	log.debug("Tela "+getClass().getSimpleName().replace("Controller", "")+" abriu em : "+(tempoFinal-tempoInicial)+" ms");
-        }
-        try {
+		try {
             loadFactory();
             carregarCartoes();
         }catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}finally {
 			close();
 		}
@@ -83,9 +74,6 @@ public class ControllerMenu extends UtilsController implements Initializable {
 
 	@FXML
 	void abrirAnuncio(ActionEvent event) {
-//		AnuncioView anuncio = new AnuncioView();
-//		anuncio.start(new Stage());
-
 		try {
 			Stage stage = new Stage();
 			FXMLLoader loader = loaderFxml(FXMLEnum.ANUNCIO_PESQUISA);

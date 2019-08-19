@@ -11,6 +11,8 @@ import java.util.*;
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
 import com.plkrhone.sisrh.model.avaliacao.AvaliacaoCondicao;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.*;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
@@ -55,7 +57,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
     private JFXComboBox<Avaliacao.AvaliacaoTipo> cbTipoAvaliacao;
 
     @FXML
-    private MaskTextField txPontuacao;
+    private JFXTextField txPontuacao;
 
     @FXML
     private JFXTextField txFormulario;
@@ -147,18 +149,6 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
     @FXML
     void anexarFormulario(ActionEvent event) {
     	Set<FileChooser.ExtensionFilter> filters = new HashSet<>();
-//		alert = new Alert(Alert.AlertType.CONFIRMATION);
-//		alert.setTitle("Informação importante!");
-//		alert.setHeaderText("Deseja usar modelo do Word para imprimir seus formulários pré-prenchidos?");
-//		alert.setContentText(
-//				"Para usar essa técnica, salve seus formularios no padrão Microsoft Word 2007 (.doc),\n"
-//						+ "Caso contrario clique em cancelar");
-//		Optional<ButtonType> buttonType = alert.showAndWait();
-//		if (buttonType.get() == ButtonType.CANCEL) {
-//			filters.add(new FileChooser.ExtensionFilter("MS Word 2007", "*.doc"));
-//			filters.add(new FileChooser.ExtensionFilter("*.pdf", "*.doc|*.pdf|*.docx"));
-//			filters.add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
-//		}
 		filters.add(new FileChooser.ExtensionFilter("pdf, doc, docx", "*.doc","*.pdf","*.docx"));
 		File file = storage.carregarArquivo(new Stage(), filters);
 		if (file != null) {
@@ -243,9 +233,13 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 			} else if (n instanceof JFXTextArea) {
 				((JFXTextArea) n).setText("");
 			} else if (n instanceof TableView) {
-				((TableView) n).getItems().clear();
+				//((TableView) n).getItems().clear();
 			} else if (n instanceof JFXCheckBox) {
 				((JFXCheckBox) n).setSelected(false);
+			} else if(n instanceof HBox){
+				limparTela(((HBox)n).getChildren());
+			} else if(n instanceof VBox){
+				limparTela(((VBox)n).getChildren());
 			}
 		});
 		txLocation.setText("");
@@ -264,7 +258,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
     	cbTipoAvaliacao.setValue(aeAva.getAvaliacaoTipo());
     	txPontuacao.setText(String.valueOf(aeAva.getPontuacao()));
     	txPontuacaoMaxima.setText(String.valueOf(aeAva.getPontuacaoMaxima()));
-    	txFormulario.setText(aeAva.getFormulario());
+    	txFormulario.setText(aeAva.getFormulario()==null?"":aeAva.getFormulario());
     	txGabarito.setText(aeAva.getGabarito());
     	txDescricao.setText(aeAva.getDescricao());
     	this.aeAva=aeAva;
@@ -324,6 +318,7 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 	    		alert.showAndWait();
 	    		return;
 	    	}
+			AnuncioEntrevistaAvaliacao ava = new AnuncioEntrevistaAvaliacao();
 			if(txPontuacao.getText().trim().equals("")) {
 	    		alert.setContentText("O campo pontuação é obrigatório mesmo se a avaliação for "+Avaliacao.AvaliacaoTipo.DISSERTATIVA);
 	    		alert.showAndWait();
@@ -331,16 +326,15 @@ public class ControllerEntrevistaAvaliacao extends UtilsController implements In
 	    	}
 			else{
 				try {
-					Double.parseDouble(txPontuacao.getText());
+					new BigDecimal(txPontuacao.getText().replace(",","."));
+					ava.setPontuacao(new BigDecimal(txPontuacao.getText()));
 				}catch (NumberFormatException nf){
 					alert(Alert.AlertType.ERROR,"Erro","","Pontuação informada esta incorreta");
 					return;
 				}
 			}
-			AnuncioEntrevistaAvaliacao ava = new AnuncioEntrevistaAvaliacao();
 			ava.setAvaliacao(cbAvaliacao.getValue());
 			ava.setAnuncioEntrevista(anuncioEntrevista);
-	    	ava.setPontuacao(new BigDecimal(txPontuacao.getText()));
 			ava.setPontuacaoMaxima(new BigDecimal(txPontuacaoMaxima.getText()));
 			ava.setGabarito(txGabarito.getText());
 			ava.setDescricao(txDescricao.getText());
