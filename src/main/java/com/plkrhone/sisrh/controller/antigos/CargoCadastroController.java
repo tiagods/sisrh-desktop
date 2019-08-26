@@ -1,7 +1,8 @@
-package com.plkrhone.sisrh.controller;
+package com.plkrhone.sisrh.controller.antigos;
 
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import com.plkrhone.sisrh.controller.UtilsController;
 import com.plkrhone.sisrh.model.Cargo;
 import com.plkrhone.sisrh.repository.helper.CargosImpl;
 import javafx.event.ActionEvent;

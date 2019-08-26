@@ -2,9 +2,6 @@ package com.plkrhone.sisrh;
 
 import java.io.IOException;
 
-import com.plkrhone.sisrh.config.init.UsuarioLogado;
-import com.plkrhone.sisrh.controller.ControllerMenu;
-import com.plkrhone.sisrh.model.Usuario;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,7 +18,7 @@ public class Atalho extends Application {
 		try {
 			Stage stage = new Stage();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Menu.fxml"));
-            //loader.setController(new ControllerMenu());
+            //loader.setController(new MenuController());
             Parent root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);

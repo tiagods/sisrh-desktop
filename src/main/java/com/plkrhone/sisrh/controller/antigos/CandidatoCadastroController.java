@@ -1,10 +1,11 @@
-package com.plkrhone.sisrh.controller;
+package com.plkrhone.sisrh.controller.antigos;
 
 import com.jfoenix.controls.*;
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.config.init.PaisesConfig;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.controller.UtilsController;
 import com.plkrhone.sisrh.model.*;
 import com.plkrhone.sisrh.repository.helper.*;
 import com.plkrhone.sisrh.util.ComboBoxAutoCompleteUtil;
@@ -12,10 +13,7 @@ import com.plkrhone.sisrh.util.storage.PathStorageEnum;
 import com.plkrhone.sisrh.util.storage.Storage;
 import com.plkrhone.sisrh.util.storage.StorageProducer;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;

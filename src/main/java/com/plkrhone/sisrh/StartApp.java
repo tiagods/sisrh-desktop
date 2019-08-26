@@ -7,7 +7,6 @@ import javax.persistence.PersistenceException;
 
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.init.JPAConfig;
-import com.plkrhone.sisrh.controller.ControllerLogin;
 import com.plkrhone.sisrh.util.Atualizador;
 import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.service.spi.ServiceException;
@@ -27,7 +26,9 @@ import javafx.stage.Stage;
 
 public class StartApp extends Application {
 	private static Logger log = LoggerFactory.getLogger(StartApp.class);
+
 	Atualizador atualizador = new Atualizador();
+
 	@Override
 	public void start(Stage primaryStage)  {
 		if (atualizador.atualizacaoPendente()) {
@@ -111,14 +112,13 @@ public class StartApp extends Application {
 					log.debug("Abrindo loader");
 					final FXMLLoader loader = new FXMLLoader(FXMLEnum.LOGIN.getLocalizacao());
 					log.debug("Controller");
-					loader.setController(new ControllerLogin(stage));
 					log.debug("Loader");
 					Parent root = loader.load();
 					log.debug("Scene");
 					Scene scene = new Scene(root);
 					stage.setScene(scene);
 					stage.setTitle("Acesso");
-					stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
+					stage.getIcons().add(new Image(getClass().getResource("/icons/theme.png").toString()));
 					log.debug("show");
 					stage.show();
 				} catch (IOException e) {

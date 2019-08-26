@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<JFXTabPane fx:id="tab" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/estilo.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.ControllerAnuncio">
+<JFXTabPane fx:id="tab" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/estilo.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.plkrhone.sisrh.controller.antigos.ControllerAnuncio">
             <tabs>
                 <Tab fx:id="tabPesquisa" text="Pesquisa">
                     <content>

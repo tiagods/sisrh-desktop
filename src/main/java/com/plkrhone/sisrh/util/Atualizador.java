@@ -14,13 +14,15 @@ import java.text.SimpleDateFormat;
 
 import com.plkrhone.sisrh.config.init.VersaoSistema;
 import com.plkrhone.sisrh.factory.ConnectionFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Atualizador {
 	private String versaoDisponivel = "";
 	private String detalhesVersao="";
 	private String dataVersao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-	private VersaoSistema versaoAtual =new VersaoSistema();
+	private VersaoSistema versaoAtual = VersaoSistema.getInstance();
 	
 	private void atualizarAgora(){
     	

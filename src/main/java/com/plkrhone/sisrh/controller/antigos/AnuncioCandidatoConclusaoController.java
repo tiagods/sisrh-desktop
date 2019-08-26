@@ -1,7 +1,8 @@
-package com.plkrhone.sisrh.controller;
+package com.plkrhone.sisrh.controller.antigos;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.plkrhone.sisrh.controller.UtilsController;
 import com.plkrhone.sisrh.model.Candidato;
 import com.plkrhone.sisrh.model.Treinamento;
 import com.plkrhone.sisrh.model.anuncio.AnuncioCandidatoConclusao;

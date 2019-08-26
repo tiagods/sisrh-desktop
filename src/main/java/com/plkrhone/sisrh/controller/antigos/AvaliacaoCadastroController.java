@@ -1,12 +1,11 @@
-package com.plkrhone.sisrh.controller;
+package com.plkrhone.sisrh.controller.antigos;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
-import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.controller.UtilsController;
 import com.plkrhone.sisrh.model.Avaliacao;
 import com.plkrhone.sisrh.model.avaliacao.AvaliacaoCondicao;
 import com.plkrhone.sisrh.model.avaliacao.AvaliacaoGrupo;

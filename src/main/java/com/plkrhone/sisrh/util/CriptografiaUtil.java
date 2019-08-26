@@ -5,11 +5,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 
 
 /**
  * Created by Tiago on 08/08/2017.
  */
+@Component
 public class CriptografiaUtil {
 	
 	public static Logger log = org.slf4j.LoggerFactory.getLogger(CriptografiaUtil.class);

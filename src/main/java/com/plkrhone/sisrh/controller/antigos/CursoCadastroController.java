@@ -1,9 +1,10 @@
-package com.plkrhone.sisrh.controller;
+package com.plkrhone.sisrh.controller.antigos;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.plkrhone.sisrh.config.enums.IconsEnum;
+import com.plkrhone.sisrh.controller.UtilsController;
 import com.plkrhone.sisrh.model.Curso;
 import com.plkrhone.sisrh.repository.helper.CursosImpl;
 import javafx.application.Platform;

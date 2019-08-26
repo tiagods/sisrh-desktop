@@ -1,8 +1,9 @@
-package com.plkrhone.sisrh.controller;
+package com.plkrhone.sisrh.controller.antigos;
 
 import com.jfoenix.controls.*;
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.enums.IconsEnum;
+import com.plkrhone.sisrh.controller.UtilsController;
 import com.plkrhone.sisrh.model.*;
 import com.plkrhone.sisrh.repository.helper.*;
 import com.plkrhone.sisrh.repository.helper.filter.CandidatoAnuncioFilter;
@@ -12,8 +13,6 @@ import com.plkrhone.sisrh.util.storage.Storage;
 import com.plkrhone.sisrh.util.storage.StorageProducer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

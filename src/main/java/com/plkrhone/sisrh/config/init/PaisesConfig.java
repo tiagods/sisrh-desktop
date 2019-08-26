@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.plkrhone.sisrh.controller.PersistenciaController;
+import com.plkrhone.sisrh.controller.antigos.PersistenciaController;
 
 public class PaisesConfig extends PersistenciaController{
 	private static PaisesConfig instance;

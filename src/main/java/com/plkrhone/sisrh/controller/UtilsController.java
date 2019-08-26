@@ -2,6 +2,7 @@ package com.plkrhone.sisrh.controller;
 
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.enums.IconsEnum;
+import com.plkrhone.sisrh.controller.antigos.PersistenciaController;
 import com.plkrhone.sisrh.model.Cidade;
 import com.plkrhone.sisrh.model.Endereco;
 import com.plkrhone.sisrh.model.Estado;
@@ -373,8 +374,8 @@ public abstract class UtilsController extends PersistenciaController {
 		new ComboBoxAutoCompleteUtil<>(cbCidade);
 	}
 
-	void bucarCep(MaskedTextField txCEP, JFXTextField txLogradouro, JFXTextField txNumero,JFXTextField txComplemento,
-				  JFXTextField txBairro, JFXComboBox<Cidade> cbCidade, JFXComboBox<Estado> cbEstado
+	protected void bucarCep(MaskedTextField txCEP, JFXTextField txLogradouro, JFXTextField txNumero, JFXTextField txComplemento,
+							JFXTextField txBairro, JFXComboBox<Cidade> cbCidade, JFXComboBox<Estado> cbEstado
 	){
 		try{
 			loadFactory();

@@ -1,9 +1,10 @@
-package com.plkrhone.sisrh.controller;
+package com.plkrhone.sisrh.controller.antigos;
 
 import com.jfoenix.controls.*;
 import com.plkrhone.sisrh.config.enums.FXMLEnum;
 import com.plkrhone.sisrh.config.enums.IconsEnum;
 import com.plkrhone.sisrh.config.init.UsuarioLogado;
+import com.plkrhone.sisrh.controller.UtilsController;
 import com.plkrhone.sisrh.model.*;
 import com.plkrhone.sisrh.model.anuncio.AnuncioCandidatoConclusao;
 import com.plkrhone.sisrh.model.anuncio.AnuncioCronograma;
@@ -29,7 +30,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
