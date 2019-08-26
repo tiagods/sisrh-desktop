@@ -2,20 +2,22 @@ package com.plkrhone.sisrh.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name="cargo_nivel")
-public class CargoNivel implements AbstractEntity,Serializable{
+public class CargoNivel implements AbstractEntity,Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
 
-    public CargoNivel(){}
+    public CargoNivel() {
+    }
 
     public CargoNivel(long id, String nome) {
-        this.id=id;
-        this.nome=nome;
+        this.id = id;
+        this.nome = nome;
     }
 
     public Long getId() {
@@ -43,14 +45,12 @@ public class CargoNivel implements AbstractEntity,Serializable{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         CargoNivel that = (CargoNivel) o;
-
-        return id != null ? id.equals(that.id) : that.id == null;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return Objects.hash(id);
     }
 }

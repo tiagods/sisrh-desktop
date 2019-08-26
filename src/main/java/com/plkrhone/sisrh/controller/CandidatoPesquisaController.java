@@ -36,7 +36,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
-public class CandidatoPesquisaController extends UtilsController implements Initializable{
+public class CandidatoPesquisaController extends UtilsController implements Initializable {
     @FXML
     private JFXComboBox<Cargo> cbObjetivoPesquisa;
 
@@ -93,28 +93,30 @@ public class CandidatoPesquisaController extends UtilsController implements Init
     private CandidatoAnuncioFilter filter;
     private boolean houveAtualizacaoCombo = false;
 
-    public CandidatoPesquisaController(Stage stage, Anuncio anuncio,CandidatoAnuncioFilter filter){
+    public CandidatoPesquisaController(Stage stage, Anuncio anuncio, CandidatoAnuncioFilter filter) {
         this.stage = stage;
         this.anuncio = anuncio;
-        this.filter= filter;
+        this.filter = filter;
     }
+
     private void abrirCadastro(Candidato t) {
         try {
             loadFactory();
             candidatos = new CandidatosImp(getManager());
             Stage stage = new Stage();
-            if(this.anuncio!=null) stage.setTitle("Anuncio: " + anuncio.getNome() + "-Cliente: " + anuncio.getCliente().getNome());
+            if (this.anuncio != null)
+                stage.setTitle("Anuncio: " + anuncio.getNome() + "-Cliente: " + anuncio.getCliente().getNome());
             FXMLLoader loader = loaderFxml(FXMLEnum.CANDIDATO_CADASTRO);
-            if(t!=null)
+            if (t != null)
                 t = candidatos.findById(t.getId());
-            CandidatoCadastroController controller = new CandidatoCadastroController(stage,t,this.anuncio);
+            CandidatoCadastroController controller = new CandidatoCadastroController(stage, t, this.anuncio);
             loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage.setOnHiding(event -> {
                 try {
                     loadFactory();
                     candidatos = new CandidatosImp(getManager());
-                    if(controller.isHouveAtualizacaoCombo()) {
+                    if (controller.isHouveAtualizacaoCombo()) {
                         cargos = new CargosImpl(getManager());
                         Cargo value1 = cbObjetivoPesquisa.getValue();
                         Cargo value2 = cbExperienciaPesquisa.getValue();
@@ -150,6 +152,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
             close();
         }
     }
+
     private boolean adicionarNoAnuncio(Candidato candidato) {
         anuncios = new AnunciosImp(getManager());
         candidatos = new CandidatosImp(getManager());
@@ -157,9 +160,9 @@ public class CandidatoPesquisaController extends UtilsController implements Init
         candidato = candidatos.findById(candidato.getId());
         this.anuncio = anuncios.findById(anuncio.getId());
         Long id = candidato.getId();
-        Optional<Candidato> result = this.anuncio.getCurriculoSet().stream().filter(f->f.getId()==id).findFirst();
-        if(!result.isPresent()){
-            candidato.setTotalRecrutamento(candidato.getTotalRecrutamento()+1);
+        Optional<Candidato> result = this.anuncio.getCurriculoSet().stream().filter(f -> f.getId() == id).findFirst();
+        if (!result.isPresent()) {
+            candidato.setTotalRecrutamento(candidato.getTotalRecrutamento() + 1);
             Set<Candidato> curriculos = anuncio.getCurriculoSet();
             curriculos.add(candidato);
             anuncio.setCurriculoSet(curriculos);
@@ -169,10 +172,11 @@ public class CandidatoPesquisaController extends UtilsController implements Init
         tbPrincipal.refresh();
         return true;
     }
+
     void combos() {
         cargos = new CargosImpl(getManager());
         cursos = new CursosImpl(getManager());
-        cbObjetivoPesquisa.getItems().add(new Cargo(-1L,"Qualquer"));
+        cbObjetivoPesquisa.getItems().add(new Cargo(-1L, "Qualquer"));
         cbObjetivoPesquisa.getItems().addAll(cargos.getAll());
         cbExperienciaPesquisa.getItems().addAll(cbObjetivoPesquisa.getItems());
 
@@ -188,7 +192,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
         cbFormacaoMinPesquisa.getItems().addAll(Candidato.Escolaridade.values());
         cbFormacaoMaxPesquisa.getItems().addAll(cbFormacaoMinPesquisa.getItems());
 
-        cbBuscarPorPesquisa.getItems().addAll(new String[] { "Nome", "Email"});
+        cbBuscarPorPesquisa.getItems().addAll(new String[]{"Nome", "Email"});
         cbBuscarPorPesquisa.getSelectionModel().selectFirst();
 
         ckIndisponivelPesquisa.setSelected(true);
@@ -253,122 +257,151 @@ public class CandidatoPesquisaController extends UtilsController implements Init
     }
 
     @FXML
-    void exportar(ActionEvent event){
-            try {
-                FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
-                Alert progress = new Alert(Alert.AlertType.INFORMATION);
-                progress.setHeaderText("");
-                DialogPane dialogPane = new DialogPane();
-                dialogPane.setContent(loader.load());
-                progress.setDialogPane(dialogPane);
-                Stage sta = (Stage) dialogPane.getScene().getWindow();
+    void exportar(ActionEvent event) {
+        try {
+            loadFactory();
+            candidatos = new CandidatosImp(getManager());
+            final List<Candidato> candidatoList = filtrar();
 
-                Task<Void> run = new Task<Void>() {
-                    {
-                        setOnFailed(a ->sta.close());
-                        setOnSucceeded(a ->sta.close());
-                        setOnCancelled(a ->sta.close());
-                    }
-                    @Override
-                    protected Void call() {
+            if (candidatoList == null || candidatoList.isEmpty()) return;
 
-                        File export = salvarTemp("xls");
-                        Platform.runLater(() -> sta.show());
-                        ArrayList<ArrayList> listaImpressao = new ArrayList<>();
-                        Integer[] colunasLenght = new Integer[] { 10, 18, 18, 14, 10, 30, 10, 10, 10, 10,20, 15, 15 };
-                        String[] cabecalho = new String[] { "Tarefa", "Mês", "Prazo", "Andamento", "Status", "Detalhes", "Tipo",
-                                "Registro", "Nome", "Ultimo Negocio","Status Negocio / Ultimo Negocio", "Atendente", "Criado_Por" };
-                        listaImpressao.add(new ArrayList<>());
-                        for (String c : cabecalho) {
-                            listaImpressao.get(0).add(c);
-                        }
-                        try {
+            FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+            Alert progress = new Alert(Alert.AlertType.INFORMATION);
+            progress.setHeaderText("");
+            DialogPane dialogPane = new DialogPane();
+            dialogPane.setContent(loader.load());
+            progress.setDialogPane(dialogPane);
+            Stage sta = (Stage) dialogPane.getScene().getWindow();
 
-                            loadFactory();
-                            candidatos = new CandidatosImp(getManager());
-                            List<Candidato> candidatoList = filtrar();
-
-                            if (candidatoList != null && ) {
-                                for (int i = 1; i <= finalList.size(); i++) {
-                                    listaImpressao.add(new ArrayList<String>());
-                                    NegocioTarefa c = finalList.get(i-1);
-                                    listaImpressao.get(i).add(c.getId());
-                                    listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getDataEvento().getTime()));
-                                    listaImpressao.get(i).add(sdfH.format(c.getDataEvento().getTime()));
-                                    listaImpressao.get(i).add(c.getTipoTarefa().getDescricao());
-                                    listaImpressao.get(i).add(c.getFinalizado()==0?"Pendente":"Finalizado");
-
-                                    listaImpressao.get(i).add(c.getDescricao());
-                                    String classe = "Contato";
-                                    long id = 0;
-                                    String nome="";
-                                    String ultimoNegocio = "";
-                                    String statusUltimoNegocio= "";
-
-                                    if(c instanceof NegocioTarefaProposta) {
-                                        classe = "Proposta";
-                                        id = ((NegocioTarefaProposta)c).getProposta().getId();
-                                        nome = ((NegocioTarefaProposta)c).getProposta().getNome();
-                                        statusUltimoNegocio = ((NegocioTarefaProposta)c).getProposta().getTipoStatus().toString();
-                                    }
-                                    else if(c instanceof NegocioTarefaContato) {
-                                        classe = "Contato";
-                                        id = ((NegocioTarefaContato)c).getContato().getId();
-                                        nome = ((NegocioTarefaContato)c).getContato().getNome();
-                                        NegocioProposta p = ((NegocioTarefaContato)c).getContato().getUltimoNegocio();
-                                        if(p!=null) {
-                                            statusUltimoNegocio = p.getTipoStatus().getDescricao();
-                                            ultimoNegocio = ""+p.getId();
-                                        }
-                                    }
-                                    listaImpressao.get(i).add(classe);
-                                    listaImpressao.get(i).add(id);
-                                    listaImpressao.get(i).add(nome);
-                                    listaImpressao.get(i).add(ultimoNegocio);
-                                    listaImpressao.get(i).add(statusUltimoNegocio);
-                                    listaImpressao.get(i).add(c.getAtendente().getNome());
-                                    listaImpressao.get(i).add(c.getCriadoPor()!=null?c.getCriadoPor().getNome():"");
-                                }
-                            }
-                            ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
-                            planilha.gerarExcel();
-                            Platform.runLater(() ->alert(Alert.AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));
-                            Desktop.getDesktop().open(export);
-                        } catch (Exception e1) {
-                            Platform.runLater(() ->alert(Alert.AlertType.ERROR,"Erro","","Erro ao criar a planilha",e1,true));
-                        } finally {
-                            close();
-                        }
-                        return null;
-                    }
-
-                };
-                if (tbPrincipal.getItems().size() >= 1) {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Exportação");
-                    alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
-                    ButtonType ok = new ButtonType("Exportar e Abrir");
-                    ButtonType cancelar = new ButtonType("Cancelar");
-                    alert.getButtonTypes().clear();
-                    alert.getButtonTypes().addAll(ok, cancelar);
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.get() == ok) {
-                        Thread thread = new Thread(run);
-                        thread.start();
-                        sta.setOnCloseRequest(ae -> {
-                            try {
-                                thread.interrupt();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    }
-                } else {
-                    alert(Alert.AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato",null,false);
+            Task<Void> run = new Task<Void>() {
+                {
+                    setOnFailed(a -> sta.close());
+                    setOnSucceeded(a -> sta.close());
+                    setOnCancelled(a -> sta.close());
                 }
-            }catch (IOException e){
-                alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
+
+                @Override
+                protected Void call() {
+
+                    File export = salvarTemp("xls");
+                    Platform.runLater(() -> sta.show());
+                    ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+                    Integer[] colunasLenght = new Integer[]{
+                            10, 20, 20, 20, 20,
+                            10, 20, 5, 5, 5, 5, 5,
+                            20, 5, 20, 30, 20, 20,
+                            20, 5, 10, 10, 10, 10, 5,
+                            20, 20, 20, 20, 20, 20, 20
+                    };
+                    String[] cabecalho = new String[]{"Id", "Modificado Em", "Criado por", "Nascimento", "Nome",
+                            "Curriculo", "Escolaridade", "Sexo", "Estado Civil", "Filhos", "Qtde Filhos", "Fumante",
+                            "Nacionalidade", "Indicacao", "Empresa Indicacao", "Det.Indicacao", "Telefone", "Celular",
+                            "Email", "UF", "Cidade", "Objetivo 1", "Objetivo 2", "Objetivo 3", "Disponivel",
+                            "Obs.Disponivel", "Empresa 1", "Cargo 1", "Empresa 2", "Cargo 2", "Empresa 3", "Cargo 3"};
+                    listaImpressao.add(new ArrayList<>());
+                    for (String c : cabecalho) {
+                        listaImpressao.get(0).add(c);
+                    }
+                    try {
+
+                        for (int i = 1; i <= candidatoList.size(); i++) {
+                            listaImpressao.add(new ArrayList<String>());
+                            Candidato c = candidatoList.get(i - 1);
+                            listaImpressao.get(i).add(c.getId());
+                            listaImpressao.get(i).add(c.getUltimaModificacao() == null ? "" : sdf.format(c.getUltimaModificacao().getTime()));
+                            listaImpressao.get(i).add(c.getCriadoPor() != null ? c.getCriadoPor().getNome() : "");
+                            listaImpressao.get(i).add(c.getDataNascimento() == null ? "" : sdf.format(c.getDataNascimento().getTime()));
+                            listaImpressao.get(i).add(c.getNome());
+                            listaImpressao.get(i).add((c.getFormulario() == null || c.getFormulario().trim().equals("")) ? "Não" : "Sim");
+                            listaImpressao.get(i).add(c.getEscolaridade() != null ? c.getEscolaridade().getDescricao() : "");
+                            listaImpressao.get(i).add(c.getSexo());
+                            listaImpressao.get(i).add(c.getEstadoCivil() != null ? c.getEstadoCivil().getDescricao() : "");
+                            listaImpressao.get(i).add(c.getFilhos() == 0 ? "Não" : "Sim");
+                            listaImpressao.get(i).add(c.getQtdeFilhos());
+                            listaImpressao.get(i).add(c.getFumante() == 0 ? "Não" : "Sim");
+                            listaImpressao.get(i).add(c.getNacionalidade());
+                            listaImpressao.get(i).add(c.getIndicacao() == 0 ? "Não" : "Sim");
+                            listaImpressao.get(i).add(c.getEmpresaIndicacao());
+                            listaImpressao.get(i).add(c.getDetalhesIndicacao());
+
+                            String telefone = "", celular = "", estado = "", cidade = "", email = "";
+
+                            if (c.getPessoaFisica() != null) {
+                                telefone = c.getPessoaFisica().getTelefone();
+                                celular = c.getPessoaFisica().getCelular();
+                                email = c.getPessoaFisica().getEmail();
+                                estado = String.valueOf(c.getPessoaFisica().getEstado());
+                                cidade = c.getPessoaFisica().getCidade() != null ? c.getPessoaFisica().getCidade().getNome() : "";
+                            }
+
+                            listaImpressao.get(i).add(telefone);
+                            listaImpressao.get(i).add(celular);
+                            listaImpressao.get(i).add(email);
+                            listaImpressao.get(i).add(estado);
+                            listaImpressao.get(i).add(cidade);
+
+                            listaImpressao.get(i).add(c.getObjetivo1());
+                            listaImpressao.get(i).add(c.getObjetivo2());
+                            listaImpressao.get(i).add(c.getObjetivo3());
+
+                            listaImpressao.get(i).add(c.getOcupado() == 1 ? "Não" : "Sim");
+                            listaImpressao.get(i).add(c.getOcupadoDetalhes());
+
+                            listaImpressao.get(i).add(c.getEmpresa1());
+                            listaImpressao.get(i).add(c.getCargo1()
+                                    + (c.getCargoNivel1() != null ? " " + c.getCargoNivel1() : "")
+                                    + (c.getCargoObs1() != null && c.getCargoObs1().trim().length() > 0 ? " " + c.getCargoObs1() : ""));
+
+                            listaImpressao.get(i).add(c.getEmpresa2());
+                            listaImpressao.get(i).add(c.getCargo2()
+                                    + (c.getCargoNivel2() != null ? " " + c.getCargoNivel2() : "")
+                                    + (c.getCargoObs2() != null && c.getCargoObs2().trim().length() > 0 ? " " + c.getCargoObs2() : ""));
+
+                            listaImpressao.get(i).add(c.getEmpresa3());
+                            listaImpressao.get(i).add(c.getCargo3()
+                                    + (c.getCargoNivel3() != null ? " " + c.getCargoNivel3() : "")
+                                    + (c.getCargoObs3() != null && c.getCargoObs3().trim().length() > 0 ? " " + c.getCargoObs3() : ""));
+                        }
+                        ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
+                        planilha.gerarExcel();
+                        Platform.runLater(() -> alert(Alert.AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
+                        Desktop.getDesktop().open(export);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                        Platform.runLater(() -> alert(Alert.AlertType.ERROR, "Erro", "", "Erro ao criar a planilha", e1, true));
+                    }
+                    return null;
+                }
+
+            };
+            if (tbPrincipal.getItems().size() >= 1) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Exportação");
+                alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
+                ButtonType ok = new ButtonType("Exportar e Abrir");
+                ButtonType cancelar = new ButtonType("Cancelar");
+                alert.getButtonTypes().clear();
+                alert.getButtonTypes().addAll(ok, cancelar);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ok) {
+                    Thread thread = new Thread(run);
+                    thread.start();
+                    sta.setOnCloseRequest(ae -> {
+                        try {
+                            thread.interrupt();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            } else {
+                alert(Alert.AlertType.ERROR, "Erro", "Parâmetros vazios", "Nenhum registro foi encontrato", null, false);
             }
+        } catch (Exception e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado", null, false);
+        } finally {
+            close();
+        }
     }
 
     private List<Candidato> filtrar() {
@@ -411,7 +444,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                 cbSexoPesquisa.getSelectionModel().getSelectedItem(), idadeMin, idadeMax, cbIndicacaoPesquisa.getValue(),
                 cbFormacaoMinPesquisa.getValue(), cbFormacaoMaxPesquisa.getValue(),
                 dtPerfilInicioPesquisa.getValue(), dtPerfilFimPesquisa.getValue(), cbBuscarPorPesquisa.getValue(),
-                txValorPesquisa.getText().trim(),ckIndisponivelPesquisa.isSelected());
+                txValorPesquisa.getText().trim(), ckIndisponivelPesquisa.isSelected());
         tbPrincipal.getItems().clear();
         tbPrincipal.getItems().addAll(lista);
         tbPrincipal.refresh();
@@ -426,7 +459,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
             loadFactory();
             candidatos = new CandidatosImp(getManager());
             combos();
-            if(anuncio!=null && filter!=null){
+            if (anuncio != null && filter != null) {
                 cbCursoSuperiorPesquisa.setValue(filter.getCurso());
                 cbFormacaoMinPesquisa.setValue(filter.getEscolaridade());
                 cbObjetivoPesquisa.setValue(filter.getCargo());
@@ -451,6 +484,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
     void novo(ActionEvent event) {
         abrirCadastro(null);
     }
+
     @FXML
     void pesquisar(KeyEvent event) {
         try {
@@ -463,6 +497,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
             close();
         }
     }
+
     private void tabela() {
         TableColumn<Candidato, Number> colunaId = new TableColumn<>("*");
         colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -598,7 +633,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                     setText(null);
                     setStyle("");
                 } else {
-                    if(item.intValue()==0)
+                    if (item.intValue() == 0)
                         setText("Sim");
                     else
                         setText("Não");
@@ -624,7 +659,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                         buttonTable(button, IconsEnum.BUTTON_CLIP);
                     } catch (IOException e) {
                     }
-                    if(c.getFormulario().equals("")) button.setVisible(false);
+                    if (c.getFormulario().equals("")) button.setVisible(false);
                     button.setOnAction(event -> {
                         visualizarFormulario(c.getFormulario());
                     });
@@ -678,16 +713,15 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                     } else {
                         button.getStyleClass().add("btJFXDefault");
                         final Candidato candidato1 = tbPrincipal.getItems().get(getIndex());
-                        if(anuncio!=null) {
+                        if (anuncio != null) {
                             Optional<Candidato> result = anuncio.getCurriculoSet().
                                     stream().
-                                    filter(f->f.getId()==candidato1.getId()).
+                                    filter(f -> f.getId() == candidato1.getId()).
                                     findFirst();
-                            if(candidato1.getOcupado()==1) {
+                            if (candidato1.getOcupado() == 1) {
                                 button.setText("Não Disponivel");
                                 button.setDisable(true);
-                            }
-                            else if(anuncio.getCurriculoSet() != null && result.isPresent()) {
+                            } else if (anuncio.getCurriculoSet() != null && result.isPresent()) {
                                 button.setText("Já Vinculado");
                                 button.setDisable(true);
                             }
@@ -701,16 +735,16 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                                 alert.setTitle("Confirmação!");
                                 alert.setHeaderText("Candidato incluido no anuncio");
                                 alert.setContentText("O candidato " + candidato1.getNome()
-                                            + " foi incluido em \nAnuncio: " + anuncio.getNome() + "\nCliente: "
-                                            + anuncio.getCliente().getNome() + "  !\n Feche esta janela para salvar!");
+                                        + " foi incluido em \nAnuncio: " + anuncio.getNome() + "\nCliente: "
+                                        + anuncio.getCliente().getNome() + "  !\n Feche esta janela para salvar!");
                                 alert.showAndWait();
                                 button.setDisable(true);
                                 tbPrincipal.refresh();
                             } catch (Exception e) {
-                                alert(Alert.AlertType.ERROR,"Erro","",
+                                alert(Alert.AlertType.ERROR, "Erro", "",
                                         "Nao foi possivel incluir o candidato no anunciol, informe o erro ao administrador do sistema",
-                                        new Exception("Candidato > "+candidato1.getId()+"\n "+e), true);
-                            }finally {
+                                        new Exception("Candidato > " + candidato1.getId() + "\n " + e), true);
+                            } finally {
                                 close();
                             }
                         });
@@ -724,6 +758,7 @@ public class CandidatoPesquisaController extends UtilsController implements Init
         colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaExcluir.setCellFactory(param -> new TableCell<Candidato, Number>() {
             JFXButton button = new JFXButton();// excluir
+
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
@@ -750,17 +785,18 @@ public class CandidatoPesquisaController extends UtilsController implements Init
         });
         tbPrincipal.getColumns().addAll(colunaId, colunaDataCriacao, colunaNome, colunaIdade, colunaIndicacao,
                 colunaSelecoes, colunaEntrevista, colunaPreAprovacoes, colunaAprovacoes, colunaDisponivel, colunaAnexo,
-                colunaAdicionarAnuncio,colunaEditar,colunaExcluir);
+                colunaAdicionarAnuncio, colunaEditar, colunaExcluir);
     }
-    private void visualizarFormulario(String formulario){
+
+    private void visualizarFormulario(String formulario) {
         Runnable run = () -> {
-            if(!formulario.trim().equals("")){
+            if (!formulario.trim().equals("")) {
                 try {
-                    File file  = storage.downloadFile(formulario);
-                    if(file!=null)
+                    File file = storage.downloadFile(formulario);
+                    if (file != null)
                         Desktop.getDesktop().open(file);
-                }catch (Exception e) {
-                    alert(Alert.AlertType.ERROR,"Erro","","Erro ao baixar o formulario",e,true);
+                } catch (Exception e) {
+                    alert(Alert.AlertType.ERROR, "Erro", "", "Erro ao baixar o formulario", e, true);
                 }
             }
         };
