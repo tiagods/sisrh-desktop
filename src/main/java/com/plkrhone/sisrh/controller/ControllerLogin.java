@@ -50,7 +50,7 @@ public class ControllerLogin extends UtilsController implements Initializable{
 
 	private UsuarioLogado logado = UsuarioLogado.getInstance();
 
-	private VersaoSistema versao = new VersaoSistema();
+	private VersaoSistema versao = VersaoSistema.getInstance();
 
 	public ControllerLogin(Stage stage){
 		this.stage=stage;

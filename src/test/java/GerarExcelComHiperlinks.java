@@ -73,7 +73,7 @@ public class GerarExcelComHiperlinks extends UtilsController {
         }catch (IOException e){
             e.printStackTrace();
         }finally {
-            //close();
+            close();
         }
     }
 }

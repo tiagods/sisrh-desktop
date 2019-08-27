@@ -20,7 +20,7 @@ public class Atualizador {
 	private String detalhesVersao="";
 	private String dataVersao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-	private VersaoSistema versaoAtual =new VersaoSistema();
+	private VersaoSistema versaoAtual = VersaoSistema.getInstance();
 	
 	private void atualizarAgora(){
     	
