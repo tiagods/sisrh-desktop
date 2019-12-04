@@ -133,6 +133,8 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                         new ComboBoxAutoCompleteUtil<>(cbObjetivoPesquisa);
                         new ComboBoxAutoCompleteUtil<>(cbExperienciaPesquisa);
                     }
+                    filtrar();
+                    //filtrar(this.paginacao);
 
                 } catch (Exception e) {
                     alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
@@ -142,8 +144,6 @@ public class CandidatoPesquisaController extends UtilsController implements Init
                 } finally {
                     close();
                 }
-                filtrar();
-                //filtrar(this.paginacao);
             });
         } catch (IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
